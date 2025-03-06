@@ -1,0 +1,21 @@
+@use '../varaibles/Varaibles' as *;
+
+
+.app-bar{
+    background: var( --background-color) !important;
+}
+
+// .app-bar {
+//     background: linear-gradient(
+//       to bottom,
+//       var(--background-color),
+//       var(--background-color)
+//     ), white !important; 
+//   }
+.nav-signin-btn{
+    background: var( --text-color) !important;
+    width: 90px !important;
+    border-radius: 30px !important;
+    text-transform: none !important;
+    color: var(--background-color) !important;
+}

@@ -1,0 +1,60 @@
+.hero-section {
+    width: 100%;
+    margin-top: 63px;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden; /* Prevents overflow from pseudo-element */
+}
+
+
+.hero-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(https://vijay-villa-private-guesthouse-natures-homestay-hills.hotelsintamilnadu.com/data/Pics/OriginalPhoto/14601/1460183/1460183359/vijay-villa-private-guesthouse-natures-homestay-hills-yelagiri-pic-1.JPEG);
+    background-size: cover;
+    background-position: center;
+    filter: blur(2px); /* Adjust blur strength */
+    z-index: -1; /* Sends it behind the content */
+   
+}
+
+.apartment-cards{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.advicetool-cards{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+@media (max-width: 768px) {
+  .hero-section {
+    margin-top:56px !important; 
+    height: 100vh !important;
+  }
+
+  .hero-section::before {
+    filter: blur(1px); 
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-section {
+    height: 100vh !important; 
+    margin-top: 56px !important; 
+  }
+
+  .hero-section::before {
+    filter: blur(0.5px); 
+  }
+}
+ 

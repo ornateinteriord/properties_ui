@@ -1,0 +1,15 @@
+@media (max-width: 768px) {
+  .property-heading-box {
+    width: 386px;
+    margin-left: -30px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+  @media (max-width: 370px) {
+    .property-heading {
+      margin-left: 10px !important;
+    }
+  }
+
+}
