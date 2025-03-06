@@ -1,6 +1,7 @@
-import { Box, Typography, Card, CardContent, Button, IconButton, Avatar } from "@mui/material";
+import { Box, Typography, Card, CardContent, Button, IconButton, Avatar, useMediaQuery } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { useRef, useEffect, useState } from "react";
+import './AllProperties.scss'
 
 const agents = [
   {
@@ -75,6 +76,7 @@ const agents = [
 const AgentCards = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+   const isMobile = useMediaQuery("(max-width:780px)");
 
   // Function to handle scrolling
   const scroll = (scrollOffset: number) => {
@@ -86,7 +88,7 @@ const AgentCards = () => {
   // Auto-scroll functionality
   useEffect(() => {
     const interval = setInterval(() => {
-      if (!isHovered && scrollRef.current) {
+      if (!isMobile && !isHovered && scrollRef.current) {
         const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
         const maxScroll = scrollWidth - clientWidth;
 
@@ -104,17 +106,19 @@ const AgentCards = () => {
   }, [isHovered]);
 
   return (
-    <Box sx={{ p: 3, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-      <Box>
-        <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold" }}>
+    <Box className="property-card-container" sx={{ p: 3, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
+      <Box className="property-heading-box">
+        <Typography   className="property-heading" variant="h4" sx={{ mb: 2, fontWeight: "bold" }}>
           Well Preferred Agents
         </Typography>
       </Box>
       <Box
+       className="property-card-box"
         sx={{ position: "relative", width: "100%", maxWidth: "1200px", margin: "0 auto" }}
         onMouseEnter={() => setIsHovered(true)} // Pause auto-scroll on hover
         onMouseLeave={() => setIsHovered(false)} // Resume auto-scroll on mouse leave
       >
+         {!isMobile && (
         <IconButton
           onClick={() => scroll(-300)}
           sx={{
@@ -130,7 +134,7 @@ const AgentCards = () => {
         >
           <ArrowBack />
         </IconButton>
-
+         )}
         <Box
           ref={scrollRef}
           sx={{
@@ -145,14 +149,14 @@ const AgentCards = () => {
         >
           {agents.map((agent) => (
             <Card key={agent.id} sx={{ minWidth: 280, maxWidth: 300, borderRadius: 2, boxShadow: 3, flexShrink: 0 }}>
-              <CardContent sx={{ display: "flex",width:"100%", alignItems: "flex-start" }}>
+              <CardContent sx={{ display: "flex",width:"100%",flexDirection:"column", alignItems: "center" }}>
                 <Box>
               <Avatar
                   src={agent.image}
                   sx={{ width: 80, height: 80, borderRadius: "50%" }} // Circular image
                 />
                 </Box>
-                <Box sx={{width:"100%",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-end"}}>
+                <Box sx={{width:"100%",display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
                   <Typography variant="h6" sx={{ fontWeight: "bold" }}>
                     {agent.name}
                   </Typography>
@@ -182,7 +186,7 @@ const AgentCards = () => {
             </Card>
           ))}
         </Box>
-
+        {!isMobile && (
         <IconButton
           onClick={() => scroll(300)}
           sx={{
@@ -198,9 +202,10 @@ const AgentCards = () => {
         >
           <ArrowForward />
         </IconButton>
+        )}
       </Box>
 
-      <Box sx={{width:"100%",display:"flex",justifyContent:"flex-end",}}>
+      <Box sx={{width:"100%",display:"flex",  justifyContent: { xs: "center", md: "flex-end" },}}>
       <Button
         variant="text"
         sx={{ mt: 2, color: "red", fontWeight: "bold", float: "right" }}

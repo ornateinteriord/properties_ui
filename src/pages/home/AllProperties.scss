@@ -1,15 +1,23 @@
 @media (max-width: 768px) {
+  .property-card-container{
+    margin-top: 10px;
+  max-width:100%;
+  padding: 0% !important;
+  margin-left:-20px !important;
+  justify-content: center !important;
+  align-items: center !important;
+  text-align: center;
+  
+  }
   .property-heading-box {
-    width: 386px;
-    margin-left: -30px;
     display: flex;
-    justify-content: flex-start;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
   }
-  @media (max-width: 370px) {
-    .property-heading {
-      margin-left: 10px !important;
-    }
+  .property-card-box{
+   max-width:300px !important;
+   margin: 0% !important;
   }
+ 
 
 }

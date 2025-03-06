@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   TextField,
@@ -13,9 +13,16 @@ import {
   Paper,
   Chip,
   Slider,
+  List,
+
+  ListItemText,
+  ListItem,
 } from "@mui/material";
 
+
 import { MapPin, Search, IndianRupee } from "lucide-react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface PropertyType {
   type: string;
@@ -46,6 +53,15 @@ const propertyTypes: PropertyType[] = [
       "> 4800 sqft",
     ],
   },
+  {
+    type: "Villa",
+    subTypes: [
+      "< 1200 sqft",
+      "1200-2400 sqft",
+      "2400-4800 sqft",
+      "> 4800 sqft",
+    ],
+  },
 ];
 
 const budgetRanges: BudgetRange[] = [
@@ -58,6 +74,7 @@ const budgetRanges: BudgetRange[] = [
 ];
 
 const PropertySearch = () => {
+  const navigate = useNavigate()
   const [location, setLocation] = useState("");
   const [propertyType, setPropertyType] = useState("");
   const [subType, setSubType] = useState("");
@@ -69,9 +86,46 @@ const PropertySearch = () => {
   const [customRange, setCustomRange] = useState<[number, number]>([
     5000, 10000000,
   ]);
+  const [cities, setCities] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+
   const selectedPropertyTypeObj = propertyTypes.find(
     (p) => p.type === propertyType
   );
+
+
+  useEffect(() => {
+    console.log("Location changed:", location);
+    if (location.trim() === "") {
+      setCities([]);
+      return;
+    }
+  
+    const fetchCities = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `https://wft-geo-db.p.rapidapi.com/v1/geo/cities?namePrefix=${location}`,
+          {
+            headers: {
+              "X-RapidAPI-Key": process.env.REACT_APP_RAPIDAPI_KEY,
+              "X-RapidAPI-Host": "wft-geo-db.p.rapidapi.com",
+            },
+          }
+        );
+        setCities(response.data.data);
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+  
+    fetchCities(); 
+  }, [location]);
+
+
   const handleBudgetClick = (event: React.MouseEvent<HTMLElement>) => {
     setBudgetAnchorEl(event.currentTarget);
   };
@@ -94,15 +148,47 @@ const PropertySearch = () => {
   };
 
   const handleSearch = () => {
-    console.log({
-      location,
-      propertyType,
-      subType,
-      budget: selectedBudgetRange || {
-        min: customRange[0],
-        max: customRange[1],
-      },
-    });
+    if (propertyType === "Apartment"){
+      navigate("/apartment-properties", {
+        state: {
+          location,
+          propertyType,
+          subType,
+          budget: selectedBudgetRange || { min: customRange[0], max: customRange[1] },
+        },
+      });
+    }else if (propertyType === "Land") {
+      navigate("/land-properties", {
+        state: {
+          location,
+          propertyType,
+          subType,
+          budget: selectedBudgetRange || { min: customRange[0], max: customRange[1] },
+        },
+      });
+    } else if (propertyType === "Site") {
+      navigate("/site-properties", {
+        state: {
+          location,
+          propertyType,
+          subType,
+          budget: selectedBudgetRange || { min: customRange[0], max: customRange[1] },
+        },
+      });
+    }else if (propertyType === "Villa") {
+      navigate("/villa-properties", {
+        state: {
+          location,
+          propertyType,
+          subType,
+          budget: selectedBudgetRange || { min: customRange[0], max: customRange[1] },
+        },
+      });
+    } else {
+      console.log("No matching property type found");
+    }
+
+
   };
   const budgetOpen = Boolean(budgetAnchorEl);
 
@@ -162,6 +248,47 @@ const PropertySearch = () => {
             },
           }}
         />
+        {location && (
+          <Box
+            sx={{
+              position: "absolute",
+              top: "100%",
+              left: 0,
+              right: 0,
+              backgroundColor: "white",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              borderRadius: "4px",
+              zIndex: 1,
+              maxHeight: "200px",
+              overflowY: "auto",
+            }}
+          >
+            <List>
+              {isLoading ? (
+                <ListItem>
+                  <ListItemText primary="Loading..." />
+                </ListItem>
+              ) : cities.length > 0 ? (
+                cities.map((city) => (
+                  <ListItem
+                    component="button"
+                    key={city.id}
+                    onClick={() => {
+                      setLocation(`${city.city}, ${city.country}`);
+                      setCities([]);
+                    }}
+                  >
+                    <ListItemText primary={`${city.city}, ${city.country}`} />
+                  </ListItem>
+                ))
+              ) : (
+                <ListItem>
+                  <ListItemText primary="No cities found" />
+                </ListItem>
+              )}
+            </List>
+          </Box>
+        )}
       </FormControl>
       <Divider />
       <FormControl
