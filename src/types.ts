@@ -8,10 +8,10 @@ export interface Property {
     bhk: number;
     bathrooms: number;
     image: string;
-    status: 'NEWLY_LAUNCHED' | 'UNDER_CONSTRUCTION' | 'READY_TO_MOVE';
+    status: 'UNDER_CONSTRUCTION' | 'READY_TO_MOVE';
     possession: string;
     furnishing: string;
-    
+    parking:string
   }
   
   export interface Agent {

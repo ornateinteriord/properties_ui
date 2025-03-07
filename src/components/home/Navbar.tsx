@@ -162,7 +162,7 @@ const Navbar = () => {
                   </Box>
                 ))}
                  <Box>
-              <Button className="nav-signin-btn">Sign in</Button>
+              <Button component={Link} to="/signin"  className="nav-signin-btn">Sign in</Button>
             </Box>
               </Box>
               
@@ -173,7 +173,7 @@ const Navbar = () => {
             {isMobile && (
               <Box sx={{width:"100%",display:"flex",justifyContent:"flex-end",gap:"15px",alignItems:"center"}}>
               <Box>
-              <Button className="nav-signin-btn">Sign in</Button>
+              <Button component={Link} to="/signin" className="nav-signin-btn">Sign in</Button>
             </Box>
               <IconButton
                 color="inherit"

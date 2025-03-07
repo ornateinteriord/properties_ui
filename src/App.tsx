@@ -9,6 +9,19 @@ import ApartmentPage from "./pages/apartments/ApartmentPage";
 import Land from "./pages/land/Land";
 import Site from "./pages/site/Site";
 import Villa from "./pages/villa/villa";
+import Signin from "./pages/auth/Signin";
+import Signup from "./pages/auth/Signup";
+import { CircularProgress, Dialog, DialogContent } from "@mui/material";
+
+export const LoadingComponent = () => {
+  return (
+    <Dialog open={true}>
+      <DialogContent>
+        <CircularProgress />
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 function App() {
   return (
@@ -16,6 +29,8 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<HomePage/>} />
+        <Route path="/signin" element={<Signin/>} />
+        <Route path="/signup" element={<Signup/>} />
         <Route path="/about" element={<About/>} />
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Contact/>} />

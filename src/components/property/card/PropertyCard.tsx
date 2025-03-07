@@ -1,6 +1,6 @@
 import { Heart, Share2, MoreVertical } from 'lucide-react';
 import { Property } from '../../../types';
-import { Card, CardMedia, Typography, Box, Chip, IconButton, Button, Link } from '@mui/material';
+import { Card, CardMedia, Typography, Box,  IconButton, Button, Link } from '@mui/material';
 import { useState } from 'react';
 
 interface PropertyCardProps {
@@ -36,21 +36,6 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
           image={property.image}
           alt={property.title}
         />
-        {property.status === 'NEWLY_LAUNCHED' && (
-          <Chip
-            label="NEWLY LAUNCHED"
-            color="primary"
-            size="small"
-            sx={{
-              position: 'absolute',
-              top: 8,
-              left: 8,
-              backgroundColor: '#4CAF50',
-              color: 'white',
-              fontSize: '0.75rem'
-            }}
-          />
-        )}
       </Box>
 
       {/* Middle Column - Content */}
@@ -67,7 +52,7 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
             textDecoration: 'underline',
             mb: 0.5
           }}>
-            {property.title}
+          {  property.title}
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: '0.9rem' }}>
             {property.location}
@@ -76,33 +61,45 @@ export const PropertyCard = ({ property }: PropertyCardProps) => {
 
         <Box sx={{ 
           display: 'grid', 
-          gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(2, 1fr)' },
+          gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(3, 1fr)' },
           gap: 2,
           mb: 2
         }}>
           <Box>
             <Typography color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-              SUPER AREA
+              Super Area
             </Typography>
             <Typography sx={{ fontSize: '0.9rem' }}>{property.sqft} sqft</Typography>
           </Box>
           <Box>
             <Typography color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-              {property.status === 'READY_TO_MOVE' ? 'STATUS' : 'UNDER CONSTRUCTION'}
+              {property.status === 'READY_TO_MOVE' ? 'Status' : 'UNDER CONSTRUCTION'}
             </Typography>
             <Typography sx={{ fontSize: '0.9rem' }}>{property.possession}</Typography>
           </Box>
           <Box>
             <Typography color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-              FURNISHING
+              Furnishing
             </Typography>
             <Typography sx={{ fontSize: '0.9rem' }}>{property.furnishing}</Typography>
           </Box>
           <Box>
             <Typography color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-              BATHROOM
+              Bathroom
             </Typography>
             <Typography sx={{ fontSize: '0.9rem' }}>{property.bathrooms}</Typography>
+          </Box>
+          <Box>
+            <Typography color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+              BHK
+            </Typography>
+            <Typography sx={{ fontSize: '0.9rem' }}>{property.bhk}</Typography>
+          </Box>
+          <Box>
+            <Typography color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+              Parking
+            </Typography>
+            <Typography sx={{ fontSize: '0.9rem' }}>{property.parking}</Typography>
           </Box>
         </Box>
 
