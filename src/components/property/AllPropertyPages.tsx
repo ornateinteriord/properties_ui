@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Container,
@@ -13,80 +13,36 @@ import {
 } from "@mui/material";
 import { PropertyCard } from "./card/PropertyCard";
 import { PropertyFilter } from "./filter/PropertyFilter";
-import { ApartmentData, landData, siteData, villaData } from "./data/PropertyData";
-import { useLocation } from "react-router-dom";
-import { Property } from "../../types";
 import CreateProperty from "./card/CreateProperty";
+import { toast } from "react-toastify";
+
+import { getAllProperties,} from "../../api/product";
+import { LoadingComponent } from "../../App";
 
 
 const AllPropertyPages = () => {
-const location = useLocation()
   const [tab, setTab] = useState(0);
-  const [bhk, setBhk] = useState("all");
-  const [price, setPrice] = useState("all");
-  const [sqft, setSqft] = useState("all");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const [selectedType, setSelectedType] = useState<string>("all");
+const [selectedSubtype, setSelectedSubtype] = useState<string>("all");
+const [selectedBudget, setSelectedBudget] = useState<string>("all");
+const [selectedSquareFeet, setSelectedSquareFeet] = useState<string>("all");
+ const {data:properties,isError,error,isLoading } = getAllProperties();
+ console.log(properties,"all")
+
+ useEffect(() => {
+  if (isError) {
+    const err = error as any;
+    toast.error(
+      err?.response.data.message 
+    );
+  }
+}, [isError, error]);
 
   const handleTabChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
-
-  const handleBhkChange = (event: SelectChangeEvent) => {
-    setBhk(event.target.value);
-  };
-
-  const handlePriceChange = (event: SelectChangeEvent) => {
-    setPrice(event.target.value);
-  };
-
-  const handleSqftChange = (event: SelectChangeEvent) => {
-    setSqft(event.target.value);
-  };
-
-  const filterProperties = (properties: any[]) => {
-    return properties.filter((property) => {
-      // Filter by BHK
-      if (bhk !== "all" && property.bhk !== parseInt(bhk)) {
-        return false;
-      }
-
-      // Filter by Square Feet
-      if (sqft !== "all") {
-        const [minSqft, maxSqft] = sqft.split("-").map(Number);
-        if (maxSqft && property.sqft > maxSqft) return false;
-        if (minSqft && property.sqft < minSqft) return false;
-      }
-
-      return true;
-    });
-  };
-
-  const sortProperties = (properties: any[]) => {
-    if (price === "low_to_high") {
-      return properties.sort((a, b) => a.price - b.price);
-    } else if (price === "high_to_low") {
-      return properties.sort((a, b) => b.price - a.price);
-    }
-    return properties;
-  };
-
-  const getFilteredProperties = (): Property[] => {
-    let properties:Property[] = [];
-    if (location.pathname.includes("apartment-properties")) {
-      properties = ApartmentData;
-    } else if (location.pathname.includes("land-properties")) {
-      properties = landData;
-    } else if (location.pathname.includes("site-properties")) {
-      properties = siteData;
-    } else if (location.pathname.includes("villa-properties")) {
-      properties = villaData;
-    }
-
-    const filteredProperties = filterProperties(properties);
-    return sortProperties(filteredProperties);
-  };
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleOpenDialog = () => {
@@ -96,6 +52,56 @@ const location = useLocation()
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
   };
+  const handleTypeChange = (event: SelectChangeEvent<string>) => {
+    setSelectedType(event.target.value);
+    setSelectedSubtype("all");
+  };
+  
+  const handleSubtypeChange = (event: SelectChangeEvent<string>) => {
+    setSelectedSubtype(event.target.value);
+  };
+  
+  const handleBudgetChange = (event: SelectChangeEvent<string>) => {
+    setSelectedBudget(event.target.value);
+  };
+  
+  const handleSquareFeetChange = (event: SelectChangeEvent<string>) => {
+    setSelectedSquareFeet(event.target.value);
+  };
+
+
+  const filteredProperties = Array.isArray(properties)? properties.filter((property:any) => {
+    const matchesType = selectedType === "all" || property.type === selectedType;
+    const matchesSubtype =
+      selectedSubtype === "all" || property.subtype === selectedSubtype;
+
+    // Logic to match budget
+    const matchesBudget =
+      selectedBudget === "all" ||
+      (() => {
+        const [minBudget, maxBudget] = selectedBudget
+          .split(" - ")
+          .map((s: string) => parseFloat(s.replace(/[^0-9.]/g, "")));
+        const propertyBudget = parseFloat(property.budget.replace(/[^0-9.]/g, ""));
+        return propertyBudget >= minBudget && propertyBudget <= maxBudget;
+      })();
+
+    // Logic to match square feet
+    const matchesSquareFeet =
+      selectedSquareFeet === "all" ||
+      (() => {
+        const [minSqFt, maxSqFt] = selectedSquareFeet
+          .split("-")
+          .map((s: string) => parseFloat(s));
+        const propertySqFt = parseFloat(property.squareFeet);
+        return (
+          (minSqFt ? propertySqFt >= minSqFt : true) &&
+          (maxSqFt ? propertySqFt <= maxSqFt : true)
+        );
+      })();
+
+    return matchesType && matchesSubtype && matchesBudget && matchesSquareFeet;
+  }) : []
 
   return (
     <Box sx={{width:"100%", bgcolor: "#f5f5f5", minHeight: "100vh", py: 3 }}>
@@ -174,12 +180,14 @@ const location = useLocation()
                   Filters
                 </Typography>
                 <PropertyFilter
-                  bhk={bhk}
-                  price={price}
-                  sqft={sqft}
-                  onBhkChange={handleBhkChange}
-                  onPriceChange={handlePriceChange}
-                  onSqftChange={handleSqftChange}
+                  selectedType={selectedType}
+                  selectedSubtype={selectedSubtype}
+                  selectedBudget={selectedBudget}
+                  selectedSquareFeet={selectedSquareFeet}
+                  handleTypeChange={handleTypeChange}
+                  handleSubtypeChange={handleSubtypeChange}
+                  handleBudgetChange={handleBudgetChange}
+                  handleSquareFeetChange={handleSquareFeetChange}
                 />
               </Paper>
             </Box>
@@ -193,37 +201,12 @@ const location = useLocation()
           <CreateProperty open={isDialogOpen} onClose={handleCloseDialog} />
           {/* Center - Content */}
           <Box sx={{ flex: 1,width:"90" }}>
-            {tab === 0 && (
-                <>
-                 {location.pathname.includes("apartment-properties") && (
+          {tab === 0 && (
               <Box>
-                {getFilteredProperties().map((property: any) => (
+                {filteredProperties?.map((property: any) => (
                   <PropertyCard key={property.id} property={property} />
                 ))}
               </Box>
-               )}
-                {location.pathname.includes("land-properties") && (
-              <Box>
-                {getFilteredProperties().map((property: any) => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </Box>
-               )}
-                {location.pathname.includes("site-properties") && (
-              <Box>
-                {getFilteredProperties().map((property: any) => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </Box>
-               )}
-                {location.pathname.includes("villa-properties") && (
-              <Box>
-                {getFilteredProperties().map((property: any) => (
-                  <PropertyCard key={property.id} property={property} />
-                ))}
-              </Box>
-               )}
-              </>
             )}
 
             {tab === 1 && (
@@ -236,6 +219,7 @@ const location = useLocation()
           </Box>
         </Container>
       </Container>
+      {isLoading && <LoadingComponent/>}
     </Box>
   );
 };

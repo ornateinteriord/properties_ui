@@ -158,7 +158,7 @@ const PropertySearch = () => {
         },
       });
     }else if (propertyType === "Land") {
-      navigate("/land-properties", {
+      navigate("/apartment-properties", {
         state: {
           location,
           propertyType,
@@ -167,7 +167,7 @@ const PropertySearch = () => {
         },
       });
     } else if (propertyType === "Site") {
-      navigate("/site-properties", {
+      navigate("/apartment-properties", {
         state: {
           location,
           propertyType,
@@ -176,7 +176,7 @@ const PropertySearch = () => {
         },
       });
     }else if (propertyType === "Villa") {
-      navigate("/villa-properties", {
+      navigate("/apartment-properties", {
         state: {
           location,
           propertyType,

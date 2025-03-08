@@ -8,7 +8,7 @@ import { useLoginMutation } from "../../api/auth";
 
 const Signin = () => {
     const [formData, setFormData] = useState({
-        username: "",
+      identifier: "",
         password: "",
       });
       const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,11 +39,11 @@ const Signin = () => {
               required
               id="username"
               label="Username"
-              name="username"
+              name="identifier"
               autoComplete="username"
               autoFocus
               placeholder="Enter your username"
-              value={formData.username}
+              value={formData.identifier}
               onChange={handleChange}
               InputProps={{
                 startAdornment: (
@@ -61,8 +61,8 @@ const Signin = () => {
               id="password"
               autoComplete="current-password"
               placeholder="Enter your password"
-            //   value={formData.password}
-            //   onChange={handleChange}
+              value={formData.password}
+              onChange={handleChange}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">

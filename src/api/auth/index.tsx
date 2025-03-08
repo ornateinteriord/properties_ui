@@ -8,7 +8,7 @@ import TokenService from "../token/TokenService";
 export const useLoginMutation = ()=>{
     const navigate =useNavigate();
      return useMutation({
-         mutationFn:async(data: { username: string; password: string })=>{
+         mutationFn:async(data: { identifier: string; password: string })=>{
             return await post("/auth/login",data)
          },
      onSuccess:(response)=>{

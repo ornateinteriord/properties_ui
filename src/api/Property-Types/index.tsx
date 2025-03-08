@@ -9,7 +9,7 @@ export const useGetPropertyTypes = () => {
             if (response.success) {
                 return response.data;
               } else {
-                throw new Error(response.message || "Failed to fetch member details");
+                throw new Error(response.message );
               }
         }
     })

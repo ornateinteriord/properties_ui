@@ -1,9 +1,35 @@
-import { useMutation } from "@tanstack/react-query"
-import { post } from "../Api"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import { get, post } from "../Api"
 import { toast } from "react-toastify"
 import axios from "axios"
 
+export const getAllProperties =()=>{
+  return useQuery({
+    queryKey:["allProperties"],
+    queryFn: async() =>{
+        const response = await get("/product/getall")
+        if(response.success){
+          return response.properties;
+        }else{
+            throw new Error(response.message )
+        }
+    }
+})
+}
 
+// export const getAllProperties2 = async ()=>{
+//  try {
+//   const response = await get("/product/getall")
+//   if(response.success){
+//     return response.properties
+//   }else {
+//     console.error( response.data?.message);
+//     return [];
+//   }
+//  } catch (error) {
+//   console.log(error)
+//  }
+// }
 
 export const useCreateProperty = ()=>{
     return useMutation({
@@ -13,6 +39,7 @@ export const useCreateProperty = ()=>{
      onSuccess:(response)=>{
         if(response.success){
             toast.success(response.message)
+            console.log(response.message)
         }else{
             console.error( response.message)
           }
@@ -26,13 +53,15 @@ export const useCreateProperty = ()=>{
     })
 }
 
-export const getCloudinaryUrl = (file :  File) => {
-  const data = new FormData();
+export const getCloudinaryUrl = () => {
+ 
+  return useMutation({
+    
+    mutationFn : async (file :File) => {
+       const data = new FormData();
   data.append("file", file);
   data.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
   data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-  return useMutation({
-    mutationFn : async () => {
       const response = await axios.post(import.meta.env.VITE_CLOUDINARY_BASE_URL, data)
       return response.data
     }

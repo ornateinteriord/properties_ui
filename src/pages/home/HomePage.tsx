@@ -1,10 +1,10 @@
-import { Box, Typography } from "@mui/material";
-import PropertySearch from "../../components/searchComponent/PropertySearch";
+import { Box, Button, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import "./HomePage.scss";
 import AllPropertiesCards from "./AllProperties";
 import AgentCards from "./AgentsCards";
 import AdviceAndTools from "./Tools";
+import { Link } from "react-router-dom";
 
 const HomePage = () => {
   return (
@@ -32,7 +32,9 @@ const HomePage = () => {
             Discover the perfect place to call home
           </Typography>
           <Box sx={{ width: "100%", marginTop: "10px" }}>
-            <PropertySearch />
+            {/* <PropertySearch /> */}
+            <Button component={Link} to="/apartment-properties"  sx={{mt:2,backgroundColor:"#150b83c1",width:"150px",borderRadius:"30px",color:"#fff",textTransform:"none"}}>Find Property</Button>
+              
           </Box>
         </motion.div>
       </Box>

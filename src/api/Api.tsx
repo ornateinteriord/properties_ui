@@ -3,7 +3,7 @@ import TokenService from "./token/TokenService";
 
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_MLM_API_URL,
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
       "Content-Type": "application/json",
     },
@@ -23,16 +23,16 @@ api.interceptors.request.use(
     }
   );
 
-  api.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            localStorage.removeItem("token"); // Remove token
-            window.location.href = "/"; 
-        }
-        return Promise.reject(error);
-    }
-  );
+  // api.interceptors.response.use(
+  //   (response) => response,
+  //   (error) => {
+  //       if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+  //           localStorage.removeItem("token"); // Remove token
+  //           window.location.href = "/"; 
+  //       }
+  //       return Promise.reject(error);
+  //   }
+  // );
 
 //post
 export const post = async (path: string, data: any) => {

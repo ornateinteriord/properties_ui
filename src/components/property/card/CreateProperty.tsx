@@ -2,7 +2,7 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
+
   Button,
   TextField,
   Box,
@@ -11,14 +11,58 @@ import {
   Select,
   MenuItem,
   FormLabel,
+  SelectChangeEvent,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
+import { getCloudinaryUrl, useCreateProperty } from "../../../api/product";
+import { toast } from "react-toastify";
 
 const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
+  const [selectedStatus, setSelectedStatus] = useState("");
+const [formData, setFormData] = useState<Record<string, string>>({
+  });
+  const createPropertyMutation = useCreateProperty()
+  const cloudinary = getCloudinaryUrl()
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    onClose();
+    createPropertyMutation.mutate(formData)
+    // onClose();
+  };
+
+  const handleInputChange = (
+    e:
+      | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+      | SelectChangeEvent<string>
+  ) => {
+    const { name, value } = e.target as
+      | HTMLInputElement
+      | HTMLTextAreaElement
+      | { name: string; value: string }; // Type assertion
+    setFormData((prevData) => ({
+      ...prevData,
+      [name ?? "status"]: value,
+    }));
+    setSelectedStatus(value)
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0]; 
+      cloudinary.mutate(file,{
+        onSuccess:(data) =>{
+          console.log(data)
+          setFormData((prevData:any) => ({
+            ...prevData,
+            image: prevData.data.secure_url, 
+          }))
+        },
+        onError:(err)=>{
+          toast.error("failed to uplaod image")
+          console.log(err)
+        }
+      }); 
+    }
   };
 
   const properties = [
@@ -46,7 +90,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     { name: "Garage Parking" },
     { name: "Basement Parking" },
   ];
-  const [selectedStatus, setSelectedStatus] = useState("");
+
   const status = [{ name: "Ready to Move" }, { name: "Under Construction" }];
 
   return (
@@ -83,11 +127,12 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
           sx={{
             mt: 1,
             display: "flex",
-            flexDirection: { xs: "column", md: "row" },
+            flexDirection: "column",
             justifyContent: "space-between",
             gap: { xs: "15px", md: "20px" },
           }}
         >
+          <Box sx={{display:"flex",flexDirection:{xs:"column",md:"row"}, gap: { xs: "15px", md: "20px" }}}>
           <form
             style={{
               display: "flex",
@@ -100,6 +145,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               <Select
                 required
                 displayEmpty
+                name="property_type"
+                value={formData.property_type}
+                onChange={handleInputChange}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
                     "&:hover": {
@@ -126,6 +174,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               </Select>
             </FormControl>
             <TextField
+             name="title"
+            value={formData.title}
+            onChange={handleInputChange}
               fullWidth
               label="Title"
               placeholder="ex: flat for sale."
@@ -135,6 +186,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             />
 
             <TextField
+               name="location"
+               value={formData.location}
+               onChange={handleInputChange}
               fullWidth
               label="Location"
               placeholder="Street/Area/City"
@@ -143,6 +197,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             />
 
             <TextField
+             name="sqrtft"
+             value={formData.sqrtft}
+             onChange={handleInputChange}
               fullWidth
               label="Super Area (sqft)"
               type="number"
@@ -151,6 +208,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             />
             <FormControl fullWidth>
               <Select
+               name="bhk"
+               value={formData.bhk}
+               onChange={handleInputChange}
                 displayEmpty
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -179,8 +239,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             </FormControl>
             <FormControl fullWidth>
               <Select
-                value={selectedStatus}
-                onChange={(e: any) => setSelectedStatus(e.target.value)}
+              name="status"
+                value={selectedStatus || formData.status}
+                onChange={handleInputChange}
                 displayEmpty
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -207,6 +268,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             </FormControl>
             {selectedStatus === "Under Construction" && (
               <TextField
+              name="possession"
+              value={formData.possession}
+              onChange={handleInputChange}
                 fullWidth
                 label="Expected Completion Date"
                 type="date"
@@ -232,6 +296,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             {" "}
             <FormControl fullWidth>
               <Select
+              name="parking"
+                value={formData.parking}
+                onChange={handleInputChange}
                 displayEmpty
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
@@ -262,6 +329,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             <FormControl fullWidth>
               <Select
                 displayEmpty
+                name="furnishing"
+                value={formData.furnishing}
+                onChange={handleInputChange}
                 sx={{
                   "& .MuiOutlinedInput-notchedOutline": {
                     "&:hover": {
@@ -288,12 +358,18 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               </Select>
             </FormControl>
             <TextField
+             name="bathrooms"
+             value={formData.bathrooms}
+             onChange={handleInputChange}
               fullWidth
               label="Bathrooms"
               type="number"
               variant="outlined"
             />
             <TextField
+             name="price"
+             value={formData.price}
+             onChange={handleInputChange}
               fullWidth
               label="Price"
               type="number"
@@ -301,6 +377,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               variant="outlined"
             />
             <TextField
+            name="pricePerSqft"
+            value={formData.pricePerSqft}
+            onChange={handleInputChange}
               fullWidth
               label="Price per sqft"
               type="number"
@@ -308,18 +387,17 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               variant="outlined"
             />
             <FormControl>
-                <FormLabel sx={{ color: "rgba(0, 0, 0, 0.5)",fontSize:"15px" }}>Add Image</FormLabel>
+                <FormLabel sx={{ color: "rgba(0, 0, 0, 0.5)",fontSize:"15px" }}>Add Images</FormLabel>
                 <Button variant="outlined" component="label">
                   Choose File
-                  <input type="file" hidden  />
+                  <input type="file" name="image" hidden onChange={handleFileChange}  />
                 </Button>
               
               </FormControl>
           </form>
-        </Box>
-      </DialogContent>
+          </Box>
 
-      <DialogActions sx={{ padding: 3 }}>
+     
         <Button
           type="submit"
           variant="contained"
@@ -336,7 +414,8 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
         >
           Create
         </Button>
-      </DialogActions>
+        </Box>
+        </DialogContent>
     </Dialog>
   );
 };
