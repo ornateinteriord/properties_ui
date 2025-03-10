@@ -4,13 +4,6 @@ import { useNavigate } from "react-router-dom";
 const About = () => {
   const navigate = useNavigate();
   return (
-<<<<<<< HEAD
-   <Box sx={{width:"100%",marginTop:"60px",display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}>
-    <h1>coming soon ...</h1>
-   </Box>
-  )
-}
-=======
     <Box
       sx={{
         width: "100%",
@@ -60,6 +53,5 @@ const About = () => {
     </Box>
   );
 };
->>>>>>> 6c2244ce5e020041b924b8f657cd241442cdf925
 
 export default About;
