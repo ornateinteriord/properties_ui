@@ -2,7 +2,7 @@ import { Box } from "@mui/material";
 import AllPropertyPages from "../../components/property/AllPropertyPages";
 
 
-const ApartmentPage = () => {
+const AllPropertiespage = () => {
   return (
     <Box sx={{width:"100%",marginTop:"60px"}}>
  <AllPropertyPages   />
@@ -11,4 +11,4 @@ const ApartmentPage = () => {
   );
 };
 
-export default ApartmentPage;
+export default AllPropertiespage;

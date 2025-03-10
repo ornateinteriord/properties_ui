@@ -5,10 +5,11 @@ import HomePage from "./pages/home/HomePage";
 import About from "./pages/about/About";
 import Contact from "./pages/contact/Contact";
 import Footer from "./components/home/Footer";
-import ApartmentPage from "./pages/apartments/ApartmentPage";
 import Signin from "./pages/auth/Signin";
 import Signup from "./pages/auth/Signup";
 import { CircularProgress, Dialog, DialogContent } from "@mui/material";
+import AllPropertiespage from "./pages/allProperties/AllPropertiespage";
+import Property from "./pages/property/Property";
 
 export const LoadingComponent = () => {
   return (
@@ -30,8 +31,8 @@ function App() {
         <Route path="/signup" element={<Signup/>} />
         <Route path="/about" element={<About/>} />
         <Route path="/contact" element={<Contact/>} />
-        <Route path="/properties" element={<Contact/>} />
-        <Route path="/apartment-properties" element={<ApartmentPage/>} />
+        <Route path="/property" element={<Property/>} />
+        <Route path="/properties" element={<AllPropertiespage/>} />
       </Routes>
       <Footer/>
     </Router>

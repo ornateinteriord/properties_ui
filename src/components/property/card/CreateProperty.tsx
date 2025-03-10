@@ -17,6 +17,7 @@ import { useState } from "react";
 import { getCloudinaryUrl, useCreateProperty } from "../../../api/product";
 import { toast } from "react-toastify";
 import { useGetPropertyTypes } from "../../../api/Property-Types";
+import { LoadingComponent } from "../../../App";
 
 
 const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
@@ -24,12 +25,13 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   const [selectedtype, setSelectedtype] = useState("");
   const [formData, setFormData] = useState<Record<string, string>>({});
   const createPropertyMutation = useCreateProperty();
+  const { mutate,isPending } = createPropertyMutation
+
   const cloudinary = getCloudinaryUrl();
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    
-    createPropertyMutation.mutate(formData);
-    // onClose();
+    mutate(formData);
+    onClose();
   };
   const { data: properties } = useGetPropertyTypes();
 
@@ -415,7 +417,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 </Select>
               </FormControl>
               <TextField
-                name="sqrtft"
+                name="sqft"
                 value={formData.sqft}
                 onChange={handleInputChange}
                 fullWidth
@@ -481,6 +483,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
           </Button>
         </Box>
       </DialogContent>
+      {isPending && <LoadingComponent/>}
     </Dialog>
   );
 };

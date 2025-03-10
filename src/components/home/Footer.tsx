@@ -18,10 +18,11 @@ import {
     return (
       <Box
         sx={{
+          width: "100%",
           backgroundColor: "#2E3B55",
           color: "white",
           padding: "40px 20px",
-          marginTop: "auto", // Push footer to the bottom
+          marginTop: "auto", // This will push the footer to the bottom
         }}
       >
         <Grid

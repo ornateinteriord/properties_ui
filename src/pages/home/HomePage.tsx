@@ -33,7 +33,7 @@ const HomePage = () => {
           </Typography>
           <Box sx={{ width: "100%", marginTop: "10px" }}>
             {/* <PropertySearch /> */}
-            <Button component={Link} to="/apartment-properties"  sx={{mt:2,backgroundColor:"#150b83c1",width:"150px",borderRadius:"30px",color:"#fff",textTransform:"none"}}>Find Property</Button>
+            <Button component={Link} to="/properties"  sx={{mt:2,backgroundColor:{md:"#150b83c1",xs:"#150b83"},width:"150px",borderRadius:"30px",color:"#fff",textTransform:"none"}}>Find Property</Button>
               
           </Box>
         </motion.div>

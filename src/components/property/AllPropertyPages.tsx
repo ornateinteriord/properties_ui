@@ -118,13 +118,13 @@ const AllPropertyPages = () => {
     : [];
 
   return (
-    <Box sx={{ width: "100%", bgcolor: "#f5f5f5", minHeight: "100vh", py: 3 }}>
+    <Box sx={{ width: "100%", bgcolor: "#f5f5f5", minHeight: "100vh", py: 3,mt:10 }}>
       <Container sx={{ width: "100%", padding: 0 }} maxWidth={false}>
         <Container
           maxWidth={false}
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", xl: "row" },
+            flexDirection: { xs: "column",md:"row", xl: "row" },
             gap: 3,
           }}
         >

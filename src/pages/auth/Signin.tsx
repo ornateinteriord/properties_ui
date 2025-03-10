@@ -4,6 +4,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import LockIcon from "@mui/icons-material/Lock";
 import { useState } from "react";
 import { useLoginMutation } from "../../api/auth";
+import { LoadingComponent } from "../../App";
 
 
 const Signin = () => {
@@ -20,7 +21,7 @@ const Signin = () => {
       };
 
       const loginMutation = useLoginMutation()
-      const { mutate, } = loginMutation
+      const { mutate,isPending } = loginMutation
 
       const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -29,7 +30,7 @@ const Signin = () => {
   return (
     <Container component="main" maxWidth="xs" sx={{ height: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", width: "100%" }}>
-      <Card sx={{ width: "100%", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)", backgroundColor: "#fff" }}>
+      <Card sx={{ width: "100%", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.7)", backgroundColor: "#fff" }}>
         <CardContent sx={{ padding: "2rem" }}>
           <Typography component="h1" variant="h5" sx={{ color: "#150b83c1", mb: 3, textAlign: "center" }}>
             Sign In
@@ -42,7 +43,7 @@ const Signin = () => {
               name="identifier"
               autoComplete="username"
               autoFocus
-              placeholder="Enter your username"
+              placeholder="Username/Phone no/Email"
               value={formData.identifier}
               onChange={handleChange}
               InputProps={{
@@ -76,7 +77,7 @@ const Signin = () => {
             </Button>
             <Typography variant="body2" sx={{ textAlign: "center", mt: 1 }}>
               Don't have an account?{" "}
-              <Link to="/register" style={{ color: "#150b83c1", textDecoration: "none", fontWeight: "bold" }}>
+              <Link to="/signup" style={{ color: "#150b83c1", textDecoration: "none", fontWeight: "bold" }}>
                 Register
               </Link>
             </Typography>
@@ -84,6 +85,7 @@ const Signin = () => {
         </CardContent>
       </Card>
     </Box>
+    {isPending && <LoadingComponent/>}
   </Container>
   )
 }
