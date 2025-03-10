@@ -2,7 +2,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-
   Button,
   TextField,
   Box,
@@ -17,18 +16,22 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { getCloudinaryUrl, useCreateProperty } from "../../../api/product";
 import { toast } from "react-toastify";
+import { useGetPropertyTypes } from "../../../api/Property-Types";
+
 
 const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   const [selectedStatus, setSelectedStatus] = useState("");
-const [formData, setFormData] = useState<Record<string, string>>({
-  });
-  const createPropertyMutation = useCreateProperty()
-  const cloudinary = getCloudinaryUrl()
+  const [selectedtype, setSelectedtype] = useState("");
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const createPropertyMutation = useCreateProperty();
+  const cloudinary = getCloudinaryUrl();
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    createPropertyMutation.mutate(formData)
+    
+    createPropertyMutation.mutate(formData);
     // onClose();
   };
+  const { data: properties } = useGetPropertyTypes();
 
   const handleInputChange = (
     e:
@@ -38,39 +41,44 @@ const [formData, setFormData] = useState<Record<string, string>>({
     const { name, value } = e.target as
       | HTMLInputElement
       | HTMLTextAreaElement
-      | { name: string; value: string }; // Type assertion
+      | { name: string; value: string }; 
     setFormData((prevData) => ({
       ...prevData,
       [name ?? "status"]: value,
     }));
-    setSelectedStatus(value)
+    if (name === "property_type") {
+      setSelectedtype(value);
+    }
+  
+    if (name === "status") {
+      setSelectedStatus(value);
+    }
   };
+
+  const filteredSubtypes =
+  properties?.find((property: any) => property.type === selectedtype)
+    ?.subTypes || [];
+    const propertyTypesWithSubtypes = ["Land","Penthouse","Farmhouse","Studio Apartment","Commercial Space","Industrial Property",];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0]; 
-      cloudinary.mutate(file,{
-        onSuccess:(data) =>{
-          console.log(data)
-          setFormData((prevData:any) => ({
+      const file = event.target.files[0];
+      cloudinary.mutate(file, {
+        onSuccess: (data) => {
+          console.log(data);
+          setFormData((prevData: any) => ({
             ...prevData,
-            image: prevData.data.secure_url, 
-          }))
+            image: data.secure_url,
+          }));
         },
-        onError:(err)=>{
-          toast.error("failed to uplaod image")
-          console.log(err)
-        }
-      }); 
-    }
+        onError: (err) => {
+          toast.error("failed to uplaod image");
+          console.log(err);
+        },
+      });
+    }
   };
 
-  const properties = [
-    { name: "Apartment" },
-    { name: "Land" },
-    { name: "Site" },
-    { name: "Villa" },
-  ];
   const furnishing = [
     { name: "Fully Furnished" },
     { name: "Semi Furnished" },
@@ -132,290 +140,347 @@ const [formData, setFormData] = useState<Record<string, string>>({
             gap: { xs: "15px", md: "20px" },
           }}
         >
-          <Box sx={{display:"flex",flexDirection:{xs:"column",md:"row"}, gap: { xs: "15px", md: "20px" }}}>
-          <form
-            style={{
+          <Box
+            sx={{
               display: "flex",
-              flexDirection: "column",
-              width: "100%",
-              gap: "15px",
+              flexDirection: { xs: "column", md: "row" },
+              gap: { xs: "15px", md: "20px" },
             }}
           >
-            <FormControl fullWidth>
-              <Select
-                required
-                displayEmpty
-                name="property_type"
-                value={formData.property_type}
-                onChange={handleInputChange}
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    "&:hover": {
-                      borderColor: "#04112f",
+            <form 
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                gap: "15px",
+              }}
+            >
+              <FormControl fullWidth>
+                <Select
+                  required
+                  displayEmpty
+                  name="property_type"
+                  value={selectedtype || formData.property_type}
+                  onChange={handleInputChange}
+                  sx={{
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      "&:hover": {
+                        borderColor: "#04112f",
+                      },
                     },
-                  },
-                }}
-                renderValue={(selected: any) => {
-                  if (!selected) {
-                    return (
-                      <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                        Select Property Type
-                      </span>
-                    );
-                  }
-                  return selected;
-                }}
-              >
-                {properties.map((fur) => (
-                  <MenuItem key={fur.name} value={fur.name}>
-                    {`${fur.name}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-             name="title"
-            value={formData.title}
-            onChange={handleInputChange}
-              fullWidth
-              label="Title"
-              placeholder="ex: flat for sale."
-              required
-              variant="outlined"
-              sx={{ borderRadius: 2 }}
-            />
-
-            <TextField
-               name="location"
-               value={formData.location}
-               onChange={handleInputChange}
-              fullWidth
-              label="Location"
-              placeholder="Street/Area/City"
-              required
-              variant="outlined"
-            />
-
-            <TextField
-             name="sqrtft"
-             value={formData.sqrtft}
-             onChange={handleInputChange}
-              fullWidth
-              label="Super Area (sqft)"
-              type="number"
-              required
-              variant="outlined"
-            />
-            <FormControl fullWidth>
-              <Select
-               name="bhk"
-               value={formData.bhk}
-               onChange={handleInputChange}
-                displayEmpty
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    "&:hover": {
-                      borderColor: "#04112f",
-                    },
-                  },
-                }}
-                renderValue={(selected: any) => {
-                  if (!selected) {
-                    return (
-                      <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                        Select BHK
-                      </span>
-                    );
-                  }
-                  return selected;
-                }}
-              >
-                {bhk.map((bhk) => (
-                  <MenuItem key={bhk.name} value={bhk.name}>
-                    {`${bhk.name}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <FormControl fullWidth>
-              <Select
-              name="status"
-                value={selectedStatus || formData.status}
-                onChange={handleInputChange}
-                displayEmpty
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    "&:hover": {
-                      borderColor: "#04112f",
-                    },
-                  },
-                }}
-                renderValue={(selected: any) => {
-                  if (!selected) {
-                    return (
-                      <span style={{ color: "rgba(0,0,0,0.5)" }}>Status</span>
-                    );
-                  }
-                  return selected;
-                }}
-              >
-                {status.map((fur) => (
-                  <MenuItem key={fur.name} value={fur.name}>
-                    {`${fur.name}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            {selectedStatus === "Under Construction" && (
+                  }}
+                  renderValue={(selected: any) => {
+                    if (!selected) {
+                      return (
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                          Select Property Type
+                        </span>
+                      );
+                    }
+                    return selected;
+                  }}
+                >
+                  {properties?.map((property: any) => (
+                    <MenuItem key={property.type} value={property.type}>
+                      {`${property.type}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {propertyTypesWithSubtypes.includes(selectedtype) && (
+                  <FormControl fullWidth>
+                  <Select
+                    required
+                    displayEmpty
+                    name="subtype"
+                    value={formData.subtype || ""}
+                    onChange={handleInputChange}
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        "&:hover": {
+                          borderColor: "#04112f",
+                        },
+                      },
+                    }}
+                    renderValue={(selected: any) => {
+                      if (!selected) {
+                        return (
+                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                            Select Subtype
+                          </span>
+                        );
+                      }
+                      return selected;
+                    }}
+                  >
+                    {filteredSubtypes.map((subtype: string) => (
+                      <MenuItem key={subtype} value={subtype}>
+                        {subtype}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
               <TextField
-              name="possession"
-              value={formData.possession}
-              onChange={handleInputChange}
+                required
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
                 fullWidth
-                label="Expected Completion Date"
-                type="date"
-                InputLabelProps={{ shrink: true }}
+                label="Title"
+                placeholder="ex: flat for sale."
                 variant="outlined"
-                sx={{
-                  "input[type='date' i]": {
-                    cursor: "pointer",
-                  },
-                }}
+                sx={{ borderRadius: 2 }}
+         
               />
-            )}
-             
-          </form>
-          <form
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              width: "100%",
-              gap: "15px",
-            }}
-          >
-            {" "}
-            <FormControl fullWidth>
-              <Select
-              name="parking"
-                value={formData.parking}
+
+              <TextField
+                name="location"
+                value={formData.location}
                 onChange={handleInputChange}
-                displayEmpty
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    "&:hover": {
-                      borderColor: "#04112f",
-                    },
-                  },
-                }}
-                renderValue={(selected: any) => {
-                  if (!selected) {
-                    return (
-                      <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                        Parking
-                      </span>
-                    );
-                  }
-                  return selected;
-                }}
-              >
-                {parking.map((par) => (
-                  <MenuItem key={par.name} value={par.name}>
-                    {`${par.name}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            
-            <FormControl fullWidth>
-              <Select
-                displayEmpty
-                name="furnishing"
-                value={formData.furnishing}
+                fullWidth
+                label="Location"
+                placeholder="Street/Area/City"
+                required
+                variant="outlined"
+              />
+              <TextField
+                name="bathrooms"
+                value={formData.bathrooms}
                 onChange={handleInputChange}
-                sx={{
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    "&:hover": {
-                      borderColor: "#04112f",
+                fullWidth
+                label="Bathrooms"
+                type="number"
+                variant="outlined"
+              />
+
+              <FormControl fullWidth>
+                <Select
+                  name="bhk"
+                  value={formData.bhk}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      "&:hover": {
+                        borderColor: "#04112f",
+                      },
                     },
-                  },
-                }}
-                renderValue={(selected: any) => {
-                  if (!selected) {
-                    return (
-                      <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                        Select Furnished Type
-                      </span>
-                    );
-                  }
-                  return selected;
-                }}
-              >
-                {furnishing.map((fur) => (
-                  <MenuItem key={fur.name} value={fur.name}>
-                    {`${fur.name}`}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-            <TextField
-             name="bathrooms"
-             value={formData.bathrooms}
-             onChange={handleInputChange}
-              fullWidth
-              label="Bathrooms"
-              type="number"
-              variant="outlined"
-            />
-            <TextField
-             name="price"
-             value={formData.price}
-             onChange={handleInputChange}
-              fullWidth
-              label="Price"
-              type="number"
-              required
-              variant="outlined"
-            />
-            <TextField
-            name="pricePerSqft"
-            value={formData.pricePerSqft}
-            onChange={handleInputChange}
-              fullWidth
-              label="Price per sqft"
-              type="number"
-              required
-              variant="outlined"
-            />
-            <FormControl>
-                <FormLabel sx={{ color: "rgba(0, 0, 0, 0.5)",fontSize:"15px" }}>Add Images</FormLabel>
+                  }}
+                  renderValue={(selected: any) => {
+                    if (!selected) {
+                      return (
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                          Select BHK
+                        </span>
+                      );
+                    }
+                    return selected;
+                  }}
+                >
+                  {bhk.map((bhk) => (
+                    <MenuItem key={bhk.name} value={bhk.name}>
+                      {`${bhk.name}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <Select
+                  required
+                  name="status"
+                  value={selectedStatus || formData.status}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      "&:hover": {
+                        borderColor: "#04112f",
+                      },
+                    },
+                  }}
+                  renderValue={(selected: any) => {
+                    if (!selected) {
+                      return (
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>Status</span>
+                      );
+                    }
+                    return selected;
+                  }}
+                >
+                  {status.map((fur) => (
+                    <MenuItem key={fur.name} value={fur.name}>
+                      {`${fur.name}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              {selectedStatus === "Under Construction" && (
+                <TextField
+                  name="possession"
+                  value={formData.possession}
+                  onChange={handleInputChange}
+                  fullWidth
+                  label="Expected Completion Date"
+                  type="date"
+                  InputLabelProps={{ shrink: true }}
+                  variant="outlined"
+                  sx={{
+                    "input[type='date' i]": {
+                      cursor: "pointer",
+                    },
+                  }}
+                />
+              )}
+              <TextField
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                fullWidth
+                multiline
+                rows={3}
+                label="Description"
+                variant="outlined"
+              />
+            </form>
+            <form
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                width: "100%",
+                gap: "15px",
+              }}
+            >
+              {" "}
+              <FormControl fullWidth>
+                <Select
+                  name="parking"
+                  value={formData.parking}
+                  onChange={handleInputChange}
+                  displayEmpty
+                  sx={{
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      "&:hover": {
+                        borderColor: "#04112f",
+                      },
+                    },
+                  }}
+                  renderValue={(selected: any) => {
+                    if (!selected) {
+                      return (
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                          Parking
+                        </span>
+                      );
+                    }
+                    return selected;
+                  }}
+                >
+                  {parking.map((par) => (
+                    <MenuItem key={par.name} value={par.name}>
+                      {`${par.name}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl fullWidth>
+                <Select
+                  displayEmpty
+                  name="furnishing"
+                  value={formData.furnishing}
+                  onChange={handleInputChange}
+                  sx={{
+                    "& .MuiOutlinedInput-notchedOutline": {
+                      "&:hover": {
+                        borderColor: "#04112f",
+                      },
+                    },
+                  }}
+                  renderValue={(selected: any) => {
+                    if (!selected) {
+                      return (
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                          Select Furnished Type
+                        </span>
+                      );
+                    }
+                    return selected;
+                  }}
+                >
+                  {furnishing.map((fur) => (
+                    <MenuItem key={fur.name} value={fur.name}>
+                      {`${fur.name}`}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                name="sqrtft"
+                value={formData.sqft}
+                onChange={handleInputChange}
+                fullWidth
+                label="Super Area (sqft)"
+                type="number"
+                required
+                variant="outlined"
+              />
+              <TextField
+                name="pricePerSqft"
+                value={formData.pricePerSqft}
+                onChange={handleInputChange}
+                fullWidth
+                label="Price per sqft"
+                type="number"
+                required
+                variant="outlined"
+              />
+              <TextField
+                name="price"
+                value={formData.price}
+                onChange={handleInputChange}
+                fullWidth
+                label="Price"
+                type="number"
+                required
+                variant="outlined"
+              />
+              <FormControl>
+                <FormLabel
+                  sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
+                >
+                  Add Images
+                </FormLabel>
                 <Button variant="outlined" component="label">
                   Choose File
-                  <input type="file" name="image" hidden onChange={handleFileChange}  />
+                  <input
+                    type="file"
+                    name="image"
+                    hidden
+                    onChange={handleFileChange}
+                  />
                 </Button>
-              
               </FormControl>
-          </form>
+            </form>
           </Box>
 
-     
-        <Button
-          type="submit"
-          variant="contained"
-          sx={{
-            backgroundColor: "#150b83c1",
-            width: "110px",
-            borderRadius: "30px",
-            color: "#fff",
-            textTransform: "none",
-            "&:hover": {
-              backgroundColor: "#150b83",
-            },
-          }}
-        >
-          Create
-        </Button>
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{
+              backgroundColor: "#150b83c1",
+              width: "110px",
+              borderRadius: "30px",
+              color: "#fff",
+              textTransform: "none",
+              "&:hover": {
+                backgroundColor: "#150b83",
+              },
+            }}
+          >
+            Create
+          </Button>
         </Box>
-        </DialogContent>
+      </DialogContent>
     </Dialog>
   );
 };

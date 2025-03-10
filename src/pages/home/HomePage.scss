@@ -1,6 +1,6 @@
 .hero-section {
     width: 100%;
-    margin-top: 63px;
+    margin-top: 79px;
     height: 80vh;
     display: flex;
     flex-direction: column;
@@ -35,6 +35,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+@media (max-width: 850px){
+  .hero-section {
+    margin-top:75px !important; 
+    height: 100vh !important;
+  }
+
 }
 @media (max-width: 768px) {
   .hero-section {

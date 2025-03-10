@@ -22,23 +22,25 @@ import {
   Info as InfoIcon,
   Business as BusinessIcon,
   Phone as PhoneIcon,
-  Dashboard as DashboardIcon,
   Close as CloseIcon,
 } from "@mui/icons-material";
 import "./Navbar.scss";
 import { Link } from "react-router-dom";
+import useAuth from "../../hook/UseAuth";
+import logo from "../../assets/images/logo.png";
 
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { isLoggedIn, logout } = useAuth();
 
   const menuItems = [
-    { name: "Home",path:"/", icon: <HomeIcon /> },
-    { name: "About",path:"/about", icon: <InfoIcon /> },
-    { name: "Properties",path:"/properties", icon: <BusinessIcon /> },
-    { name: "Contact",path:"/contact", icon: <PhoneIcon /> },
+    { name: "Home", path: "/", icon: <HomeIcon /> },
+    { name: "About", path: "/about", icon: <InfoIcon /> },
+    { name: "Properties", path: "/properties", icon: <BusinessIcon /> },
+    { name: "Contact", path: "/contact", icon: <PhoneIcon /> },
   ];
 
   const handleDrawerToggle = () => {
@@ -52,16 +54,16 @@ const Navbar = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          p: 2,
           borderBottom: 1,
+          p:1,
           borderColor: "divider",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
-          <DashboardIcon sx={{ color: "#150b83c1", mr: 1 }} />
-          <Typography variant="h6" sx={{ color: "#150b83c1" }}>
-            RealEstate
-          </Typography>
+          <img
+            src={logo}
+            style={{ width: "100px", height: "40px", objectFit: "contain" ,}}
+          />
         </Box>
         <IconButton onClick={handleDrawerToggle}>
           <CloseIcon sx={{ color: "#150b83c1" }} />
@@ -100,25 +102,39 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="fixed" className="app-bar" >
+      <AppBar position="fixed" className="app-bar">
         <Container maxWidth="lg">
           <Toolbar disableGutters>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <DashboardIcon sx={{ color: "#fff", mr: 1 }} />
-              <Typography
-                variant="h5"
-                noWrap
-                component="div"
-                sx={{ flexGrow: 1 }}
-              >
-                RealEstate
-              </Typography>
+            <Box  component={Link} 
+                to="/"  sx={{ display: "flex", alignItems: "center" ,marginLeft:{xs:"0",md:"0",xl:"-100px"} }}>
+              <img
+              className="nav-img"
+                src={logo}
+                style={{
+                  width: "150px",
+                  height: "80px",
+                  objectFit: "contain"
+                 
+                }}
+              />
+
             </Box>
 
             {/* Desktop Menu */}
-            
+
             {!isMobile && (
-              <Box sx={{ display: "flex", ml: "auto", gap: 4,alignItems:"center" }}>
+              <>
+              <Box
+                sx={{
+                  width:"100%",
+                  marginRight:"-100px",
+                  display: "flex",
+                  ml: "auto",
+                  gap: 4,
+                  alignItems: "center",
+                  justifyContent:"center"
+                }}
+              >
                 {menuItems.map((item) => (
                   <Box
                     key={item.name}
@@ -143,8 +159,8 @@ const Navbar = () => {
                     }}
                   >
                     <Typography
-                     component={Link}
-                     to={item.path}
+                      component={Link}
+                      to={item.path}
                       sx={{
                         display: "flex",
                         alignItems: "center",
@@ -161,33 +177,62 @@ const Navbar = () => {
                     </Typography>
                   </Box>
                 ))}
-                 <Box>
-              <Button component={Link} to="/signin"  className="nav-signin-btn">Sign in</Button>
-            </Box>
+               
               </Box>
-              
+              <Box sx={{marginRight:0}}>
+                  {isLoggedIn ? (
+                    <Button onClick={logout} className="nav-signin-btn">
+                      Logout
+                    </Button>
+                  ) : (
+                    <Button
+                      component={Link}
+                      to="/signin"
+                      className="nav-signin-btn"
+                    >
+                      Sign in
+                    </Button>
+                  )}
+                </Box>
+              </>
             )}
-           
 
             {/* Mobile Menu Button */}
             {isMobile && (
-              <Box sx={{width:"100%",display:"flex",justifyContent:"flex-end",gap:"15px",alignItems:"center"}}>
-              <Box>
-              <Button component={Link} to="/signin" className="nav-signin-btn">Sign in</Button>
-            </Box>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                
+              <Box
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  gap: "15px",
+                  alignItems: "center",
+                }}
               >
-                <MenuIcon />
-              </IconButton>
+                <Box>
+                  {isLoggedIn ? (
+                    <Button onClick={logout} className="nav-signin-btn">
+                      Logout
+                    </Button>
+                  ) : (
+                    <Button
+                      component={Link}
+                      to="/signin"
+                      className="nav-signin-btn"
+                    >
+                      Sign in
+                    </Button>
+                  )}
+                </Box>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                >
+                  <MenuIcon />
+                </IconButton>
               </Box>
             )}
-            
-          
           </Toolbar>
         </Container>
       </AppBar>

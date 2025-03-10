@@ -76,7 +76,7 @@ const agents = [
 const AgentCards = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-   const isMobile = useMediaQuery("(max-width:780px)");
+   const isMobile = useMediaQuery("(max-width:850px)");
 
   // Function to handle scrolling
   const scroll = (scrollOffset: number) => {

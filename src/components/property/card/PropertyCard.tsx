@@ -11,13 +11,23 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-
 interface PropertyCardProps {
   property: any;
 }
 
-export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const formatPrice = (price: number) => {
+    if (price >= 10000000) {
+      return `₹${(price / 10000000).toFixed(2)} Cr`; // Convert to Crore
+    } else if (price >= 100000) {
+      return `₹${(price / 100000).toFixed(2)} Lac`; // Convert to Lakh
+    } else if (price >= 1000) {
+      return `₹${(price / 1000).toFixed(2)} K`; // Convert to Thousand
+    }
+    return `₹${price}`; // If less than 1000, show the exact price
+  };
+  
 
   return (
     <Card
@@ -47,8 +57,7 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
             height: { xs: 200, sm: 220 },
             objectFit: "cover",
           }}
-          image={property.image}
-          alt={property.title}
+          src={property.image}
         />
       </Box>
 
@@ -74,6 +83,12 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
           >
             {property.title}
           </Typography>
+          <Typography color="text.secondary" sx={{ fontSize: "0.9rem", display:"flex",gap:"10px" ,alignItems:"center"}}>
+          {property.property_type} <Typography
+              color="text.secondary"
+              sx={{ fontSize: "0.75rem",  }}
+            >{property.subtype}</Typography> 
+          </Typography>
           <Typography color="text.secondary" sx={{ fontSize: "0.9rem" }}>
             {property.location}
           </Typography>
@@ -95,7 +110,8 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
               Super Area
             </Typography>
             <Typography sx={{ fontSize: "0.9rem" }}>
-              {property.sqft} sqft
+            {`${property.sqft} sqft`}
+
             </Typography>
           </Box>
           <Box>
@@ -103,13 +119,19 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
               color="text.secondary"
               sx={{ fontSize: "0.75rem", mb: 0.5 }}
             >
-              {property.status === "READY_TO_MOVE"
-                ? "Status"
-                : "UNDER CONSTRUCTION"}
+              Status
             </Typography>
             <Typography sx={{ fontSize: "0.9rem" }}>
-              {property.possession}
+              {property.status}
             </Typography>
+            {property.status === "Under Construction" && (
+              <Typography
+                color="text.secondary"
+                sx={{ fontSize: "0.65rem", mb: 0.5 }}
+              >
+                Completion by {property.possession}
+              </Typography>
+            )}
           </Box>
           <Box>
             <Typography
@@ -165,26 +187,27 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
             overflow: "hidden",
           }}
         >
-          We have crafted a one of a kind universe of 52 acres in Devanahalli.
-          It's a place where we have built Life We have crafted a one of a kind
-          universe of 52 acres in Devanahalli. It's a place where we have built
-          Life
+          {property.description && (
+            <>
+              <Typography>{property.description}</Typography>
+              <Button
+                onClick={() => setIsExpanded(!isExpanded)}
+                sx={{
+                  fontSize: "0.8rem",
+                  color: "#2196f3",
+                  textTransform: "none",
+                  p: 0,
+                  mt: 1,
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                  },
+                }}
+              >
+                {isExpanded ? "Show Less" : "...more"}
+              </Button>
+            </>
+          )}
         </Typography>
-        <Button
-          onClick={() => setIsExpanded(!isExpanded)}
-          sx={{
-            fontSize: "0.8rem",
-            color: "#2196f3",
-            textTransform: "none",
-            p: 0,
-            mt: 1,
-            "&:hover": {
-              backgroundColor: "transparent",
-            },
-          }}
-        >
-          {isExpanded ? "Show Less" : "...more"}
-        </Button>
       </Box>
 
       {/* Right Column - Price and Buttons */}
@@ -223,7 +246,7 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
           }}
         >
           <Typography variant="h6" sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
-            ₹{(property.price / 10000000).toFixed(2)} Cr
+            {formatPrice(property.price)}
           </Typography>
           <Typography
             variant="body2"
@@ -299,7 +322,6 @@ export const PropertyCard : React.FC<PropertyCardProps> = ({ property }) => {
           </Typography>
         </Box>
       </Box>
-     
     </Card>
   );
 };

@@ -48,6 +48,8 @@ export const PropertyFilter = ({
     { label: "₹25 Lac - ₹50 Lac" },
     { label: "₹50 Lac - ₹75 Lac" },
     { label: "₹75 Lac - ₹1 Cr" },
+    { label: "₹1cr - ₹2cr" },
+    { label: "₹2cr+" },
   ];
 
   const squareFeetOptions = [

@@ -135,8 +135,11 @@ import {
             <Box
               sx={{
                 display: "flex",
+               
+                flexDirection:{xs:"column",md:"row",xl:"row"},
                 gap: 1,
-                justifyContent: { xs: "center", sm: "flex-start" }, // Center on small screens
+                justifyContent: { xs: "center",md:"center"}, // Center on small screens
+                // Center on small screens
               }}
             >
               <TextField
@@ -159,9 +162,11 @@ import {
                   },
                 }}
               />
+              <Box>
               <Button
                 variant="contained"
                 sx={{
+                  width:{xs:"30%",md:"100%"},
                   backgroundColor: "#FF6B6B",
                   color: "white",
                   "&:hover": {
@@ -171,6 +176,7 @@ import {
               >
                 Subscribe
               </Button>
+              </Box>
             </Box>
           </Grid>
         </Grid>

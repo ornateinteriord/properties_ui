@@ -2,7 +2,7 @@
 
 
 .app-bar{
-    background: var( --background-color) !important;
+    background: var( --nav-bar) !important;
 }
 
 // .app-bar {
@@ -18,4 +18,11 @@
     border-radius: 30px !important;
     text-transform: none !important;
     color: var(--background-color) !important;
+}
+
+@media (max-width: 780px){
+    .nav-img{
+       width: 100px !important;
+       height: 40px !important;
+    }
 }
