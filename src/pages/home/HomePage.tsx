@@ -51,12 +51,13 @@ const HomePage = () => {
         </Box>
       </motion.div>
       <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }} 
+        initial={{ opacity: 0, x: 0}}
+        animate={{ opacity: 1, x: 20 }} 
         transition={{ duration: 2}} 
         className="apartment-cards"
+        
       >
-        <Box>
+        <Box sx={{width:"100%"}}>
           {" "}
           <AgentCards />
         </Box>
