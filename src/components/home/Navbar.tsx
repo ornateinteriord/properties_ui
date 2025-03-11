@@ -94,7 +94,7 @@ const Navbar = () => {
       </List>
       <Box sx={{ p: 2, mt: "auto", borderTop: 1, borderColor: "divider" }}>
         <Typography variant="body2" color="text.secondary">
-          © 2024 RealEstate
+          © 2024 SK Properties
         </Typography>
       </Box>
     </Box>

@@ -192,7 +192,7 @@ import {
           }}
         >
           <Typography variant="body2">
-            © {new Date().getFullYear()} RealEstate Company. All rights reserved.
+            © {new Date().getFullYear()} SK Properties. All rights reserved.
           </Typography>
         </Box>
       </Box>
