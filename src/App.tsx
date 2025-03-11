@@ -9,6 +9,7 @@ import Signin from "./pages/auth/Signin";
 import Signup from "./pages/auth/Signup";
 import { CircularProgress, Dialog, DialogContent } from "@mui/material";
 import Properties from "./pages/Properties/Properties";
+import NotFound from "./pages/notfound/NotFound";
 
 
 export const LoadingComponent = () => {
@@ -32,6 +33,7 @@ function App() {
         <Route path="/about" element={<About/>} />
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Properties/>} />
+        <Route path="*" element={<NotFound/>} />
       </Routes>
       <Footer/>
     </Router>
