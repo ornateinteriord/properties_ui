@@ -22,8 +22,14 @@
 @media (max-width: 768px) {
   
   .property-card-box{
-   max-width:280px !important;
+   max-width:285px !important;
    margin: 0% !important;
+ 
+   
+  }
+  .card{
+    margin: 2px !important;
+    box-shadow: 0 10px 10px -1px rgb(0 0 0 / 0.3)
   }
  
 

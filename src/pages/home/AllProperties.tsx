@@ -120,7 +120,7 @@ const AllPropertiesCards = () => {
         <Typography
           variant="h4"
           className="property-heading"
-          sx={{ mb: 2, fontWeight: "bold" }}
+          sx={{ mb: 2, fontWeight: "bold",fontSize:{xs:"25px"} }}
         >
           Modern Living, Elevated Comfortable Properties
         </Typography>
@@ -168,6 +168,7 @@ const AllPropertiesCards = () => {
         >
           {properties.map((property) => (
             <Card
+            className="card"
               key={property.id}
               sx={{
                 minWidth: 280,
@@ -175,6 +176,7 @@ const AllPropertiesCards = () => {
                 borderRadius: 2,
                 boxShadow: 3,
                 flexShrink: 0,
+                
               }}
             >
               <CardMedia

@@ -108,7 +108,7 @@ const AgentCards = () => {
   return (
     <Box className="property-card-container" sx={{ p: 3, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
       <Box className="property-heading-box">
-        <Typography   className="property-heading" variant="h4" sx={{ mb: 2, fontWeight: "bold" }}>
+        <Typography   className="property-heading" variant="h4" sx={{ mb: 2, fontWeight: "bold" ,fontSize:{xs:"25px"}}}>
           Well Preferred Agents
         </Typography>
       </Box>
@@ -136,6 +136,7 @@ const AgentCards = () => {
         </IconButton>
          )}
         <Box
+       
           ref={scrollRef}
           sx={{
             display: "flex",
@@ -148,7 +149,7 @@ const AgentCards = () => {
           }}
         >
           {agents.map((agent) => (
-            <Card key={agent.id} sx={{ minWidth: 280, maxWidth: 300, borderRadius: 2, boxShadow: 3, flexShrink: 0 }}>
+            <Card    className="card" key={agent.id} sx={{ minWidth: 280, maxWidth: 300, borderRadius: 2, boxShadow: 3, flexShrink: 0 }}>
               <CardContent sx={{ display: "flex",width:"100%",flexDirection:"column", alignItems: "center" }}>
                 <Box>
               <Avatar
