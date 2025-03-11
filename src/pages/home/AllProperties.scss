@@ -3,9 +3,9 @@
     margin-top: 10px;
     max-width:100%;
     padding: 0% !important;
-    margin-left:-20px !important;
-    justify-content: center !important;
-    align-items: center !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
     
     }
@@ -16,18 +16,21 @@
     }
     .property-card-box{
       max-width:580px !important ;
+      margin: 0% !important;
     }
 }
 
 @media (max-width: 768px) {
   
   .property-card-box{
-   max-width:285px !important;
+   max-width:300px !important;
    margin: 0% !important;
+   padding: 0% !important;
  
    
   }
   .card{
+    width: 295px !important;
     margin: 2px !important;
     box-shadow: 0 10px 10px -1px rgb(0 0 0 / 0.3)
   }

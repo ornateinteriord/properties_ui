@@ -1,5 +1,5 @@
-import { Box, Typography, Card, CardContent, Button, IconButton, Avatar, useMediaQuery } from "@mui/material";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { Box, Typography, Card, CardContent, Button,  Avatar, } from "@mui/material";
+import {  ArrowForward } from "@mui/icons-material";
 import { useRef, useEffect, useState } from "react";
 import './AllProperties.scss'
 
@@ -75,35 +75,42 @@ const agents = [
 
 const AgentCards = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-   const isMobile = useMediaQuery("(max-width:850px)");
 
-  // Function to handle scrolling
-  const scroll = (scrollOffset: number) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: scrollOffset, behavior: "smooth" });
-    }
-  };
+   const [activeIndex, setActiveIndex] = useState(0);
+   const cardWidth = 300;
+   const gap = 16;
 
-  // Auto-scroll functionality
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (!isMobile && !isHovered && scrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        const maxScroll = scrollWidth - clientWidth;
 
-        if (scrollLeft >= maxScroll) {
-          // If at the end, scroll back to the start
-          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          // Otherwise, scroll forward
-          scroll(300);
-        }
+ 
+   const scrollToIndex = (index: number) => {
+      if (scrollRef.current) {
+        const cardWidth = scrollRef.current.children[0]?.clientWidth || 300; 
+        scrollRef.current.scrollTo({
+          left: index * (cardWidth + 16), 
+          behavior: "smooth",
+        });
+        setActiveIndex(index); 
       }
-    }, 3000); // Adjust the interval time (in milliseconds) as needed
+    };
+  
+    const updateActiveIndexOnScroll = () => {
+      if (scrollRef.current) {
+        const { scrollLeft } = scrollRef.current;
+        const newIndex = Math.floor((scrollLeft + cardWidth / 2) / (cardWidth + gap));
+        setActiveIndex(Math.min(newIndex, agents.length - 1));
+      }
+    };
+  
+    useEffect(() => {
+      const container = scrollRef.current;
+      if (container) {
+        container.addEventListener("scroll", updateActiveIndexOnScroll);
+      }
+      return () => container?.removeEventListener("scroll", updateActiveIndexOnScroll);
+    }, []);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
-  }, [isHovered]);
+
+
 
   return (
     <Box className="property-card-container" sx={{ p: 3, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
@@ -115,26 +122,8 @@ const AgentCards = () => {
       <Box
        className="property-card-box"
         sx={{ position: "relative", width: "100%", maxWidth: "1200px", margin: "0 auto" }}
-        onMouseEnter={() => setIsHovered(true)} // Pause auto-scroll on hover
-        onMouseLeave={() => setIsHovered(false)} // Resume auto-scroll on mouse leave
+       
       >
-         {!isMobile && (
-        <IconButton
-          onClick={() => scroll(-300)}
-          sx={{
-            position: "absolute",
-            left: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            backgroundColor: "rgba(0,0,0,0.6)",
-            color: "white",
-            "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
-          }}
-        >
-          <ArrowBack />
-        </IconButton>
-         )}
         <Box
        
           ref={scrollRef}
@@ -187,23 +176,32 @@ const AgentCards = () => {
             </Card>
           ))}
         </Box>
-        {!isMobile && (
-        <IconButton
-          onClick={() => scroll(300)}
-          sx={{
-            position: "absolute",
-            right: 0,
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 10,
-            backgroundColor: "rgba(0,0,0,0.6)",
-            color: "white",
-            "&:hover": { backgroundColor: "rgba(0,0,0,0.8)" },
-          }}
-        >
-          <ArrowForward />
-        </IconButton>
-        )}
+                 <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 1,
+                    mt: 2,
+                  }}
+                >
+                  {agents.map((_, index) => (
+                    <Box
+                      key={index}
+                      onClick={() => scrollToIndex(index)}
+                      sx={{
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        backgroundColor: activeIndex === index ? "#150b83c1" : "#ccc",
+                        cursor: "pointer",
+                        "&:hover": {
+                          backgroundColor: "#150b83c1",
+                        },
+                      }}
+                    />
+                  ))}
+                </Box>
+
       </Box>
 
       <Box sx={{width:"100%",display:"flex",  justifyContent: { xs: "center", md: "flex-end" },}}>

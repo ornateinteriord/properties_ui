@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/home/Navbar";
 import HomePage from "./pages/home/HomePage";
@@ -22,10 +22,29 @@ export const LoadingComponent = () => {
   );
 };
 
+
+const Layout = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+
+  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties"];
+
+  // Check if the current route is valid
+  const isValidRoute = validRoutes.includes(location.pathname);
+
+  return (
+    <>
+      {isValidRoute && <Navbar />}
+      {children}
+      {isValidRoute && <Footer/>}
+    </>
+  );
+};
+
 function App() {
+ 
   return (
     <Router>
-      <Navbar />
+      <Layout >
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/signin" element={<Signin/>} />
@@ -35,7 +54,7 @@ function App() {
         <Route path="/properties" element={<Properties/>} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
-      <Footer/>
+      </Layout>
     </Router>
   );
 }

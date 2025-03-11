@@ -13,7 +13,7 @@ const NotFound = () => {
         height: "100vh",
         textAlign: "center",
         padding: "20px",
-        
+        background:"linear-gradient(90deg, rgba(222, 218, 237, 0.95), rgba(41, 18, 136, 0.76))"
       }}
     >
       <img src={notfound} style={{width:"400px"}} alt="" />
