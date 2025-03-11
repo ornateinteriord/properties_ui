@@ -46,13 +46,13 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
       | { name: string; value: string }; 
     setFormData((prevData) => ({
       ...prevData,
-      [name ?? "status"]: value,
+      [name ?? "propertyStatus"]: value,
     }));
     if (name === "property_type") {
       setSelectedtype(value);
     }
   
-    if (name === "status") {
+    if (name === "propertyStatus") {
       setSelectedStatus(value);
     }
   };
@@ -101,7 +101,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     { name: "Basement Parking" },
   ];
 
-  const status = [{ name: "Ready to Move" }, { name: "Under Construction" }];
+  const propertyStatus = [{ name: "Ready to Move" }, { name: "Under Construction" }];
 
   return (
     <Dialog
@@ -290,8 +290,8 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               <FormControl fullWidth>
                 <Select
                   required
-                  name="status"
-                  value={selectedStatus || formData.status}
+                  name="propertyStatus"
+                  value={selectedStatus || formData.propertyStatus}
                   onChange={handleInputChange}
                   displayEmpty
                   sx={{
@@ -304,15 +304,15 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                   renderValue={(selected: any) => {
                     if (!selected) {
                       return (
-                        <span style={{ color: "rgba(0,0,0,0.5)" }}>Status</span>
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>Property Status</span>
                       );
                     }
                     return selected;
                   }}
                 >
-                  {status.map((fur) => (
-                    <MenuItem key={fur.name} value={fur.name}>
-                      {`${fur.name}`}
+                  {propertyStatus.map((x) => (
+                    <MenuItem key={x.name} value={x.name}>
+                      {`${x.name}`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -409,9 +409,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                     return selected;
                   }}
                 >
-                  {furnishing.map((fur) => (
-                    <MenuItem key={fur.name} value={fur.name}>
-                      {`${fur.name}`}
+                  {furnishing.map((x) => (
+                    <MenuItem key={x.name} value={x.name}>
+                      {`${x.name}`}
                     </MenuItem>
                   ))}
                 </Select>
