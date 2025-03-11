@@ -7,16 +7,17 @@ import Contact from "./pages/contact/Contact";
 import Footer from "./components/home/Footer";
 import Signin from "./pages/auth/Signin";
 import Signup from "./pages/auth/Signup";
-import { CircularProgress, Dialog, DialogContent } from "@mui/material";
+import { Dialog, DialogContent } from "@mui/material";
 import Properties from "./pages/Properties/Properties";
 import NotFound from "./pages/notfound/NotFound";
+import CustomLoader from "./components/ui/Loader";
 
 
 export const LoadingComponent = () => {
   return (
     <Dialog open={true}>
-      <DialogContent>
-        <CircularProgress />
+      <DialogContent >
+        <CustomLoader />
       </DialogContent>
     </Dialog>
   );

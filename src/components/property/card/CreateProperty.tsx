@@ -67,7 +67,6 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
       const file = event.target.files[0];
       cloudinary.mutate(file, {
         onSuccess: (data) => {
-          console.log(data);
           setFormData((prevData: any) => ({
             ...prevData,
             image: data.secure_url,
@@ -483,7 +482,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
           </Button>
         </Box>
       </DialogContent>
-      {isPending && <LoadingComponent/>}
+      {(isPending || cloudinary.isPending) && <LoadingComponent/>}
     </Dialog>
   );
 };
