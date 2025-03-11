@@ -121,7 +121,7 @@ export const PropertyFilter = ({
         onClick={handleClearFilters}
         variant="outlined"
         fullWidth
-        sx={{ mt: 2, textTransform: "none" }}
+        sx={{ mt: 2, textTransform: "none",borderColor:"#150b83c1",color:"#150b83c1" }}
       >
         Clear Filters
       </Button>

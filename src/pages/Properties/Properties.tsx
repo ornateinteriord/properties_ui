@@ -154,6 +154,18 @@ const handleClearFilters = useCallback(() => {
         >
           {/* Left Sidebar - Navigation & Filters */}
           <Box sx={{ width: { xs: "100%", md: "20%" }, display: "flex", flexDirection: "column", gap: 3 }}>
+
+
+             {/* Create Property Button */}
+             <Paper sx={{ p: 2, borderRadius: 2, textAlign: "center" }}>
+              <Button
+                onClick={handleButtonClick}
+                sx={{ backgroundColor: "#150b83c1", width: "200px", borderRadius: "30px", color: "#fff", textTransform: "none" }}
+              >
+                Create Property
+              </Button>
+            </Paper>
+            
             {/* Tabs */}
             <Paper sx={{ p: 2, borderRadius: 2 }}>
               <Tabs
@@ -212,15 +224,7 @@ const handleClearFilters = useCallback(() => {
               />
             </Paper>
 
-            {/* Create Property Button */}
-            <Paper sx={{ p: 2, borderRadius: 2, textAlign: "center" }}>
-              <Button
-                onClick={handleButtonClick}
-                sx={{ backgroundColor: "#150b83c1", width: "200px", borderRadius: "30px", color: "#fff", textTransform: "none" }}
-              >
-                Create Property
-              </Button>
-            </Paper>
+           
           </Box>
 
           <CreateProperty open={isDialogOpen} onClose={handleDialogToggle} />
