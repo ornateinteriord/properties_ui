@@ -22,3 +22,12 @@ export interface Property {
     experience: number;
     rating: number;
   }
+
+  export interface profile{
+    username:string;
+    fullname:string;
+    email:string;
+    mobileno:string;
+    password:string;
+    gender:string;
+  }

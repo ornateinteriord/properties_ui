@@ -150,7 +150,7 @@ const handleClearFilters = useCallback(() => {
       <Container sx={{ width: "100%", padding: 0 }} maxWidth={false}>
         <Container
           maxWidth={false}
-          sx={{ display: "flex", flexDirection: { xs: "column", xl: "row" }, gap: 3 }}
+          sx={{ display: "flex", flexDirection: { xs: "column", xl: "row",md:"row" }, gap: 3 }}
         >
           {/* Left Sidebar - Navigation & Filters */}
           <Box sx={{ width: { xs: "100%", md: "20%" }, display: "flex", flexDirection: "column", gap: 3 }}>

@@ -12,20 +12,14 @@ const useAuth = () => {
       setIsLoggedIn(!!token);
     };
 
-    // Update state on render
     handleStorageChange();
 
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  const logout = () =>{
-    TokenService.removeToken()
-    setIsLoggedIn(false)
-    window.location.href = "/signin";
-  }
 
-  return { isLoggedIn,logout };
+  return { isLoggedIn };
 };
 
 export default useAuth;

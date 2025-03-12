@@ -15,6 +15,10 @@ import {
   useTheme,
   useMediaQuery,
   Button,
+  Avatar,
+  Menu,
+  Divider,
+  MenuItem,
 } from "@mui/material";
 import {
   Menu as MenuIcon,
@@ -25,23 +29,48 @@ import {
   Close as CloseIcon,
 } from "@mui/icons-material";
 import "./Navbar.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hook/UseAuth";
 import logo from "../../assets/images/logo.png";
-
+import { ChevronDown, LogOutIcon, Settings, User } from "lucide-react";
+import TokenService from "../../api/token/TokenService";
+import { useGetuserDetails } from "../../api/user";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn } = useAuth();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const navigate = useNavigate();
+  const { data: user } = useGetuserDetails();
+  console.log(user, "userdetails");
 
-  const menuItems = [
+  const handleLogout = () => {
+    setAnchorEl(null);
+    navigate("/signin");
+    TokenService.removeToken();
+    window.dispatchEvent(new Event("storage"));
+  };
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const menuItems = !isLoggedIn? [
     { name: "Home", path: "/", icon: <HomeIcon /> },
     { name: "About", path: "/about", icon: <InfoIcon /> },
     { name: "Properties", path: "/properties", icon: <BusinessIcon /> },
     { name: "Contact", path: "/contact", icon: <PhoneIcon /> },
-  ];
+  ]:[
+    { name: "Help", path: "/", icon: <InfoIcon /> },
+    { name: "Support", path: "/", icon: <BusinessIcon /> },
+    { name: "Contact", path: "/", icon: <PhoneIcon /> },
+  ]
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -55,14 +84,14 @@ const Navbar = () => {
           alignItems: "center",
           justifyContent: "space-between",
           borderBottom: 1,
-          p:1,
+          p: 1,
           borderColor: "divider",
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
             src={logo}
-            style={{ width: "100px", height: "40px", objectFit: "contain" ,}}
+            style={{ width: "100px", height: "40px", objectFit: "contain" }}
           />
         </Box>
         <IconButton onClick={handleDrawerToggle}>
@@ -105,34 +134,38 @@ const Navbar = () => {
       <AppBar position="fixed" className="app-bar">
         <Container maxWidth="lg">
           <Toolbar disableGutters>
-            <Box  component={Link} 
-                to="/"  sx={{ display: "flex", alignItems: "center" ,marginLeft:{xs:"0",md:"0",xl:"-100px"} }}>
+            <Box
+              component={Link}
+              to="/"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: { xs: "0", md: "0", xl: "-100px" },
+              }}
+            >
               <img
-              className="nav-img"
+                className="nav-img"
                 src={logo}
                 style={{
                   width: "150px",
                   height: "80px",
-                  objectFit: "contain"
-                 
+                  objectFit: "contain",
                 }}
               />
-
             </Box>
 
             {/* Desktop Menu */}
 
             {!isMobile && (
-              <>
               <Box
                 sx={{
-                  width:"100%",
-                  marginRight:"-100px",
+                  width: "100%",
+                  marginRight: "-100px",
                   display: "flex",
                   ml: "auto",
                   gap: 4,
                   alignItems: "center",
-                  justifyContent:"center"
+                  justifyContent: "center",
                 }}
               >
                 {menuItems.map((item) => (
@@ -177,52 +210,52 @@ const Navbar = () => {
                     </Typography>
                   </Box>
                 ))}
-               
               </Box>
-              <Box sx={{marginRight:0}}>
-                  {isLoggedIn ? (
-                    <Button onClick={logout} className="nav-signin-btn">
-                      Logout
-                    </Button>
-                  ) : (
-                    <Button
-                      component={Link}
-                      to="/signin"
-                      className="nav-signin-btn"
-                    >
-                      Sign in
-                    </Button>
-                  )}
-                </Box>
-              </>
             )}
-
-            {/* Mobile Menu Button */}
-            {isMobile && (
-              <Box
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  gap: "15px",
-                  alignItems: "center",
-                }}
-              >
-                <Box>
-                  {isLoggedIn ? (
-                    <Button onClick={logout} className="nav-signin-btn">
-                      Logout
-                    </Button>
-                  ) : (
-                    <Button
-                      component={Link}
-                      to="/signin"
-                      className="nav-signin-btn"
+            <Box className="menu-btn-container">
+              <Box sx={{ marginRight: 0 }}>
+                {isLoggedIn ? (
+                  <Box
+                    className="profile-panel-content"
+                    onClick={handleMenuOpen}
+                  >
+                    <Avatar
+                      className="user-avatar"
+                      alt="User Avatar"
+                      sx={{
+                        width: { xs: "40px", md: "40px", xl: "60px" },
+                        height: { xs: "40px", md: "40px", xl: "60px" },
+                        margin: "0%",
+                      }}
                     >
-                      Sign in
-                    </Button>
-                  )}
-                </Box>
+                      {user?.fullname?.charAt(0).toUpperCase() || ""}
+                    </Avatar>
+                    <Typography variant="body1" sx={{ color: "white" }}>
+                      {user?.fullname || "profile"}
+                    </Typography>
+                    <ChevronDown
+                      color="white"
+                      size={22}
+                      style={{
+                        transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "transform 0.3s ease",
+                      }}
+                    />
+                  </Box>
+                ) : (
+                  <Button
+                    component={Link}
+                    to="/signin"
+                    className="nav-signin-btn"
+                  >
+                    Sign in
+                  </Button>
+                )}
+              </Box>
+
+              {/* Mobile Menu Button */}
+
+              {isMobile && (
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -231,11 +264,50 @@ const Navbar = () => {
                 >
                   <MenuIcon />
                 </IconButton>
-              </Box>
-            )}
+              )}
+            </Box>
           </Toolbar>
         </Container>
       </AppBar>
+      {/* profile-panel ---------- */}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        PaperProps={{
+          className: Boolean(anchorEl) ? "custom-menu open" : "custom-menu",
+        }}
+      >
+        <MenuItem
+          onClick={() => {
+            handleMenuClose();
+            navigate("/my-properties");
+          }}
+        >
+          <User size={18} style={{ marginRight: "8px" }} />
+          My Property
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/");
+            setAnchorEl(null);
+          }}
+        >
+          <Settings size={18} style={{ marginRight: "8px" }} />
+          profile Setting
+        </MenuItem>
+
+        <Divider />
+        <Box>
+          <MenuItem onClick={handleLogout}>
+            <LogOutIcon
+              size={18}
+              style={{ marginRight: "4px", color: "red" }}
+            />
+            Logout
+          </MenuItem>
+        </Box>
+      </Menu>
 
       {/* Mobile Drawer */}
       <Drawer

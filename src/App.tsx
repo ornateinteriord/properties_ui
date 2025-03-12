@@ -10,6 +10,7 @@ import Signup from "./pages/auth/Signup";
 import { CircularProgress, Dialog, DialogContent } from "@mui/material";
 import Properties from "./pages/Properties/Properties";
 import NotFound from "./pages/notfound/NotFound";
+import MyProperty from "./pages/myProperty/MyProperty";
 
 
 export const LoadingComponent = () => {
@@ -26,7 +27,7 @@ export const LoadingComponent = () => {
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
-  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties"];
+  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties","/my-properties"];
 
   // Check if the current route is valid
   const isValidRoute = validRoutes.includes(location.pathname);
@@ -52,6 +53,7 @@ function App() {
         <Route path="/about" element={<About/>} />
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Properties/>} />
+        <Route path="/my-properties" element={<MyProperty/>} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
       </Layout>
