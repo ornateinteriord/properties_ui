@@ -7,17 +7,27 @@ import AdviceAndTools from "./Tools";
 import { Link } from "react-router-dom";
 
 const HomePage = () => {
+  const images = [
+    "https://vijay-villa-private-guesthouse-natures-homestay-hills.hotelsintamilnadu.com/data/Pics/OriginalPhoto/14601/1460183/1460183359/vijay-villa-private-guesthouse-natures-homestay-hills-yelagiri-pic-1.JPEG",
+    "https://assets.cntraveller.in/photos/612350165ee2ad4060e8cb54/master/w_1600%2Cc_limit/Xanadu%2520exterior.jpg",
+    "https://static.vecteezy.com/system/resources/thumbnails/026/763/669/small/generative-ai-farm-landscape-agricultural-fields-beautiful-countryside-country-road-nature-illustrationrealistic-top-view-drone-horizontal-banner-photo.jpg",
+    "https://www.allsoppandallsopp.com/_next/image?url=https%3A%2F%2Fstrapiallsopp.s3.eu-west-1.amazonaws.com%2Flarge_emma_harrisova_U_Ds_O83_Ts6t_Q_unsplash_93ffc655b5.jpg&w=3840&q=75",
+  ];
+  const imageCount = images.length;
   return (
     <Box>
-      <Box className="hero-section">
-        <motion.div
+      <Box className="hero-section" sx={{ "--image-count": imageCount }}>
+      <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5}}
+          transition={{ duration: 1.5 }}
+          className="motion-div"
           style={{
             textAlign: "center",
             color: "white",
-            position: "relative",
+            position: "absolute", 
+            top: "12%", 
+            transform: "translate(-50%, -50%)",
             zIndex: 1,
           }}
         >
@@ -33,43 +43,89 @@ const HomePage = () => {
           </Typography>
           <Box sx={{ width: "100%", marginTop: "10px" }}>
             {/* <PropertySearch /> */}
-            <Button component={Link} to="/properties"  sx={{mt:2,backgroundColor:{md:"#150b83c1",xs:"#150b83"},width:"150px",borderRadius:"30px",color:"#fff",textTransform:"none"}}>Find Property</Button>
-              
+            <Button
+              component={Link}
+              to="/properties"
+              sx={{
+                mt: 2,
+                backgroundColor: { md: "#150b83c1", xs: "#150b83" },
+                width: "150px",
+                borderRadius: "30px",
+                color: "#fff",
+                textTransform: "none",
+              }}
+            >
+              Find Property
+            </Button>
+          </Box>
+        </motion.div>
+        <Box
+          className="slider-container"
+          sx={{
+            display: "flex",
+            width: `${images.length * 100}vw`, // Total width of all images
+            animation: "scroll 30s linear infinite",
+            position: "relative", // CSS animation
+          }}
+        >
+         
+          {images.map((src, index) => (
+            <Box
+              key={index}
+              component="img"
+              src={src}
+              alt={`Slide ${index + 1}`}
+              sx={{
+                width: "100vw",
+                height: "100vh",
+                objectFit: "cover",
+                flexShrink: 0,
+              }}
+            />
+          ))}
+          {images.map((src, index) => (
+            <Box
+              key={`duplicate-${index}`}
+              component="img"
+              src={src}
+              alt={`Slide ${index + 1}`}
+            />
+          ))}
+          
+        </Box>
+       
+
+        <motion.div
+          initial={{ opacity: 0, x: 0 }}
+          animate={{ opacity: 1, x: 20 }}
+          transition={{ duration: 2 }}
+          className="apartment-cards"
+        >
+          <Box>
+            {" "}
+            <AllPropertiesCards />
+          </Box>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, x: 0 }}
+          animate={{ opacity: 1, x: 20 }}
+          transition={{ duration: 2 }}
+          className="apartment-cards"
+        >
+          <Box >
+            {" "}
+            <AgentCards />
           </Box>
         </motion.div>
       </Box>
 
       <motion.div
         initial={{ opacity: 0, x: 0 }}
-        animate={{ opacity: 1, x: 20 }} 
-        transition={{ duration: 2}} 
-        className="apartment-cards"
+        animate={{ opacity: 1, x: 20 }}
+        transition={{ duration: 2 }}
+        className="advicetool-cards"
       >
         <Box>
-          {" "}
-          <AllPropertiesCards />
-        </Box>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: 0}}
-        animate={{ opacity: 1, x: 20 }} 
-        transition={{ duration: 2}} 
-        className="apartment-cards"
-        
-      >
-        <Box sx={{width:"100%"}}>
-          {" "}
-          <AgentCards />
-        </Box>
-      </motion.div>
-      <motion.div
-        initial={{ opacity: 0, x: 0 }}
-        animate={{ opacity: 1, x: 20 }} 
-        transition={{ duration: 2}} 
-      className="advicetool-cards"
-      >
-        <Box >
-         
           <AdviceAndTools />
         </Box>
       </motion.div>

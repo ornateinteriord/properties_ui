@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query"
 import { get, post } from "../Api"
 import { toast } from "react-toastify"
 import axios from "axios"
+import TokenService from "../token/TokenService"
 
 export const getAllProperties =()=>{
   return useQuery({
@@ -17,19 +18,21 @@ export const getAllProperties =()=>{
 })
 }
 
-// export const getAllProperties2 = async ()=>{
-//  try {
-//   const response = await get("/product/getall")
-//   if(response.success){
-//     return response.properties
-//   }else {
-//     console.error( response.data?.message);
-//     return [];
-//   }
-//  } catch (error) {
-//   console.log(error)
-//  }
-// }
+export const getUserProperties= ()=>{
+  const userId = TokenService.getuserId()
+  return useQuery({
+    queryKey:["UserProperty",userId],
+    queryFn: async() =>{
+        const response = await get(`/product/get-property/${userId}`)
+        if(response.success){
+          return response.userProperty;
+        }else{
+            throw new Error(response.message )
+        }
+    }
+})
+}
+
 
 export const useCreateProperty = ()=>{
     return useMutation({
