@@ -5,6 +5,7 @@ import AllPropertiesCards from "./AllProperties";
 import AgentCards from "./AgentsCards";
 import AdviceAndTools from "./Tools";
 import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
 
 const HomePage = () => {
   const images = [
@@ -13,10 +14,43 @@ const HomePage = () => {
     "https://static.vecteezy.com/system/resources/thumbnails/026/763/669/small/generative-ai-farm-landscape-agricultural-fields-beautiful-countryside-country-road-nature-illustrationrealistic-top-view-drone-horizontal-banner-photo.jpg",
     "https://www.allsoppandallsopp.com/_next/image?url=https%3A%2F%2Fstrapiallsopp.s3.eu-west-1.amazonaws.com%2Flarge_emma_harrisova_U_Ds_O83_Ts6t_Q_unsplash_93ffc655b5.jpg&w=3840&q=75",
   ];
-  const imageCount = images.length;
+
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const [index, setIndex] = useState(1);
+  const duplicatedImages = [images[images.length - 1], ...images, images[0]]; 
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const slideNext = () => {
+      setIndex((prevIndex) => (prevIndex + 1));
+    };
+
+    const timeout = setTimeout(slideNext, 4000); 
+
+    return () => clearTimeout(timeout);
+  }, [index]);
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (slider) {
+      slider.scrollTo({
+        left: index * slider.clientWidth,
+        behavior: "smooth",
+      });
+    }
+    if (index === duplicatedImages.length - 1) {
+      setTimeout(() => {
+        setIndex(1); 
+        if (slider) {
+          slider.scrollTo({ left: slider.clientWidth, behavior: "instant" });
+        }
+      }, 500); 
+    }
+  }, [index]);
   return (
     <Box>
-      <Box className="hero-section" sx={{ "--image-count": imageCount }}>
+      <Box className="hero-section" >
       <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,36 +95,30 @@ const HomePage = () => {
         </motion.div>
         <Box
           className="slider-container"
+          ref={sliderRef}
           sx={{
             display: "flex",
-            width: `${images.length * 100}vw`, // Total width of all images
-            animation: "scroll 30s linear infinite",
-            position: "relative", // CSS animation
+            width: "100vw",
+            overflow: "hidden", 
+            position: "relative", 
+            scrollBehavior: "smooth",
           }}
         >
          
-          {images.map((src, index) => (
+          {[...images,...images].map((src, index) => (
             <Box
               key={index}
               component="img"
               src={src}
-              alt={`Slide ${index + 1}`}
               sx={{
                 width: "100vw",
                 height: "100vh",
-                objectFit: "cover",
+                objectFit: "contain",
                 flexShrink: 0,
               }}
             />
           ))}
-          {images.map((src, index) => (
-            <Box
-              key={`duplicate-${index}`}
-              component="img"
-              src={src}
-              alt={`Slide ${index + 1}`}
-            />
-          ))}
+         
           
         </Box>
        
