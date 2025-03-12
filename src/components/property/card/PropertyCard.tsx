@@ -177,19 +177,22 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           </Box>
         </Box>
 
+
+
         <Typography
-          sx={{
-            fontSize: "0.9rem",
-            color: "#303030",
-            display: "-webkit-box",
-            WebkitLineClamp: isExpanded ? "unset" : 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {property.description && (
-            <>
-              <Typography>{property.description}</Typography>
+    sx={{
+      fontSize: "0.9rem",
+      color: "#303030",
+      display: "-webkit-box",
+      WebkitLineClamp: isExpanded ? "unset" : 2,
+      WebkitBoxOrient: "vertical",
+      overflow: "hidden",
+    }}
+  >
+    {property.description && (isExpanded ? property.description : `${property.description.slice(0, 100)}...`)}
+  </Typography>
+
+             {property.description && property.description.length > 100 && (
               <Button
                 onClick={() => setIsExpanded(!isExpanded)}
                 sx={{
@@ -205,9 +208,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               >
                 {isExpanded ? "Show Less" : "...more"}
               </Button>
-            </>
-          )}
-        </Typography>
+              )}
+           
       </Box>
 
       {/* Right Column - Price and Buttons */}

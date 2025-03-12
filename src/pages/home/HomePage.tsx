@@ -9,10 +9,10 @@ import { useEffect, useRef, useState } from "react";
 
 const HomePage = () => {
   const images = [
-    "https://vijay-villa-private-guesthouse-natures-homestay-hills.hotelsintamilnadu.com/data/Pics/OriginalPhoto/14601/1460183/1460183359/vijay-villa-private-guesthouse-natures-homestay-hills-yelagiri-pic-1.JPEG",
+    "https://wallpapercave.com/wp/wp7406688.jpg",
     "https://assets.cntraveller.in/photos/612350165ee2ad4060e8cb54/master/w_1600%2Cc_limit/Xanadu%2520exterior.jpg",
-    "https://static.vecteezy.com/system/resources/thumbnails/026/763/669/small/generative-ai-farm-landscape-agricultural-fields-beautiful-countryside-country-road-nature-illustrationrealistic-top-view-drone-horizontal-banner-photo.jpg",
-    "https://www.allsoppandallsopp.com/_next/image?url=https%3A%2F%2Fstrapiallsopp.s3.eu-west-1.amazonaws.com%2Flarge_emma_harrisova_U_Ds_O83_Ts6t_Q_unsplash_93ffc655b5.jpg&w=3840&q=75",
+    "https://c4.wallpaperflare.com/wallpaper/640/463/638/nature-landscape-green-water-wallpaper-preview.jpg",
+    "https://wallpapers.com/images/hd/apartment-interior-during-sunset-8q4dk0825mqxychg.jpg",
   ];
 
   const sliderRef = useRef<HTMLDivElement>(null);
