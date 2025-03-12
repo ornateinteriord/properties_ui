@@ -22,7 +22,8 @@ import {
           backgroundColor: "#2E3B55",
           color: "white",
           padding: "40px 20px",
-          marginTop: "auto", // This will push the footer to the bottom
+          marginTop: "auto",
+          marginBottom:"0%" 
         }}
       >
         <Grid

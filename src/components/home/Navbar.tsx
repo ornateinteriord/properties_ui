@@ -98,7 +98,7 @@ const Navbar = () => {
         </IconButton>
       </Box>
       <List >
-        {menuItems.map((item) => (
+        { menuItems.map((item) => (
           <ListItem key={item.name} disablePadding>
             <ListItemButton
               component={Link}
@@ -132,14 +132,14 @@ const Navbar = () => {
     <>
       <AppBar position="fixed" className="app-bar">
         <Container maxWidth="lg">
-          <Toolbar disableGutters >
+          <Toolbar disableGutters  className="tool-bar" >
             <Box
               component={Link}
               to="/"
               sx={{
                 display: "flex",
                 alignItems: "center",
-                marginLeft: { xs: "0", md: "0", xl: "-100px" },
+                width:"100%",
               }}
             >
               <img
@@ -155,7 +155,7 @@ const Navbar = () => {
 
             {/* Desktop Menu */}
 
-            {!isMobile && (
+            {!isLoggedIn &&!isMobile && (
               <Box
                 sx={{
                   width: "100%",

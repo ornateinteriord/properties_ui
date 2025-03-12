@@ -13,7 +13,12 @@
     text-transform: none !important;
     color: var(--background-color) !important;
 }
+.tool-bar{
+    display: flex;
+    justify-content: space-evenly !important;
+    align-items: center;
 
+}
 .menu-btn-container{
    width: 100%;
     display: flex;
