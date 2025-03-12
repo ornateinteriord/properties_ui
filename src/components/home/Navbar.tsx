@@ -67,9 +67,8 @@ const Navbar = () => {
     { name: "Properties", path: "/properties", icon: <BusinessIcon /> },
     { name: "Contact", path: "/contact", icon: <PhoneIcon /> },
   ]:[
-    { name: "Help", path: "/", icon: <InfoIcon /> },
-    { name: "Support", path: "/", icon: <BusinessIcon /> },
-    { name: "Contact", path: "/", icon: <PhoneIcon /> },
+    { name: "Help & Support", path: "/", icon: <InfoIcon /> },
+    { name: "Contact", path: "/contact", icon: <PhoneIcon /> },
   ]
 
   const handleDrawerToggle = () => {
@@ -98,7 +97,7 @@ const Navbar = () => {
           <CloseIcon sx={{ color: "#150b83c1" }} />
         </IconButton>
       </Box>
-      <List>
+      <List >
         {menuItems.map((item) => (
           <ListItem key={item.name} disablePadding>
             <ListItemButton
@@ -133,7 +132,7 @@ const Navbar = () => {
     <>
       <AppBar position="fixed" className="app-bar">
         <Container maxWidth="lg">
-          <Toolbar disableGutters>
+          <Toolbar disableGutters >
             <Box
               component={Link}
               to="/"
@@ -165,7 +164,7 @@ const Navbar = () => {
                   ml: "auto",
                   gap: 4,
                   alignItems: "center",
-                  justifyContent: "center",
+                  justifyContent: "flex-end",
                 }}
               >
                 {menuItems.map((item) => (
