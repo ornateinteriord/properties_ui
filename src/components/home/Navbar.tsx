@@ -67,7 +67,7 @@ const Navbar = () => {
     { name: "Properties", path: "/properties", icon: <BusinessIcon /> },
     { name: "Contact", path: "/contact", icon: <PhoneIcon /> },
   ]:[
-    { name: "Help & Support", path: "/", icon: <InfoIcon /> },
+    { name: "Help & Support", path: "/help-support", icon: <InfoIcon /> },
     { name: "Contact", path: "/contact", icon: <PhoneIcon /> },
   ]
 
