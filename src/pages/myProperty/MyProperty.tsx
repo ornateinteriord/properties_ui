@@ -18,7 +18,7 @@ const MyProperty = () => {
    }, [isError, error]);
     
   return (
-    <Box sx={{mt:15,mb:12,display:"flex",alignItems:"center",ml:{xs:0,md:6,xl:8}}}>
+    <Box sx={{mt:15,mb:12,display:"flex",flexDirection:"column",alignItems:"center",ml:{xs:0,md:6,xl:8}}}>
         {properties?.map((property:any)=>(
             <PropertyCard key={property.id} property={property} />
         ))}

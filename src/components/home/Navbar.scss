@@ -5,12 +5,25 @@
     background: var( --nav-bar) !important;
 }
 
+
 .nav-signin-btn{
     background: var( --text-color) !important;
     width: 90px !important;
     border-radius: 30px !important;
     text-transform: none !important;
     color: var(--background-color) !important;
+}
+
+.menu-btn-container{
+   width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    white-space: nowrap;
+}
+.list{
+    display: flex;
+    justify-content: flex-end;
 }
 
 .profile-panel-content{
