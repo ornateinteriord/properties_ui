@@ -122,8 +122,10 @@ const handleClearFilters = useCallback(() => {
       
         return propertySqFt >= minSqFt && propertySqFt <= maxSqFt;
       })();
+
+      const matchesStatus = property.status === "active";
   
-      return matchesType && matchesSubtype && matchesBudget && matchesSquareFeet;
+      return matchesType && matchesSubtype && matchesBudget && matchesSquareFeet && matchesStatus;
     },
     [filters]
   );
@@ -140,10 +142,6 @@ const handleClearFilters = useCallback(() => {
   
     return result;
   }, [properties, matchesFilter, filters.sortOrder]);
-  
-  
-  console.log(properties)
-  console.log(sortedAndFilteredProperties,"sortedAndFilteredProperties")
 
   return (
     <Box sx={{ width: "100%", bgcolor: "#f5f5f5", minHeight: "100vh", py: 3, mt: "80px" }}>

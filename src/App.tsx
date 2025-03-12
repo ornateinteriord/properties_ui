@@ -56,7 +56,7 @@ function App() {
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Properties/>} />
         <Route path="/my-properties" element={<MyProperty/>} />
-        <Route path="/review-properties" element={<ReviewProperty/>} />
+        <Route path="/admin/properties" element={<ReviewProperty/>} />
         <Route path="*" element={<NotFound/>} />
       </Routes>
       </Layout>

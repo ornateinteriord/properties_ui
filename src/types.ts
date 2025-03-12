@@ -31,3 +31,29 @@ export interface Property {
     password:string;
     gender:string;
   }
+
+  export interface Product {
+    userid: string;
+    property_id: string;
+    property_type: string;
+    subtype: string;
+    title: string;
+    image: string;
+    location: string;
+    price: string;
+    sqft: string;
+    status: string; 
+    pramote: string; 
+    pricePerSqft: string;
+    bhk: string;
+    bathrooms: string;
+    propertyStatus: string;
+    possession: string;
+    furnishing: string;
+    parking: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+  }
+  
+  
