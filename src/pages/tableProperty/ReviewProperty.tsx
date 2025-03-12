@@ -38,9 +38,11 @@ const ReviewProperty = () => {
         },
         {
           name: 'Action',
-          cell: (row:Product | any) => (
-            <ActionMenuComponent row={row} />
-          ),
+          cell: (row:Product | any) =>{
+            if(row.status !== 'active' && row.pramote !== 'active') {
+              return <ActionMenuComponent row={row} />  
+            }
+          },
           center : true
         },
       ];
