@@ -11,6 +11,7 @@ import { Dialog, DialogContent } from "@mui/material";
 import Properties from "./pages/Properties/Properties";
 import NotFound from "./pages/notfound/NotFound";
 import CustomLoader from "./components/ui/Loader";
+import MyProperty from "./pages/myProperty/MyProperty";
 
 
 export const LoadingComponent = () => {
