@@ -1,0 +1,24 @@
+.dashboard-container {
+  
+    margin-top: 80px;
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    align-items: center; // Center the content horizontally
+  }
+  
+  .grid {
+   
+    margin-top: 12px;
+    width: 100%;
+    max-width: 1200px; // Increase max-width for larger cards
+    display: flex;
+    justify-content: center; // Center the grid horizontally
+  }
+  
+  .grid-item {
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px !important; 
+  }
