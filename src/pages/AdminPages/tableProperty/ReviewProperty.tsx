@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography, Box } from "@mui/material";
 import DataTable from 'react-data-table-component';
-import { getAllProperties } from "../../../api/product";
+import { getAllProperties, useDeleteProperty } from "../../../api/product";
 import { Product } from "../../../types";
 import { ActionMenyItems, getFormattedName, getRelativeTime } from "../../../utils/constant";
 import { useCallback, useState } from "react";
@@ -81,6 +81,7 @@ const ActionMenuComponent = ({ row }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const updateProperty = useUpdateProperty(row._id);
+  const deleteProperty = useDeleteProperty(row._id);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
    const handleDialogToggle = useCallback(() => {
@@ -100,10 +101,9 @@ const ActionMenuComponent = ({ row }: any) => {
     setIsDialogOpen(true)
    }else if(action.payload === "delete"){
     if (window.confirm("Are you sure you want to delete this property?")) {
-      updateProperty.mutate({ [action.payload]: action.value });
+      deleteProperty.mutate();
     }
    }else{
-
      updateProperty.mutate({ [action.payload]: action.value });
    }
    handleClose()

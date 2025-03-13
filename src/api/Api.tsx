@@ -61,3 +61,11 @@ export const post = async (path: string, data: any) => {
       throw error;
     }
   };
+  export const deleteApi = async (path: string) => {
+    try {
+      const response = await api.delete(path);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
