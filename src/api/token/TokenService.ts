@@ -9,12 +9,12 @@ class TokenService {
     return localStorage.getItem("token");
   }
 
-  static decodeToken(): { id: string; userid: string } | null {
+  static decodeToken(): { id: string; userid: string;role: string } | null {
     const token = this.getToken();
     if (!token) return null;
 
     try {
-      const decoded = jwtDecode<{ id: string; userid: string }>(token);
+      const decoded = jwtDecode<{ id: string; userid: string; role: string }>(token);
       return decoded;
     } catch (error) {
       console.error("Invalid token", error);
@@ -27,6 +27,11 @@ class TokenService {
 
   static getId(): string | null {
     return this.decodeToken()?.id || null;
+  }
+
+  
+  static getRole(): string | null {
+    return this.decodeToken()?.role || null;
   }
 
   static removeToken(): void {

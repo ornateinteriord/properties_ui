@@ -35,6 +35,16 @@ export const BUDGET_RANGES: Record<string, [number, number]> = {
       payload:'pramote',
       value : STATUS.ACTIVE
     },
+    {
+      label: "Edit",
+      payload: "edit", 
+      value: null,
+    },
+    {
+      label: "Delete",
+      payload: "delete", 
+      value: null, 
+    },
   ]
   
   export const getFormattedDate = (date: Date | string) => {
