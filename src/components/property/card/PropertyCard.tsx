@@ -90,7 +90,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             >{property.subtype}</Typography> 
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: "0.9rem" }}>
-            {property.location}
+          {property?.address ? `${property.address},` : ""}  {property?.taluk ? `${property.taluk},` : ""}   {property?.district ? `${property.district},` : ""}   {property?.state ? `${property.state},` : ""}
           </Typography>
         </Box>
 

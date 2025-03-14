@@ -11,6 +11,7 @@ import {
   MenuItem,
   FormLabel,
   SelectChangeEvent,
+  Autocomplete,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
@@ -18,19 +19,29 @@ import { getCloudinaryUrl, useCreateProperty } from "../../../api/product";
 import { toast } from "react-toastify";
 import { useGetPropertyTypes } from "../../../api/Property-Types";
 import { LoadingComponent } from "../../../App";
-
+import { districtsOfKarnataka, taluksOfKarnataka } from "../data/State";
 
 const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
   const [formData, setFormData] = useState<Record<string, string>>({});
   const createPropertyMutation = useCreateProperty();
-  const { mutate,isPending } = createPropertyMutation
+  const { mutate, isPending } = createPropertyMutation;
+
+  const [districtSearchTerm, setDistrictSearchTerm] = useState("");
+  const [talukSearchTerm, setTalukSearchTerm] = useState("");
+  const [districtSuggestions, setDistrictSuggestions] = useState<string[]>([]);
+  const [talukSuggestions, setTalukSuggestions] = useState<string[]>([]);
 
   const cloudinary = getCloudinaryUrl();
   const handleSubmit = (event: any) => {
     event.preventDefault();
-    mutate(formData);
+    const updatedFormData = {
+      ...formData,
+      district: districtSearchTerm,
+      taluk: talukSearchTerm,
+    };
+    mutate(updatedFormData);
     onClose();
   };
   const { data: properties } = useGetPropertyTypes();
@@ -43,24 +54,39 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     const { name, value } = e.target as
       | HTMLInputElement
       | HTMLTextAreaElement
-      | { name: string; value: string }; 
+      | { name: string; value: string };
     setFormData((prevData) => ({
       ...prevData,
       [name ?? "propertyStatus"]: value,
     }));
+
     if (name === "property_type") {
       setSelectedtype(value);
     }
-  
+
     if (name === "propertyStatus") {
       setSelectedStatus(value);
     }
   };
 
   const filteredSubtypes =
-  properties?.find((property: any) => property.type === selectedtype)
-    ?.subTypes || [];
-    const propertyTypesWithSubtypes = ["Land","Penthouse","Farmhouse","Studio Apartment","Commercial Space","Industrial Property",];
+    properties?.find((property: any) => property.type === selectedtype)
+      ?.subTypes || [];
+
+  const propertyTypesWithSubtypes = [
+    "Land",
+    "Penthouse",
+    "Farmhouse",
+    "Studio Apartment",
+    "Commercial Space",
+    "Industrial Property",
+  ];
+
+  const shouldHideFields =
+    (propertyTypesWithSubtypes.includes(selectedtype) &&
+      selectedtype !== "Penthouse" &&
+      selectedtype !== "Farmhouse") ||
+    selectedtype === "Site";
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -100,7 +126,42 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     { name: "Basement Parking" },
   ];
 
-  const propertyStatus = [{ name: "Ready to Move" }, { name: "Under Construction" }];
+  const propertyStatus = [
+    { name: "Ready to Move" },
+    { name: "Under Construction" },
+  ];
+
+  const handleDistrictSearchChange = (_event: any, value: any) => {
+    setDistrictSearchTerm(value);
+    setFormData((prevData) => ({
+      ...prevData,
+      district: value, 
+    }));
+    if (value) {
+      const filteredDistricts = districtsOfKarnataka.filter((district) =>
+        district.toLowerCase().startsWith(value.toLowerCase())
+      );
+      setDistrictSuggestions(filteredDistricts);
+    } else {
+      setDistrictSuggestions([]);
+    }
+  };
+
+  const handleTalukSearchChange = (_event: any, value: any) => {
+    setTalukSearchTerm(value);
+    setFormData((prevData) => ({
+      ...prevData,
+      taluk: value, 
+    }));
+    if (value) {
+      const filteredTaluks = taluksOfKarnataka.filter((taluk) =>
+        taluk.toLowerCase().startsWith(value.toLowerCase())
+      );
+      setTalukSuggestions(filteredTaluks);
+    } else {
+      setTalukSuggestions([]);
+    }
+  };
 
   return (
     <Dialog
@@ -148,7 +209,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               gap: { xs: "15px", md: "20px" },
             }}
           >
-            <form 
+            <form
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -189,7 +250,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 </Select>
               </FormControl>
               {propertyTypesWithSubtypes.includes(selectedtype) && (
-                  <FormControl fullWidth>
+                <FormControl fullWidth>
                   <Select
                     required
                     displayEmpty
@@ -232,33 +293,22 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 placeholder="ex: flat for sale."
                 variant="outlined"
                 sx={{ borderRadius: 2 }}
-         
               />
-
               <TextField
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                fullWidth
-                label="Location"
-                placeholder="Street/Area/City"
                 required
-                variant="outlined"
-              />
-              <TextField
-                name="bathrooms"
-                value={formData.bathrooms}
+                name="address"
+                value={formData.address}
                 onChange={handleInputChange}
                 fullWidth
-                label="Bathrooms"
-                type="number"
+                label="Address"
+                placeholder="area/street/"
                 variant="outlined"
+                sx={{ borderRadius: 2 }}
               />
-
               <FormControl fullWidth>
                 <Select
-                  name="bhk"
-                  value={formData.bhk}
+                  name="state"
+                  value={formData.state}
                   onChange={handleInputChange}
                   displayEmpty
                   sx={{
@@ -271,21 +321,92 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                   renderValue={(selected: any) => {
                     if (!selected) {
                       return (
-                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                          Select BHK
-                        </span>
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>State</span>
                       );
                     }
                     return selected;
                   }}
                 >
-                  {bhk.map((bhk) => (
-                    <MenuItem key={bhk.name} value={bhk.name}>
-                      {`${bhk.name}`}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value="karnataka">Karnataka</MenuItem>
                 </Select>
               </FormControl>
+              <Autocomplete
+                freeSolo
+                options={districtSuggestions}
+                value={districtSearchTerm}
+                onInputChange={handleDistrictSearchChange}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Search District"
+                    variant="outlined"
+                    fullWidth
+                    sx={{ "&.MuiFormControl-root": { mt: 0 } }}
+                  />
+                )}
+              />
+              <Autocomplete
+                freeSolo
+                options={talukSuggestions}
+                value={talukSearchTerm}
+                onInputChange={handleTalukSearchChange}
+                renderInput={(params) => (
+                  <TextField
+                   sx={{ "&.MuiFormControl-root": { mt: 0 } }}
+                    {...params}
+                    label="Search Taluk"
+                    variant="outlined"
+                    fullWidth
+                    
+                  />
+                )}
+              />
+
+              {!shouldHideFields && (
+                <TextField
+                  name="bathrooms"
+                  value={formData.bathrooms}
+                  onChange={handleInputChange}
+                  fullWidth
+                  label="Bathrooms"
+                  type="number"
+                  variant="outlined"
+                />
+              )}
+              {!shouldHideFields && (
+                <FormControl fullWidth>
+                  <Select
+                    name="bhk"
+                    value={formData.bhk}
+                    onChange={handleInputChange}
+                    displayEmpty
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        "&:hover": {
+                          borderColor: "#04112f",
+                        },
+                      },
+                    }}
+                    renderValue={(selected: any) => {
+                      if (!selected) {
+                        return (
+                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                            Select BHK
+                          </span>
+                        );
+                      }
+                      return selected;
+                    }}
+                  >
+                    {bhk.map((bhk) => (
+                      <MenuItem key={bhk.name} value={bhk.name}>
+                        {`${bhk.name}`}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+
               <FormControl fullWidth>
                 <Select
                   required
@@ -303,7 +424,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                   renderValue={(selected: any) => {
                     if (!selected) {
                       return (
-                        <span style={{ color: "rgba(0,0,0,0.5)" }}>Property Status</span>
+                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                          Property Status
+                        </span>
                       );
                     }
                     return selected;
@@ -353,68 +476,72 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               }}
             >
               {" "}
-              <FormControl fullWidth>
-                <Select
-                  name="parking"
-                  value={formData.parking}
-                  onChange={handleInputChange}
-                  displayEmpty
-                  sx={{
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      "&:hover": {
-                        borderColor: "#04112f",
+              {!shouldHideFields && (
+                <FormControl fullWidth>
+                  <Select
+                    name="parking"
+                    value={formData.parking}
+                    onChange={handleInputChange}
+                    displayEmpty
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        "&:hover": {
+                          borderColor: "#04112f",
+                        },
                       },
-                    },
-                  }}
-                  renderValue={(selected: any) => {
-                    if (!selected) {
-                      return (
-                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                          Parking
-                        </span>
-                      );
-                    }
-                    return selected;
-                  }}
-                >
-                  {parking.map((par) => (
-                    <MenuItem key={par.name} value={par.name}>
-                      {`${par.name}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <FormControl fullWidth>
-                <Select
-                  displayEmpty
-                  name="furnishing"
-                  value={formData.furnishing}
-                  onChange={handleInputChange}
-                  sx={{
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      "&:hover": {
-                        borderColor: "#04112f",
+                    }}
+                    renderValue={(selected: any) => {
+                      if (!selected) {
+                        return (
+                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                            Parking
+                          </span>
+                        );
+                      }
+                      return selected;
+                    }}
+                  >
+                    {parking.map((par) => (
+                      <MenuItem key={par.name} value={par.name}>
+                        {`${par.name}`}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
+              {!shouldHideFields && (
+                <FormControl fullWidth>
+                  <Select
+                    displayEmpty
+                    name="furnishing"
+                    value={formData.furnishing}
+                    onChange={handleInputChange}
+                    sx={{
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        "&:hover": {
+                          borderColor: "#04112f",
+                        },
                       },
-                    },
-                  }}
-                  renderValue={(selected: any) => {
-                    if (!selected) {
-                      return (
-                        <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                          Select Furnished Type
-                        </span>
-                      );
-                    }
-                    return selected;
-                  }}
-                >
-                  {furnishing.map((x) => (
-                    <MenuItem key={x.name} value={x.name}>
-                      {`${x.name}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+                    }}
+                    renderValue={(selected: any) => {
+                      if (!selected) {
+                        return (
+                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                            Select Furnished Type
+                          </span>
+                        );
+                      }
+                      return selected;
+                    }}
+                  >
+                    {furnishing.map((x) => (
+                      <MenuItem key={x.name} value={x.name}>
+                        {`${x.name}`}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              )}
               <TextField
                 name="sqft"
                 value={formData.sqft}
@@ -482,7 +609,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
           </Button>
         </Box>
       </DialogContent>
-      {(isPending || cloudinary.isPending) && <LoadingComponent/>}
+      {(isPending || cloudinary.isPending) && <LoadingComponent />}
     </Dialog>
   );
 };

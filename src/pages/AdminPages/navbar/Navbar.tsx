@@ -31,7 +31,7 @@ const AdminNavbar = () => {
           </IconButton>
           <Box
             component={Link}
-            to="/admin/dashboard"
+            to="/"
             sx={{
               ml: 10,
               display: "flex",
