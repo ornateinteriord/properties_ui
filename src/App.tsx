@@ -13,6 +13,7 @@ import NotFound from "./pages/notfound/NotFound";
 import CustomLoader from "./components/ui/Loader";
 import MyProperty from "./pages/myProperty/MyProperty";
 import ReviewProperty from "./pages/tableProperty/ReviewProperty";
+import MyProfile from "./pages/myProfile/MyProfile";
 
 
 export const LoadingComponent = () => {
@@ -29,7 +30,7 @@ export const LoadingComponent = () => {
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
-  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties","/my-properties","/review-properties"];
+  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile" ];
 
   // Check if the current route is valid
   const isValidRoute = validRoutes.includes(location.pathname);
@@ -56,6 +57,7 @@ function App() {
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Properties/>} />
         <Route path="/my-properties" element={<MyProperty/>} />
+        <Route path="/my-profile" element={<MyProfile/>} />
         <Route path="/admin/properties" element={<ReviewProperty/>} />
         <Route path="*" element={<NotFound/>} />
       </Routes>

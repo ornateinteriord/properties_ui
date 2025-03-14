@@ -223,7 +223,7 @@ const Signup = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "row",
-                  gap: "20px",
+                  gap:{xs:"10px",md:"20px",xl:"20px"},
                   alignItems: "center",
                 }}
               >
@@ -238,22 +238,21 @@ const Signup = () => {
                   Gender:
                 </FormLabel>
                 <RadioGroup
+                  sx={{display:"flex",flexDirection:"row", flexWrap: "nowrap"}}
                   row
                   name="gender"
                   value={formData.gender}
                   onChange={handleRadioChange}
-                  className="radio-grp"
+                 
                 >
                   <FormControlLabel
-                    value="Male"
-                    className="form-control-label"
+                    value="Male"                  
                     control={
                       <Radio sx={{ "&.Mui-checked": { color: "#150b83c1" } }} />
                     }
                     label="Male"
                   />
                   <FormControlLabel
-                    className="form-control-label"
                     value="Female"
                     control={
                       <Radio sx={{ "&.Mui-checked": { color: "#150b83c1" } }} />

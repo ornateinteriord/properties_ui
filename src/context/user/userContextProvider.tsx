@@ -4,11 +4,10 @@ import { get } from "../../api/Api";
 import { profile } from "../../types";
 
 const UserProvider = ({ children }: { children: React.ReactNode }) => {
-    const [user, setUser] = useState<profile>()
+    const [user, setUser] = useState<profile | null>()
 
         const getUser = async (userId: string) => {
-           return await get(`/user/user-details/${userId}`)
-          
+           return await get(`/user/user-details/${userId}`) 
          };
 
          return (
