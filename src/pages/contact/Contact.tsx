@@ -40,7 +40,6 @@ const Contact = () => {
     setErrors(newErrors);
 
     if (!Object.values(newErrors).includes(true)) {
-      console.log("Form Submitted", formData);
       alert("Thank you! We will get back to you soon.");
       setFormData({ name: "", email: "", phone: "", message: "" });
     }
