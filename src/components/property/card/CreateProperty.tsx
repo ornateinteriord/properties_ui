@@ -35,6 +35,12 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   };
   const { data: properties } = useGetPropertyTypes();
 
+    const clearForm = () => {
+    setFormData({});
+    setSelectedtype("");
+    setSelectedStatus("");
+  };
+
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -124,7 +130,10 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
         }}
       >
         Create Property
-        <IconButton onClick={onClose} sx={{ color: "text.secondary" }}>
+        <IconButton onClick={()=>{
+          onClose()
+          clearForm()
+        }} sx={{ color: "text.secondary" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
