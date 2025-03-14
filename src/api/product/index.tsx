@@ -42,9 +42,8 @@ export const useCreateProperty = ()=>{
      onSuccess:(response)=>{
         if(response.success){
             toast.success(response.message)
-            console.log(response.message)
         }else{
-            console.error( response.message)
+           toast.error(response.message)
           }
      },
      onError: (err: any) => {

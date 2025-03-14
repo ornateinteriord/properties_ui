@@ -78,9 +78,8 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             image: data.secure_url,
           }));
         },
-        onError: (err) => {
-          toast.error("failed to uplaod image");
-          console.log(err);
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || "Error uploading image");
         },
       });
     }
