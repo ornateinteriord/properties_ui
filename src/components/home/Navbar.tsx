@@ -27,6 +27,7 @@ import {
   Business as BusinessIcon,
   Phone as PhoneIcon,
   Close as CloseIcon,
+  Dashboard,
 } from "@mui/icons-material";
 import "./Navbar.scss";
 import { Link, useNavigate } from "react-router-dom";
@@ -44,6 +45,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { data: user } = useGetuserDetails();
+  const isRole = TokenService.getRole()
 
   const handleLogout = () => {
     setAnchorEl(null);
@@ -296,6 +298,17 @@ const Navbar = () => {
           profile Setting
         </MenuItem>
 
+        {isRole === "admin" && (
+        <MenuItem
+          onClick={() => {
+            navigate("/admin/dashboard");
+            setAnchorEl(null);
+          }}
+        >
+          <Dashboard sx={{ marginRight: "8px" ,fontSize:"19px"}} />
+          Dashboard
+        </MenuItem>
+        )}
         <Divider />
         <Box>
           <MenuItem onClick={handleLogout}>
