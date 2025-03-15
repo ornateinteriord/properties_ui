@@ -16,7 +16,6 @@ export const useGetuserDetails = () => {
         const response = await getUser(userId);
         if (response.success) {
           setUser(response.user);
-          console.log(response.user,"setuser")
           return response.user;
         } else {
           throw new Error(response.message );
@@ -38,8 +37,7 @@ export const userUpdateDetails = async (data:any)=>{
       toast.error(response.message);
     }
   } catch (err: any) {
-    const errorMessage = err.response?.data?.message || "An error occurred";
-    console.error("Update error:", errorMessage);
+    const errorMessage = err.response?.data?.message ;
     toast.error(errorMessage);
   }
 }
