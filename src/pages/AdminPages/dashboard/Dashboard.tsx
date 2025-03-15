@@ -35,7 +35,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <h1 style={{ textAlign: 'center', margin: '12px 0' }}>Welcome to Admin Dashboard</h1>
+      <h1 style={{ textAlign: 'center', margin: '12px 0' }}>Welcome to SK-Properties Admin Dashboard</h1>
       <Grid container spacing={3} className="grid">
         {/* First Card */}
         <Grid item xs={12} sm={6} md={6} className="grid-item">

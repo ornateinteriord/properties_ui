@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import UserContext from "../../context/user/userContext";
-import {  useQuery, } from "@tanstack/react-query";
+import {  useMutation, useQuery, useQueryClient, } from "@tanstack/react-query";
 import TokenService from "../token/TokenService";
 import { get } from "../Api";
 import { put } from "../Api";
@@ -39,20 +39,24 @@ export const useGetuserDetails = () => {
        }
    })
   }
-  
-export const userUpdateDetails = async (data:any)=>{
-  try {
-    const userId = TokenService.getuserId();
-    const response = await put(`/user/update-profile/${userId}`, data);
 
-    if (response.success) {
-      toast.success(response.message);
-      return response.data;
-    } else {
-      toast.error(response.message);
-    }
-  } catch (err: any) {
-    const errorMessage = err.response?.data?.message ;
-    toast.error(errorMessage);
+  export const useUpdateUser = (userid ?: any) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+      mutationFn: async (data: any) => {
+        return await put(`/user/update-profile/${userid}`, data);
+      },
+      onSuccess: (data) => {
+        if(data.success){
+        toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ["allUsers"] });
+        queryClient.invalidateQueries({ queryKey: ["userDetails"] });
+        }else{
+          toast.error(data.message);
+        }
+      },
+      onError: (error : any) => {
+        toast.error(error?.response?.data?.message);
+      },
+    })
   }
-}

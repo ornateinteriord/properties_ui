@@ -12,43 +12,58 @@ import {
   Radio,
 } from "@mui/material";
 import PersonIcon from "@mui/icons-material/Person";
-import LockIcon from "@mui/icons-material/Lock";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import WcIcon from "@mui/icons-material/Wc";
 import {  useEffect, useState } from "react";
 
-import { useGetuserDetails, userUpdateDetails } from "../../api/user";
+import { useGetuserDetails, useUpdateUser, } from "../../api/user";
 
 import { getCloudinaryUrl } from "../../api/product";
 import { toast } from "react-toastify";
+import { LoadingComponent } from "../../App";
+import TokenService from "../../api/token/TokenService";
 
 const MyProfile = () => {
-  const {data:user} = useGetuserDetails()
+  const {data:user , isLoading} = useGetuserDetails()
+  const userId = TokenService.getuserId()
+  const {mutate , isPending: loading , isError , error} = useUpdateUser(userId);
+
+  useEffect(()=>{
+    if(isError){
+      const err = error as any
+      toast.error(err?.response?.data?.message)
+    }
+  },[error , isError])
 
   const [formData, setFormData] = useState<Record<string, string>>({
     gender: "",
     profileImage:""
   });
   const cloudinary = getCloudinaryUrl();
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
+  
       cloudinary.mutate(file, {
         onSuccess: (data) => {
-          setFormData((prevData: any) => ({
-            ...prevData,
-            profileImage: data.secure_url,
-          }));
+          if (data.secure_url) {
+            setFormData((prevData) => ({
+              ...prevData,
+              profileImage: data.secure_url,
+            }));
+          } else {
+            toast.error("Failed to get image URL");
+          }
         },
         onError: (err) => {
-          toast.error("failed to uplaod image");
-          console.log(err);
+          toast.error("Failed to upload image");
+          console.error(err);
         },
       });
     }
   };
-
+  
   useEffect(() => {
     if (user) {
       setFormData((prevData) => ({
@@ -79,11 +94,7 @@ const MyProfile = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); 
-    try {
-      await userUpdateDetails(formData);
-    } catch(error) {
-      console.error("API call failed:", error);
-    }
+    mutate(formData)
   };
 
   return (
@@ -103,9 +114,9 @@ const MyProfile = () => {
       <Card
         sx={{
           mt: { xs: 5, md: -10 },
-          width: { xs: "90%", sm: "80%", md: "60%", lg: "100%" },
+          width: { xs: "70%", sm: "80%", md: "90%", lg: "100%" },
           display: "flex",
-          flexDirection: { xs: "column", md: "column", xl: "row" },
+          flexDirection: { lg: "row", md : "row", xs: "column" },
           justifyContent: "center",
           gap: { xs: "25px", md: "10px" },
           p: { xs: 2, sm: 3 },
@@ -117,14 +128,15 @@ const MyProfile = () => {
       >
         <Box
           sx={{
-            width: { xs: "100%", md: "100%", xl: "30%" },
+            width: { xs: "100%", md: "50%", xl: "30%" },
             display: "flex",
             flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
           }}
         >
           <CardMedia
-          src={user?.profileImage || ""}
+          src={formData.profileImage || user?.profileImage}
             component="img"
             sx={{
               width: "200px",
@@ -133,7 +145,6 @@ const MyProfile = () => {
               borderRadius: "50%",
               border: "1px solid black",
             }}
-            // Replace with actual image source
           />
           <Button
            component="label"
@@ -263,24 +274,6 @@ const MyProfile = () => {
                 gap: "20px",
               }}
             >
-              <TextField
-                required
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="password"
-                placeholder="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockIcon sx={{ color: "#150b83c1" }} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
               <FormControl
             
                 sx={{
@@ -294,6 +287,7 @@ const MyProfile = () => {
                   sx={{
                     color: "#150b83c1 !important",
                     display: "flex",
+
                     alignItems: "center",
                   }}
                 >
@@ -350,7 +344,7 @@ const MyProfile = () => {
           </Box>
         </Box>
       </Card>
-      {/* {isPending && <LoadingComponent />} */}
+      {(cloudinary.isPending || isLoading || loading)  && <LoadingComponent />}
     </Box>
   );
 };

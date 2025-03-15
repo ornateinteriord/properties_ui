@@ -35,7 +35,10 @@ const Properties = () => {
     budget: "all",
     squareFeet: "all",
     sortOrder: "default", 
+    districtSearchTerm : "",
+    talukSearchTerm:""
   });
+
   
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -48,6 +51,8 @@ const handleClearFilters = useCallback(() => {
     budget: "all",
     squareFeet: "all",
     sortOrder: "default",
+    districtSearchTerm : "",
+    talukSearchTerm : ""
   });
 }, []);
 
@@ -123,9 +128,26 @@ const handleClearFilters = useCallback(() => {
         return propertySqFt >= minSqFt && propertySqFt <= maxSqFt;
       })();
 
+        // District and Taluk Filtering
+    const matchesDistrict =
+    filters.districtSearchTerm === "" ||
+    property.district?.toLowerCase().includes(filters.districtSearchTerm.toLowerCase());
+
+  const matchesTaluk =
+    filters.talukSearchTerm === "" ||
+    property.taluk?.toLowerCase().includes(filters.talukSearchTerm.toLowerCase());
+
       const matchesStatus = property.status === "active";
   
-      return matchesType && matchesSubtype && matchesBudget && matchesSquareFeet && matchesStatus;
+      return (
+        matchesType &&
+        matchesSubtype &&
+        matchesBudget &&
+        matchesSquareFeet &&
+        matchesDistrict &&
+        matchesTaluk &&
+        matchesStatus
+      );
     },
     [filters]
   );
@@ -158,7 +180,7 @@ const handleClearFilters = useCallback(() => {
              <Paper sx={{ p: 2, borderRadius: 2, textAlign: "center" }}>
               <Button
                 onClick={handleButtonClick}
-                sx={{ backgroundColor: "#150b83c1", width: "200px", borderRadius: "30px", color: "#fff", textTransform: "none" }}
+                sx={{ backgroundColor: "#150b83c1", width: {lg : "200px" , md : "150px" , sm : "200px" , xs : "150px" }, borderRadius: "30px", color: "#fff", textTransform: "none" }}
               >
                 Create Property
               </Button>
@@ -211,6 +233,8 @@ const handleClearFilters = useCallback(() => {
                 selectedType={filters.type}
                 selectedSubtype={filters.subtype}
                 selectedBudget={filters.budget}
+                districtSearchTerm={filters.districtSearchTerm}
+                talukSearchTerm={filters.talukSearchTerm}
                 selectedSquareFeet={filters.squareFeet}
                 selectedSortOrder={filters.sortOrder} 
                 handleTypeChange={(e: SelectChangeEvent<string>) => handleFilterChange("type", e.target.value)}
@@ -218,6 +242,8 @@ const handleClearFilters = useCallback(() => {
                 handleBudgetChange={(e: SelectChangeEvent<string>) => handleFilterChange("budget", e.target.value)}
                 handleSquareFeetChange={(e: SelectChangeEvent<string>) => handleFilterChange("squareFeet", e.target.value)}
                 handleSortOrderChange={(e) => handleFilterChange("sortOrder", e.target.value)} 
+                handleDistrictChange={(value: string) => handleFilterChange("districtSearchTerm", value)}
+                handleTalukChange={(value: string) => handleFilterChange("talukSearchTerm", value)}
                 handleClearFilters={handleClearFilters}
               />
             </Paper>
