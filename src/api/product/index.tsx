@@ -35,6 +35,7 @@ export const getUserProperties= ()=>{
 
 
 export const useCreateProperty = ()=>{
+    const queryClient = useQueryClient()
     return useMutation({
         mutationFn:async(data:any)=>{
             return await post("/product/create-property",data)
@@ -42,6 +43,7 @@ export const useCreateProperty = ()=>{
      onSuccess:(response)=>{
         if(response.success){
             toast.success(response.message)
+            queryClient.invalidateQueries({ queryKey: ["allProperties"] });
         }else{
            toast.error(response.message)
           }

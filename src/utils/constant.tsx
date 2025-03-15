@@ -38,9 +38,19 @@ export const BUDGET_RANGES: Record<string, [number, number]> = {
       value: STATUS.ACTIVE,
     },
     {
+      label: "De-Active",
+      payload:'status',
+      value: STATUS.PENDING,
+    },
+    {
       label: "Promote",
       payload:'pramote',
       value : STATUS.ACTIVE
+    },
+    {
+      label: "De-Promote",
+      payload:'pramote',
+      value : STATUS.PENDING
     },
     {
       label: "Edit",
@@ -84,6 +94,11 @@ export const BUDGET_RANGES: Record<string, [number, number]> = {
     const now = new Date();
     const inputDate = new Date(date);
     const timeDifference = now.getTime() - inputDate.getTime(); // difference in milliseconds
+  
+    // Handle future dates
+    if (timeDifference < 0) {
+      return "Created Now";
+    }
   
     const seconds = Math.floor(timeDifference / 1000);
     const minutes = Math.floor(seconds / 60);
