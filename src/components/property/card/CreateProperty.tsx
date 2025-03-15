@@ -25,7 +25,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   const [selectedtype, setSelectedtype] = useState("");
   const [formData, setFormData] = useState<Record<string, string>>({});
   const createPropertyMutation = useCreateProperty();
-  const { mutate,isPending } = createPropertyMutation
+  const { mutate, isPending } = createPropertyMutation
 
   const cloudinary = getCloudinaryUrl();
   const handleSubmit = (event: any) => {
@@ -35,6 +35,12 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   };
   const { data: properties } = useGetPropertyTypes();
 
+    const clearForm = () => {
+    setFormData({});
+    setSelectedtype("");
+    setSelectedStatus("");
+  };
+
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -43,7 +49,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     const { name, value } = e.target as
       | HTMLInputElement
       | HTMLTextAreaElement
-      | { name: string; value: string }; 
+      | { name: string; value: string };
     setFormData((prevData) => ({
       ...prevData,
       [name ?? "propertyStatus"]: value,
@@ -51,16 +57,16 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     if (name === "property_type") {
       setSelectedtype(value);
     }
-  
+
     if (name === "propertyStatus") {
       setSelectedStatus(value);
     }
   };
 
   const filteredSubtypes =
-  properties?.find((property: any) => property.type === selectedtype)
-    ?.subTypes || [];
-    const propertyTypesWithSubtypes = ["Land","Penthouse","Farmhouse","Studio Apartment","Commercial Space","Industrial Property",];
+    properties?.find((property: any) => property.type === selectedtype)
+      ?.subTypes || [];
+  const propertyTypesWithSubtypes = ["Land", "Penthouse", "Farmhouse", "Studio Apartment", "Commercial Space", "Industrial Property",];
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
@@ -72,9 +78,8 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
             image: data.secure_url,
           }));
         },
-        onError: (err) => {
-          toast.error("failed to uplaod image");
-          console.log(err);
+        onError: (err: any) => {
+          toast.error(err?.response?.data?.message || "Error uploading image");
         },
       });
     }
@@ -124,7 +129,10 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
         }}
       >
         Create Property
-        <IconButton onClick={onClose} sx={{ color: "text.secondary" }}>
+        <IconButton onClick={()=>{
+          onClose()
+          clearForm()
+        }} sx={{ color: "text.secondary" }}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -148,7 +156,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               gap: { xs: "15px", md: "20px" },
             }}
           >
-            <form 
+            <form
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -189,7 +197,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 </Select>
               </FormControl>
               {propertyTypesWithSubtypes.includes(selectedtype) && (
-                  <FormControl fullWidth>
+                <FormControl fullWidth>
                   <Select
                     required
                     displayEmpty
@@ -232,7 +240,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 placeholder="ex: flat for sale."
                 variant="outlined"
                 sx={{ borderRadius: 2 }}
-         
+
               />
 
               <TextField
@@ -419,26 +427,67 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 name="sqft"
                 value={formData.sqft}
                 onChange={handleInputChange}
+                onBlur={() => {
+                  if (formData.price && formData.sqft) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      pricePerSqft: (Number(formData.price) / Number(formData.sqft)).toFixed(2),
+                    }));
+                  } else if (formData.sqft && formData.pricePerSqft) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      price: (Number(formData.sqft) * Number(formData.pricePerSqft)).toFixed(2),
+                    }));
+                  }
+                }}
                 fullWidth
                 label="Super Area (sqft)"
                 type="number"
                 required
                 variant="outlined"
               />
+
               <TextField
                 name="pricePerSqft"
                 value={formData.pricePerSqft}
                 onChange={handleInputChange}
+                onBlur={() => {
+                  if (formData.sqft && formData.pricePerSqft) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      price: (Number(formData.sqft) * Number(formData.pricePerSqft)).toFixed(2),
+                    }));
+                  } else if (formData.price && formData.pricePerSqft) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      sqft: (Number(formData.price) / Number(formData.pricePerSqft)).toFixed(2),
+                    }));
+                  }
+                }}
                 fullWidth
                 label="Price per sqft"
                 type="number"
                 required
                 variant="outlined"
               />
+
               <TextField
                 name="price"
                 value={formData.price}
                 onChange={handleInputChange}
+                onBlur={() => {
+                  if (formData.sqft && formData.price) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      pricePerSqft: (Number(formData.price) / Number(formData.sqft)).toFixed(2),
+                    }));
+                  } else if (formData.price && formData.pricePerSqft) {
+                    setFormData((prevData) => ({
+                      ...prevData,
+                      sqft: (Number(formData.price) / Number(formData.pricePerSqft)).toFixed(2),
+                    }));
+                  }
+                }}
                 fullWidth
                 label="Price"
                 type="number"
@@ -482,7 +531,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
           </Button>
         </Box>
       </DialogContent>
-      {(isPending || cloudinary.isPending) && <LoadingComponent/>}
+      {(isPending || cloudinary.isPending) && <LoadingComponent />}
     </Dialog>
   );
 };

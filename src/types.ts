@@ -1,3 +1,6 @@
+import { JSX } from "react";
+
+
 export interface Property {
     id: string;
     title: string;
@@ -30,6 +33,8 @@ export interface Property {
     mobileno:string;
     password:string;
     gender:string;
+    role:string;
+    createdAt: Date;
   }
 
   export interface Product {
@@ -56,4 +61,12 @@ export interface Property {
     updatedAt: Date;
   }
   
+
+  export interface SideBarMenuItemType {
+    name: string;
+    icon: JSX.Element;
+    path: string;
+    isExpandable?: boolean;
+    subItems?: Array<{ name: string; path: string; icon: JSX.Element }>;
+  }
   

@@ -44,7 +44,6 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { data: user } = useGetuserDetails();
-  console.log(user, "userdetails");
 
   const handleLogout = () => {
     setAnchorEl(null);

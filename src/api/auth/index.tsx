@@ -33,9 +33,13 @@ export const useLoginMutation = ()=>{
             window.dispatchEvent(new Event("storage"));
             toast.success(response.message)
             const user = TokenService.getuserId()
-            if(user){
+            const role = TokenService.getRole();
+            if(role === 'admin'){
+                navigate("/admin/dashboard")
+            }else if(role === 'user'){
                 navigate("/")
-            }else{
+            }
+            else{
                 console.error("Invalid user:", user);
                 localStorage.clear()
                 toast.error("Invalid user");

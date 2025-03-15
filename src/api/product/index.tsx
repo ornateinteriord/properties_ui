@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
-import { get, post, put } from "../Api"
+import { deleteApi, get, post, put } from "../Api"
 import { toast } from "react-toastify"
 import axios from "axios"
 import TokenService from "../token/TokenService"
@@ -42,9 +42,8 @@ export const useCreateProperty = ()=>{
      onSuccess:(response)=>{
         if(response.success){
             toast.success(response.message)
-            console.log(response.message)
         }else{
-            console.error( response.message)
+           toast.error(response.message)
           }
      },
      onError: (err: any) => {
@@ -76,6 +75,28 @@ export const useUpdateProperty = (productId : string) => {
   return useMutation({
     mutationFn:async(data:any)=>{
         return await put(`/product/update/${productId}`,data)
+    },
+ onSuccess:(response)=>{
+    if(response.success){
+        toast.success(response.message)
+         queryClient.invalidateQueries({ queryKey: ["allProperties"] });
+    }else{
+        console.error( response.message)
+      }
+ },
+ onError: (err: any) => {
+    const errorMessage =
+      err.response.data.message ;
+    console.error("Login error:", errorMessage);
+    toast.error(errorMessage);
+  },
+})
+}
+export const useDeleteProperty = (productId : string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn:async()=>{
+        return await deleteApi(`/product/delete/${productId}`)
     },
  onSuccess:(response)=>{
     if(response.success){

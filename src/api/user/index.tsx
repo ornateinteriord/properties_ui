@@ -2,6 +2,7 @@ import { useContext } from "react";
 import UserContext from "../../context/user/userContext";
 import {  useQuery, } from "@tanstack/react-query";
 import TokenService from "../token/TokenService";
+import { get } from "../Api";
 import { put } from "../Api";
 import { toast } from "react-toastify";
 
@@ -24,6 +25,20 @@ export const useGetuserDetails = () => {
       enabled: !!userId,
     });
   };
+
+  export const getAllUserDetails = ()=>{
+   return useQuery({
+       queryKey:["allUsers"],
+       queryFn: async() =>{
+           const response = await get("/user/alluser-details")
+           if(response.success){
+             return response.users;
+           }else{
+               throw new Error(response.message )
+           }
+       }
+   })
+  }
   
 export const userUpdateDetails = async (data:any)=>{
   try {

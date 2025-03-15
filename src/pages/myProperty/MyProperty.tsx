@@ -19,8 +19,8 @@ const MyProperty = () => {
     
   return (
     <Box sx={{mt:15,mb:12,minHeight: "100vh",display:"flex",flexDirection:"column",alignItems:"center",ml:2,mr:2}}>
-        {properties?.map((property:any)=>(
-            <PropertyCard key={property.id} property={property} />
+        {properties?.map((property:any,idx : any)=>(
+            <PropertyCard key={`${property.id}-${idx}`} property={property} />
         ))}
    {isLoading && <LoadingComponent />}
 </Box>
