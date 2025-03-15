@@ -2,11 +2,13 @@ import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography
 import DataTable from 'react-data-table-component';
 import { getAllProperties, useDeleteProperty } from "../../../api/product";
 import { Product } from "../../../types";
-import { ActionMenyItems, getFormattedName, getRelativeTime } from "../../../utils/constant";
+import { ActionPropertyMenuItems, DASHBOARD_CUTSOM_STYLE, getFormattedName, getRelativeTime } from "../../../utils/constant";
 import { useCallback, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useUpdateProperty } from '../../../api/product/index';
-import CreateProperty from "../../../components/property/card/CreateProperty";
+import UpdateProperty from "../../../components/property/card/UpdateProperty";
+import { useUpdateUser } from "../../../api/user";
+import DeleteConfirmationDialog from "../../../components/ui/DeletePopup";
 
 
 const ReviewProperty = () => {
@@ -48,7 +50,7 @@ const ReviewProperty = () => {
     },
     {
       name: 'Action',
-      cell: (row: Product | any) => <ActionMenuComponent row={row} />,
+      cell: (row: Product) => <ActionMenuComponent row={row} ActionMenuItems={ActionPropertyMenuItems} />,
       center: true,
     },
   ];
@@ -65,6 +67,7 @@ const ReviewProperty = () => {
             data={products}
             progressComponent={<CircularProgress />}
             progressPending={isLoading}
+            customStyles={DASHBOARD_CUTSOM_STYLE}
             pagination
             highlightOnHover
             responsive 
@@ -73,20 +76,38 @@ const ReviewProperty = () => {
       </Card>
     </Box>
   );
-};
+};0
 
 export default ReviewProperty;
 
-const ActionMenuComponent = ({ row }: any) => {
+export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const updateProperty = useUpdateProperty(row._id);
   const deleteProperty = useDeleteProperty(row._id);
+  const updateUser = useUpdateUser(row?.username);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-   const handleDialogToggle = useCallback(() => {
-      setIsDialogOpen((prev) => !prev);
-    }, []);
+  // Open the delete confirmation dialog
+  const handleOpenDeleteDialog = () => {
+    setIsDeleteDialogOpen(true);
+  };
+
+  // Close the delete confirmation dialog
+  const handleCloseDeleteDialog = () => {
+    setIsDeleteDialogOpen(false);
+  };
+
+  // Handle the delete action
+  const handleDeleteProperty = () => {
+    deleteProperty.mutate();
+    setIsDeleteDialogOpen(false); // Close the dialog after deletion
+  };
+
+  const handleDialogToggle = useCallback(() => {
+    setIsDialogOpen((prev) => !prev);
+  }, []);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -96,23 +117,27 @@ const ActionMenuComponent = ({ row }: any) => {
     setAnchorEl(null);
   };
 
-  const handleUpdateProperty = (action: any) => {
-   if(action.payload === 'edit'){
-    setIsDialogOpen(true)
-   }else if(action.payload === "delete"){
-    if (window.confirm("Are you sure you want to delete this property?")) {
-      deleteProperty.mutate();
+  const handleUpdatePropertyActions = (action: any) => {
+    if (action.payload === "edit") {
+      setIsDialogOpen(true);
+    } else if (action.payload === "delete") {
+      handleOpenDeleteDialog(); // Open the delete confirmation dialog
+    } else if (action.payload === "role") {
+      if (row?.role === "admin") {
+        updateUser.mutate({ role: "user" });
+      } else {
+        updateUser.mutate({ role: "admin" });
+      }
+    } else {
+      updateProperty.mutate({ [action.payload]: action.value });
     }
-   }else{
-     updateProperty.mutate({ [action.payload]: action.value });
-   }
-   handleClose()
+    handleClose();
   };
 
-  const filteredActions = ActionMenyItems.filter((action) => {
-    if (row.status === "active" && action.label === "Active") return false; 
-    if (row.pramote === "active" && action.label === "Promote") return false; 
-    return true; 
+  const filteredActions = ActionMenuItems.filter((action: any) => {
+    if (row.status === "active" && action.label === "Active") return false;
+    if (row.pramote === "active" && action.label === "Promote") return false;
+    return true;
   });
 
   return (
@@ -121,12 +146,23 @@ const ActionMenuComponent = ({ row }: any) => {
         aria-controls="action-menu"
         aria-haspopup="true"
         onClick={handleClick}
-        endIcon={<ChevronDown  style={{
-          transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
-          transition: "transform 0.3s ease",
-        }} />}
+        endIcon={
+          <ChevronDown
+            style={{
+              transform: anchorEl ? "rotate(180deg)" : "rotate(0deg)",
+              transition: "transform 0.3s ease",
+            }}
+          />
+        }
         variant="outlined"
-        sx={{width:"auto",fontFamily:"Bogle-Regular",color:"#000",whiteSpace:"nowrap",textTransform:"none",borderColor:"#150b83c1"}}
+        sx={{
+          width: "auto",
+          fontFamily: "Bogle-Regular",
+          color: "#000",
+          whiteSpace: "nowrap",
+          textTransform: "none",
+          borderColor: "#150b83c1",
+        }}
       >
         Action
       </Button>
@@ -136,18 +172,27 @@ const ActionMenuComponent = ({ row }: any) => {
         open={open}
         onClose={handleClose}
         sx={{
-          '& .MuiPaper-root': {
-            minWidth:{xs:110},
+          "& .MuiPaper-root": {
+            minWidth: { xs: 110 },
           },
         }}
       >
-        {filteredActions.map((action) => (
-          <MenuItem key={action.label} onClick={() => handleUpdateProperty(action)}>
+        {filteredActions.map((action: any) => (
+          <MenuItem key={action.label} onClick={() => handleUpdatePropertyActions(action)}>
             {action.label}
           </MenuItem>
         ))}
       </Menu>
-      <CreateProperty open={isDialogOpen} onClose={handleDialogToggle}/>
+
+      {/* Update Property Dialog */}
+      <UpdateProperty open={isDialogOpen} onClose={handleDialogToggle} property={row} />
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmationDialog
+        open={isDeleteDialogOpen}
+        onClose={handleCloseDeleteDialog}
+        onDelete={handleDeleteProperty}
+      />
     </>
   );
 };

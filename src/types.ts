@@ -38,6 +38,7 @@ export interface Property {
   }
 
   export interface Product {
+    _id : string
     userid: string;
     property_id: string;
     property_type: string;
@@ -52,6 +53,10 @@ export interface Property {
     pricePerSqft: string;
     bhk: string;
     bathrooms: string;
+    address: string 
+    state : string;
+    district : string;
+    taluk : string;
     propertyStatus: string;
     possession: string;
     furnishing: string;

@@ -16,6 +16,10 @@ const MyProperty = () => {
        toast.error(err?.response?.data?.message );
      }
    }, [isError, error]);
+
+   if(!properties || properties.length === 0){
+      return <Box sx={{mt:15,mb:12,minHeight: "100vh",display:"flex",flexDirection:"column",alignItems:"center" , color : "#000"}}>No properties found</Box>
+    }
     
   return (
     <Box sx={{mt:15,mb:12,minHeight: "100vh",display:"flex",flexDirection:"column",alignItems:"center",ml:2,mr:2}}>

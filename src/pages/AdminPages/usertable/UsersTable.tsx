@@ -2,8 +2,9 @@ import { Box, Card, CardContent, CircularProgress, Typography } from "@mui/mater
 import DataTable from "react-data-table-component"
 import { getAllUserDetails } from "../../../api/user"
 import { profile } from "../../../types"
-import { getRelativeTime } from "../../../utils/constant"
+import { ActionUserMenuItems, DASHBOARD_CUTSOM_STYLE, getRelativeTime } from "../../../utils/constant"
 import TokenService from "../../../api/token/TokenService"
+import { ActionMenuComponent } from "../tableProperty/ReviewProperty"
 
 
 const UsersTable = () => {
@@ -47,6 +48,12 @@ const userData=users?.filter((user:profile)=>user.username !== TokenService.getu
       cell: (row: profile) => getRelativeTime(row.createdAt),
       sortable: true,
     },
+    {
+      name: 'Action',
+      cell: (row: profile) => <ActionMenuComponent row={row} ActionMenuItems={ActionUserMenuItems} />,
+      sortable: true,
+    },
+
 ]
   return (
     <Box sx={{ mt: 8, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -60,6 +67,7 @@ const userData=users?.filter((user:profile)=>user.username !== TokenService.getu
             data={userData}
             progressComponent={<CircularProgress />}
             progressPending={isLoading}
+            customStyles={DASHBOARD_CUTSOM_STYLE}
             pagination
             highlightOnHover
             responsive 

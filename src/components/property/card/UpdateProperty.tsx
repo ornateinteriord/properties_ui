@@ -14,18 +14,19 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import { getCloudinaryUrl, useCreateProperty } from "../../../api/product";
+import { getCloudinaryUrl, useUpdateProperty } from "../../../api/product";
 import { toast } from "react-toastify";
 import { useGetPropertyTypes } from "../../../api/Property-Types";
 import { LoadingComponent } from "../../../App";
+import { Product } from "../../../types";
 import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
 
-const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
+const UpdateProperty = ({ open, onClose , property }: { open: any; onClose: any , property: Product}) => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
-  const [formData, setFormData] = useState<Record<string, string>>({});
-  const createPropertyMutation = useCreateProperty();
-  const { mutate, isPending } = createPropertyMutation;
+  const [formData, setFormData] = useState<Product>(property);
+  const updateProperty = useUpdateProperty(property._id);
+  const { mutate, isPending } = updateProperty;
 
   const [districtSearchTerm, setDistrictSearchTerm] = useState("");
   const [talukSearchTerm, setTalukSearchTerm] = useState("");
@@ -43,12 +44,6 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
   };
   const { data: properties } = useGetPropertyTypes();
 
-  const clearForm = () => {
-    setFormData({});
-    setSelectedtype("");
-    setSelectedStatus("");
-  };
-
   const handleInputChange = (
     e:
       | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -58,7 +53,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
       | HTMLInputElement
       | HTMLTextAreaElement
       | { name: string; value: string };
-
+      
     setFormData((prevData) => ({
       ...prevData,
       [name ?? "propertyStatus"]: value,
@@ -135,8 +130,8 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
     { name: "Under Construction" },
   ];
 
-  // Handle district change
-  const handleDistrictChange = (district: string) => {
+   // Handle district change
+   const handleDistrictChange = (district: string) => {
     setDistrictSearchTerm(district);
     setFormData((prevData) => ({
       ...prevData,
@@ -152,7 +147,6 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
       taluk,
     }));
   };
-
 
   return (
     <Dialog
@@ -175,10 +169,9 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
           alignItems: "center",
         }}
       >
-        Create Property
-        <IconButton onClick={() => {
+        Update Property
+        <IconButton onClick={()=>{
           onClose()
-          clearForm()
         }} sx={{ color: "text.secondary" }}>
           <CloseIcon />
         </IconButton>
@@ -203,7 +196,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               gap: { xs: "15px", md: "20px" },
             }}
           >
-
+            
             <form
               style={{
                 display: "flex",
@@ -245,7 +238,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 </Select>
               </FormControl>
               {propertyTypesWithSubtypes.includes(selectedtype) && (
-
+               
                 <FormControl fullWidth>
                   <Select
                     required
@@ -304,7 +297,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               <FormControl fullWidth>
                 <Select
                   name="state"
-                  value={formData.state || 'karnataka'}
+                  value={formData.state}
                   onChange={handleInputChange}
                   displayEmpty
                   sx={{
@@ -326,12 +319,13 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                   <MenuItem value="karnataka">Karnataka</MenuItem>
                 </Select>
               </FormControl>
-              <DistrictTalukSelector
+               <DistrictTalukSelector
                 onDistrictChange={handleDistrictChange}
                 onTalukChange={handleTalukChange}
                 districtValue={districtSearchTerm}
                 talukValue={talukSearchTerm}
               />
+
               {!shouldHideFields && (
                 <TextField
                   name="bathrooms"
@@ -616,14 +610,14 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
               },
             }}
           >
-            Create
+            Update
           </Button>
         </Box>
       </DialogContent>
-
+     
       {(isPending || cloudinary.isPending) && <LoadingComponent />}
     </Dialog>
   );
 };
 
-export default CreateProperty;
+export default UpdateProperty;
