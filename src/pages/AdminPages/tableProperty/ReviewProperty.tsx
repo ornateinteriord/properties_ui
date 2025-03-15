@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography, Box } from "@mui/material";
+import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography, Box, Grid } from "@mui/material";
 import DataTable from 'react-data-table-component';
 import { getAllProperties, useDeleteProperty } from "../../../api/product";
 import { Product } from "../../../types";
@@ -9,10 +9,18 @@ import { useUpdateProperty } from '../../../api/product/index';
 import UpdateProperty from "../../../components/property/card/UpdateProperty";
 import { useUpdateUser } from "../../../api/user";
 import DeleteConfirmationDialog from "../../../components/ui/DeletePopup";
+import CreateProperty from "../../../components/property/card/CreateProperty";
 
 
 const ReviewProperty = () => {
   const { data: products, isLoading } = getAllProperties();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleDialogToggle = useCallback(() => {
+    setIsDialogOpen((prev) => !prev);
+  }, []);
+
+
 
   const columns = [
     {
@@ -57,10 +65,13 @@ const ReviewProperty = () => {
 
   return (
     <Box sx={{ mt: 8, width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Typography variant="h4" sx={{ textAlign: "center", mb: 4,mt:4 }}>
+      <Typography variant="h4" sx={{ mb: 4,mt:4 }}>
         Properties
       </Typography>
       <Card sx={{ width: "100%", maxWidth: "1200px", overflowX: "auto" }}>
+      <Grid container justifyContent="flex-end" sx={{pr :2}}>
+      <Button variant="outlined" onClick={()=>setIsDialogOpen(true)}>Add Property</Button>
+      </Grid>
         <CardContent>
           <DataTable
             columns={columns}
@@ -74,6 +85,7 @@ const ReviewProperty = () => {
           />
         </CardContent>
       </Card>
+      <CreateProperty open={isDialogOpen} onClose={handleDialogToggle} />
     </Box>
   );
 };0
@@ -135,8 +147,14 @@ export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
   };
 
   const filteredActions = ActionMenuItems.filter((action: any) => {
-    if (row.status === "active" && action.label === "Active") return false;
-    if (row.pramote === "active" && action.label === "Promote") return false;
+    if (action.payload === 'status') {
+      // Show "De-Active" if status is 'active', otherwise show "Active"
+      return row.status === 'active' ? action.label === 'De-Active' : action.label === 'Active';
+    } else if (action.payload === 'pramote') {
+      // Show "De-Promote" if pramote is 'active', otherwise show "Promote"
+      return row.pramote === 'active' ? action.label === 'De-Promote' : action.label === 'Promote';
+    }
+    // Always show other actions (Edit, Delete)
     return true;
   });
 

@@ -534,6 +534,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 type="number"
                 required
                 variant="outlined"
+                InputLabelProps={{ shrink: !!formData.sqft }}
               />
 
               <TextField
@@ -558,6 +559,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 type="number"
                 required
                 variant="outlined"
+                InputLabelProps={{ shrink: !!formData.pricePerSqft }}
               />
 
               <TextField
@@ -582,6 +584,7 @@ const CreateProperty = ({ open, onClose }: { open: any; onClose: any }) => {
                 type="number"
                 required
                 variant="outlined"
+                InputLabelProps={{ shrink: !!formData.price }}
               />
               <FormControl>
                 <FormLabel
