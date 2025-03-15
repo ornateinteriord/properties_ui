@@ -17,7 +17,6 @@ import Dashboard from "./pages/AdminPages/dashboard/Dashboard";
 import AdminNavbar from "./pages/AdminPages/navbar/Navbar";
 import UsersTable from "./pages/AdminPages/usertable/UsersTable";
 import MyProfile from "./pages/myProfile/MyProfile";
-import ProtectedRoute from "./routerProtector/RouteProtector";
 
 
 export const LoadingComponent = () => {
@@ -65,16 +64,10 @@ function App() {
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Properties/>} />
         <Route path="/my-properties" element={<MyProperty/>} />
-
-        {/* admin pages -------------- */}
-        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin/dashboard" element={<Dashboard/>} />
         <Route path="/my-profile" element={<MyProfile/>} />
         <Route path="/admin/properties" element={<ReviewProperty/>} />
         <Route path="/admin/users" element={<UsersTable/>} />
-        </Route>
-
-        {/* 404 page------------------------------- */}
         <Route path="*" element={<NotFound/>} />
       </Routes>
       </Layout>
