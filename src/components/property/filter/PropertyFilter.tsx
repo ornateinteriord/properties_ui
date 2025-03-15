@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useGetPropertyTypes } from "../../../api/Property-Types";
+import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
 
 interface PropertyFilterProps {
   selectedType: string;
@@ -16,10 +17,14 @@ interface PropertyFilterProps {
   selectedBudget: string;
   selectedSquareFeet: string;
   selectedSortOrder: string;
+  districtSearchTerm : string
+  talukSearchTerm: string
   handleTypeChange: (event: SelectChangeEvent<string>) => void;
   handleSubtypeChange: (event: SelectChangeEvent<string>) => void;
   handleBudgetChange: (event: SelectChangeEvent<string>) => void;
   handleSquareFeetChange: (event: SelectChangeEvent<string>) => void;
+  handleDistrictChange :any
+  handleTalukChange : any
   handleSortOrderChange: (event: SelectChangeEvent<string>) => void;
   handleClearFilters: () => void;
 }
@@ -53,9 +58,13 @@ export const PropertyFilter = ({
   selectedBudget,
   selectedSquareFeet,
   selectedSortOrder,
+  districtSearchTerm,
+  talukSearchTerm,
   handleTypeChange,
   handleSubtypeChange,
   handleBudgetChange,
+  handleDistrictChange,
+  handleTalukChange,
   handleSquareFeetChange,
   handleSortOrderChange,
   handleClearFilters
@@ -104,6 +113,7 @@ export const PropertyFilter = ({
           options={[{ label: "All", value: "all" }, ...SQUARE_FEET_OPTIONS]}
         />
       </FilterSection>
+      <DistrictTalukSelector districtValue={districtSearchTerm} talukValue={talukSearchTerm} onDistrictChange={handleDistrictChange} onTalukChange={handleTalukChange} />
 
       <FilterSection title="Sort By">
       <Dropdown

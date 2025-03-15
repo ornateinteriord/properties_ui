@@ -3,6 +3,7 @@ import { Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText
 import { SideBarMenuItemType } from "../../../types";
 import { AdminSideBarMenuItems } from "./SidebarUtils";
 import { Link } from "react-router-dom";
+import logo from "../../../assets/images/logo.png";
 import CloseIcon from '@mui/icons-material/Close';
 
 interface SidebarProps {
@@ -31,20 +32,30 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     >
 
 <List>
-        <ListItem>
+        <ListItem sx={{ justifyContent: "space-between" }}>
+          <img
+              className="nav-img"
+              src={logo}
+              style={{
+                width: "150px",
+                height: "80px",
+                objectFit: "contain",
+              }}
+            />
           <IconButton onClick={onClose} sx={{ ml:"-10px",color:'#150b83c1' }}>
             <CloseIcon />
           </IconButton>
         </ListItem>
       </List>
       <Divider/>
-      <List>
+      <List sx={{ml : 3}}>
         {AdminSideBarMenuItems.map((item:SideBarMenuItemType) => (
           <ListItem 
             key={item.name}
             component={Link} 
             to={item.path}
-            onClick={onClose}>
+            onClick={onClose}
+          >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText sx={{ml:-2}} primary={item.name} />
           </ListItem>

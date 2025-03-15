@@ -24,7 +24,14 @@ export const BUDGET_RANGES: Record<string, [number, number]> = {
     PENDING : "pending",
   }
 
-  export const ActionMenyItems = [
+  export const ActionUserMenuItems = [
+    {
+      label: "Change Role",
+      payload : 'role' , 
+      value : null
+    }
+  ]
+  export const ActionPropertyMenuItems = [
     {
       label: "Active",
       payload:'status',
@@ -98,5 +105,31 @@ export const BUDGET_RANGES: Record<string, [number, number]> = {
     } else {
       return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
     }
+  };
+  
+  
+  const TABLE_ROW_CUSTOM_STYLE = {
+    style: {
+      fontFamily: "Bogle-Regular",
+      "&:last-child": {
+        borderBottom: "1px solid rgba(0,0,0,.12)",
+      },
+    },
+  };
+  export const DASHBOARD_CUTSOM_STYLE = {
+    headCells: {
+      style: {
+        fontSize: "16px",
+        fontWeight: "Bogle-Bold",
+        backgroundColor: "#04112fe3",
+        color: "#fff",
+        border: "none",
+      },
+    },
+    rows: {
+      style: {
+        ...TABLE_ROW_CUSTOM_STYLE,
+      },
+    },
   };
   
