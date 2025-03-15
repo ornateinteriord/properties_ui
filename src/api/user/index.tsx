@@ -1,8 +1,10 @@
 import { useContext } from "react";
 import UserContext from "../../context/user/userContext";
-import { useQuery } from "@tanstack/react-query";
+import {  useQuery, } from "@tanstack/react-query";
 import TokenService from "../token/TokenService";
 import { get } from "../Api";
+import { put } from "../Api";
+import { toast } from "react-toastify";
 
 
 
@@ -38,3 +40,19 @@ export const useGetuserDetails = () => {
    })
   }
   
+export const userUpdateDetails = async (data:any)=>{
+  try {
+    const userId = TokenService.getuserId();
+    const response = await put(`/user/update-profile/${userId}`, data);
+
+    if (response.success) {
+      toast.success(response.message);
+      return response.data;
+    } else {
+      toast.error(response.message);
+    }
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.message ;
+    toast.error(errorMessage);
+  }
+}

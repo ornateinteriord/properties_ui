@@ -27,6 +27,7 @@ import {
   Business as BusinessIcon,
   Phone as PhoneIcon,
   Close as CloseIcon,
+  Dashboard,
 } from "@mui/icons-material";
 import "./Navbar.scss";
 import { Link, useNavigate } from "react-router-dom";
@@ -44,6 +45,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const navigate = useNavigate();
   const { data: user } = useGetuserDetails();
+  const isRole = TokenService.getRole()
 
   const handleLogout = () => {
     setAnchorEl(null);
@@ -220,13 +222,14 @@ const Navbar = () => {
                     <Avatar
                       className="user-avatar"
                       alt="User Avatar"
+                      src={user?.profileImage || ''}
                       sx={{
                         width: { xs: "40px", md: "40px", xl: "60px" },
                         height: { xs: "40px", md: "40px", xl: "60px" },
                         margin: "0%",
                       }}
                     >
-                      {user?.fullname?.charAt(0).toUpperCase() || ""}
+                      {user?.profileImage || user?.fullname?.charAt(0).toUpperCase() || ""}
                     </Avatar>
                     <Typography variant="body1" sx={{ color: "white" }}>
                       {user?.fullname || "profile"}
@@ -287,7 +290,7 @@ const Navbar = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            navigate("/");
+            navigate("/my-profile");
             setAnchorEl(null);
           }}
         >
@@ -295,6 +298,17 @@ const Navbar = () => {
           profile Setting
         </MenuItem>
 
+        {isRole === "admin" && (
+        <MenuItem
+          onClick={() => {
+            navigate("/admin/dashboard");
+            setAnchorEl(null);
+          }}
+        >
+          <Dashboard sx={{ marginRight: "8px" ,fontSize:"19px"}} />
+          Dashboard
+        </MenuItem>
+        )}
         <Divider />
         <Box>
           <MenuItem onClick={handleLogout}>

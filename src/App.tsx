@@ -16,6 +16,7 @@ import ReviewProperty from "./pages/AdminPages/tableProperty/ReviewProperty";
 import Dashboard from "./pages/AdminPages/dashboard/Dashboard";
 import AdminNavbar from "./pages/AdminPages/navbar/Navbar";
 import UsersTable from "./pages/AdminPages/usertable/UsersTable";
+import MyProfile from "./pages/myProfile/MyProfile";
 import ProtectedRoute from "./routerProtector/RouteProtector";
 
 
@@ -33,8 +34,10 @@ export const LoadingComponent = () => {
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
 
-  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties","/my-properties","/review-properties"];
+
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
+  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile" ];
+
   // Check if the current route is valid
   const isValidRoute = validRoutes.includes(location.pathname);
   const isAdminRoute = adminRoutes.includes(location.pathname);
@@ -66,6 +69,7 @@ function App() {
         {/* admin pages -------------- */}
         <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
         <Route path="/admin/dashboard" element={<Dashboard/>} />
+        <Route path="/my-profile" element={<MyProfile/>} />
         <Route path="/admin/properties" element={<ReviewProperty/>} />
         <Route path="/admin/users" element={<UsersTable/>} />
         </Route>
