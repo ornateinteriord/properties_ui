@@ -138,12 +138,34 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               color="text.secondary"
               sx={{ fontSize: "0.75rem", mb: 0.5 }}
             >
+              Property Status
+            </Typography>
+            <Typography sx={{ fontSize: "0.9rem" }}>
+              {property.propertyStatus}
+            </Typography>
+            {property.propertyStatus === "Under Construction" && (
+              <Typography
+                color="text.secondary"
+                sx={{ fontSize: "0.65rem", mb: 0.5 }}
+              >
+                Completion by {property.possession}
+              </Typography>
+            )}
+          </Box>
+          {property.furnishing && (
+          <Box>
+            <Typography
+              color="text.secondary"
+              sx={{ fontSize: "0.75rem", mb: 0.5 }}
+            >
               Furnishing
             </Typography>
             <Typography sx={{ fontSize: "0.9rem" }}>
               {property.furnishing}
             </Typography>
           </Box>
+          )}
+           {property.bathrooms && (
           <Box>
             <Typography
               color="text.secondary"
@@ -155,6 +177,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               {property.bathrooms}
             </Typography>
           </Box>
+           )}
+            {property.bhk && (
           <Box>
             <Typography
               color="text.secondary"
@@ -164,6 +188,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
             </Typography>
             <Typography sx={{ fontSize: "0.9rem" }}>{property.bhk}</Typography>
           </Box>
+            )}
+             {property.parking && (
           <Box>
             <Typography
               color="text.secondary"
@@ -175,6 +201,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               {property.parking}
             </Typography>
           </Box>
+             )}
         </Box>
 
 
