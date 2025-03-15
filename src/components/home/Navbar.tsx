@@ -220,13 +220,14 @@ const Navbar = () => {
                     <Avatar
                       className="user-avatar"
                       alt="User Avatar"
+                      src={user?.profileImage || ''}
                       sx={{
                         width: { xs: "40px", md: "40px", xl: "60px" },
                         height: { xs: "40px", md: "40px", xl: "60px" },
                         margin: "0%",
                       }}
                     >
-                      {user?.fullname?.charAt(0).toUpperCase() || ""}
+                      {user?.profileImage || user?.fullname?.charAt(0).toUpperCase() || ""}
                     </Avatar>
                     <Typography variant="body1" sx={{ color: "white" }}>
                       {user?.fullname || "profile"}
@@ -287,7 +288,7 @@ const Navbar = () => {
         </MenuItem>
         <MenuItem
           onClick={() => {
-            navigate("/");
+            navigate("/my-profile");
             setAnchorEl(null);
           }}
         >
