@@ -114,7 +114,7 @@ const MyProfile = () => {
       <Card
         sx={{
           mt: { xs: 5, md: -10 },
-          width: { xs: "70%", sm: "80%", md: "90%", lg: "100%" },
+          width: { xs: "100%", sm: "80%", md: "90%", lg: "100%" },
           display: "flex",
           flexDirection: { lg: "row", md : "row", xs: "column" },
           justifyContent: "center",

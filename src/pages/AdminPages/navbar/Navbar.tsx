@@ -24,7 +24,7 @@ const AdminNavbar = () => {
     };
   return (
     <>
-      <AppBar position="fixed" className="app-bar">
+      <AppBar position="fixed"  className="app-bar">
         <Toolbar disableGutters className="tool-bar">
           <IconButton sx={{ ml: 2 }} onClick={toggleSidebar}>
             <MenuIcon color="#150b83c1" />
@@ -51,8 +51,8 @@ const AdminNavbar = () => {
             />
           </Box>
           {isLoggedIn && (
-          <Box sx={{mr:10}}>
-            <Button   onClick={handleLogout}  className="nav-signin-btn">
+          <Box sx={{mr:{xs:2,md:10,xl:20},}}>
+            <Button   onClick={handleLogout}   className="nav-signin-btn">
               Sign Out
             </Button>
           </Box>

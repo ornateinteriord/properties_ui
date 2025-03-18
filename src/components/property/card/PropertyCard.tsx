@@ -1,13 +1,10 @@
-import { Heart, Share2, MoreVertical } from "lucide-react";
 
 import {
   Card,
   CardMedia,
   Typography,
   Box,
-  IconButton,
   Button,
-  Link,
 } from "@mui/material";
 import { useState } from "react";
 
@@ -119,25 +116,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               color="text.secondary"
               sx={{ fontSize: "0.75rem", mb: 0.5 }}
             >
-              Status
-            </Typography>
-            <Typography sx={{ fontSize: "0.9rem" }}>
-              {property.status}
-            </Typography>
-            {property.status === "Under Construction" && (
-              <Typography
-                color="text.secondary"
-                sx={{ fontSize: "0.65rem", mb: 0.5 }}
-              >
-                Completion by {property.possession}
-              </Typography>
-            )}
-          </Box>
-          <Box>
-            <Typography
-              color="text.secondary"
-              sx={{ fontSize: "0.75rem", mb: 0.5 }}
-            >
               Property Status
             </Typography>
             <Typography sx={{ fontSize: "0.9rem" }}>
@@ -216,7 +194,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       overflow: "hidden",
     }}
   >
-    {property.description && (isExpanded ? property.description : `${property.description.slice(0, 100)}...`)}
+    {property.description && (isExpanded ? property.description : `${property.description.slice(0, 100)}`)}
   </Typography>
 
              {property.description && property.description.length > 100 && (
@@ -249,24 +227,6 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           mt: { xs: 2, md: 0 },
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            gap: 1,
-            mb: 2,
-            justifyContent: { xs: "flex-end", md: "flex-end" },
-          }}
-        >
-          <IconButton size="small">
-            <Heart size={20} />
-          </IconButton>
-          <IconButton size="small">
-            <Share2 size={20} />
-          </IconButton>
-          <IconButton size="small">
-            <MoreVertical size={20} />
-          </IconButton>
-        </Box>
 
         <Box
           sx={{
@@ -307,49 +267,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
               },
             }}
           >
-            Get Phone No.
+            Contact
           </Button>
-          <Button
-            variant="contained"
-            sx={{
-              borderRadius: 5,
-              textTransform: "none",
-              backgroundColor: "#150b83c1",
-              "&:hover": {
-                backgroundColor: "#150b83c1",
-              },
-            }}
-          >
-            Contact Agent
-          </Button>
-          <Link
-            href="#"
-            underline="always"
-            sx={{
-              color: "#2196f3",
-              fontSize: "0.9rem",
-              textAlign: "center",
-              mt: 1,
-            }}
-          >
-            Check Loan Eligibility
-          </Link>
+         
         </Box>
 
-        <Box
-          sx={{
-            mt: "auto",
-            textAlign: { xs: "left", md: "right" },
-            pt: { xs: 2, md: 0 },
-          }}
-        >
-          <Typography sx={{ fontSize: "0.9rem", fontWeight: 500 }}>
-            Agent: Premier
-          </Typography>
-          <Typography color="text.secondary" sx={{ fontSize: "0.8rem" }}>
-            4500+ Buyers Served
-          </Typography>
-        </Box>
       </Box>
     </Card>
   );
