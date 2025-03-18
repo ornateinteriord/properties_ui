@@ -6,7 +6,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface PropertyCardProps {
   property: any;
@@ -14,6 +14,8 @@ interface PropertyCardProps {
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0); // Track current image index
+
   const formatPrice = (price: number) => {
     if (price >= 10000000) {
       return `₹${(price / 10000000).toFixed(2)} Cr`; // Convert to Crore
@@ -24,7 +26,18 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     }
     return `₹${price}`; // If less than 1000, show the exact price
   };
-  
+
+  useEffect(() => {
+    if (property.images.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentImageIndex((prevIndex) =>
+          (prevIndex + 1) % property.images.length
+        ); // Update image index
+      }, 2500); // Change image every 2.5 seconds
+
+      return () => clearInterval(interval); // Cleanup interval on unmount
+    }
+  }, [property.images.length]);
 
   return (
     <Card
@@ -53,8 +66,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           sx={{
             height: { xs: 200, sm: 220 },
             objectFit: "cover",
+            opacity: 1, // Fade effect
+            transition: "opacity 0.5s ease-in-out", // Smooth transition
           }}
-          src={property.image}
+          src={property.images[currentImageIndex]} // Use current image index
+          alt={`Property Image ${currentImageIndex + 1}`}
         />
       </Box>
 

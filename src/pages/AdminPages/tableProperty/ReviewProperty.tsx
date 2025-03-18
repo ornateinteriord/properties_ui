@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography, Box, Grid } from "@mui/material";
+import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography, Box, Grid, Dialog, DialogContent, IconButton, DialogActions } from "@mui/material";
 import DataTable from 'react-data-table-component';
 import { getAllProperties, useDeleteProperty } from "../../../api/product";
 import { Product } from "../../../types";
@@ -6,10 +6,10 @@ import { ActionPropertyMenuItems, DASHBOARD_CUTSOM_STYLE, getFormattedName, getR
 import { useCallback, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useUpdateProperty } from '../../../api/product/index';
-import UpdateProperty from "../../../components/property/card/UpdateProperty";
 import { useUpdateUser } from "../../../api/user";
 import DeleteConfirmationDialog from "../../../components/ui/DeletePopup";
-import CreateProperty from "../../../components/property/card/CreateProperty";
+import PropertyForm from "../../../components/property/card/PropertyForm";
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
 
 
 const ReviewProperty = () => {
@@ -57,6 +57,13 @@ const ReviewProperty = () => {
       sortable: true,
     },
     {
+      name: 'Images',
+      cell: (row: Product) => (
+       <ViewImagesComponent images={row.images} />
+      ),
+      sortable: true,
+    },
+    {
       name: 'Action',
       cell: (row: Product) => <ActionMenuComponent row={row} ActionMenuItems={ActionPropertyMenuItems} />,
       center: true,
@@ -85,12 +92,93 @@ const ReviewProperty = () => {
           />
         </CardContent>
       </Card>
-      <CreateProperty open={isDialogOpen} onClose={handleDialogToggle} />
+      <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} mode="create" />
     </Box>
   );
 };0
 
 export default ReviewProperty;
+
+export const ViewImagesComponent = ({ images }: any) => {
+  const [dialogOpen, setDialogOpen] = useState(false);  // To control dialog visibility
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);  // To track current image in the dialog
+
+  // Open and close the dialog
+  const handleDialogToggle = () => setDialogOpen(!dialogOpen);
+
+  // Go to next image
+  const handleNext = () => {
+    if (currentImageIndex < images.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    }
+  };
+
+  // Go to previous image
+  const handlePrevious = () => {
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
+  return (
+    <>
+      {/* "View" button */}
+      <Button variant="outlined" onClick={handleDialogToggle}>
+        View
+      </Button>
+
+      {/* Dialog to show images */}
+      <Dialog open={dialogOpen} onClose={handleDialogToggle} maxWidth="md" fullWidth>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Box sx={{ position: 'relative' }}>
+            {/* Display current image */}
+            <img
+              src={images[currentImageIndex]}
+              alt={`property-image-${currentImageIndex}`}
+              style={{ maxHeight: '500px', width: 'auto', borderRadius: '8px' }}
+            />
+
+            {/* Navigation buttons */}
+            <IconButton
+              onClick={handlePrevious}
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '10px',
+                transform: 'translateY(-50%)',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                color: 'white',
+              }}
+              disabled={currentImageIndex === 0}
+            >
+              <ArrowBack />
+            </IconButton>
+
+            <IconButton
+              onClick={handleNext}
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                right: '10px',
+                transform: 'translateY(-50%)',
+                backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                color: 'white',
+              }}
+              disabled={currentImageIndex === images.length - 1}
+            >
+              <ArrowForward />
+            </IconButton>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogToggle} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+};
 
 export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -203,7 +291,7 @@ export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
       </Menu>
 
       {/* Update Property Dialog */}
-      <UpdateProperty open={isDialogOpen} onClose={handleDialogToggle} property={row} />
+      <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} property={row} mode="update" />
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
