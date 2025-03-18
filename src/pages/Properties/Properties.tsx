@@ -20,6 +20,9 @@ import { LoadingComponent } from "../../App";
 import useAuth from "../../hook/UseAuth";
 import { useNavigate } from "react-router-dom";
 import { BUDGET_RANGES, SQUARE_FEET_RANGES } from "../../utils/constant";
+import usePagination from "../../hook/pagination/Pagination";
+import { CustomPagination } from "../../hook/pagination/CustomPagination";
+
 
 const Properties = () => {
   const { isLoggedIn } = useAuth();
@@ -165,6 +168,9 @@ const handleClearFilters = useCallback(() => {
     return result;
   }, [properties, matchesFilter, filters.sortOrder]);
 
+  const itemsPerPage = 10
+  const {currentPage,totalPages,getCurrentData,handlePageChange } = usePagination(sortedAndFilteredProperties || [],itemsPerPage)
+  const currentProperties = getCurrentData();
   return (
     <Box sx={{ width: "100%", bgcolor: "#f5f5f5", minHeight: "100vh", py: 3, mt: "80px" }}>
       <Container sx={{ width: "100%", padding: 0 }} maxWidth={false}>
@@ -204,7 +210,7 @@ const handleClearFilters = useCallback(() => {
                         Properties
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        56,010 listings
+                        {!isLoading && sortedAndFilteredProperties.length}
                       </Typography>
                     </Box>
                   }
@@ -216,7 +222,7 @@ const handleClearFilters = useCallback(() => {
                         Top Agents
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        2,450 agents
+                        0
                       </Typography>
                     </Box>
                   }
@@ -256,8 +262,8 @@ const handleClearFilters = useCallback(() => {
           {/* Content Area */}
           <Box sx={{ flex: 1 }}>
             {tab === 0 ? (
-              sortedAndFilteredProperties.length > 0 ? (
-                sortedAndFilteredProperties.map((property: any) => (
+              currentProperties?.length > 0 ? (
+                currentProperties?.map((property: any) => (
                   <PropertyCard key={property.id} property={property} />
                 ))
               ) : (
@@ -273,7 +279,19 @@ const handleClearFilters = useCallback(() => {
               </Paper>
             )}
           </Box>
+
+          
         </Container>
+        <Box sx={{m:2,display:"flex",justifyContent:"flex-end"}}>
+        <CustomPagination 
+        totalPages={totalPages}
+        currentPage={currentPage}
+        handlePageChange={handlePageChange}
+        sx={{ marginTop: '20px' }} // Custom styles
+        previousLabel="Prev" // Custom labels
+        nextLabel="Next"
+        />
+          </Box>
       </Container>
       {isLoading && <LoadingComponent />}
     </Box>
