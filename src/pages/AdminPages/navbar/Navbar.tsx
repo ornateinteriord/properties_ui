@@ -30,8 +30,6 @@ const AdminNavbar = () => {
             <MenuIcon color="#150b83c1" />
           </IconButton>
           <Box
-            component={Link}
-            to="/"
             sx={{
               ml: 10,
               display: "flex",
@@ -40,6 +38,7 @@ const AdminNavbar = () => {
               width: "100%",
             }}
           >
+            <Link to="/">
             <img
               className="nav-img"
               src={logo}
@@ -49,6 +48,7 @@ const AdminNavbar = () => {
                 objectFit: "contain",
               }}
             />
+            </Link>
           </Box>
           {isLoggedIn && (
           <Box sx={{mr:{xs:2,md:10,xl:20},}}>

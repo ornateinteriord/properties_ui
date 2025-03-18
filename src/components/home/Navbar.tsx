@@ -135,15 +135,15 @@ const Navbar = () => {
         <Container maxWidth="lg">
           <Toolbar disableGutters  className="tool-bar" >
             <Box
-              component={Link}
-              to="/"
               sx={{
                 display: "flex",
                 alignItems: "center",
                 width:"100%",
               }}
             >
+               <Link to="/">
               <img
+               
                 className="nav-img"
                 src={logo}
                 style={{
@@ -152,6 +152,7 @@ const Navbar = () => {
                   objectFit: "contain",
                 }}
               />
+              </Link>
             </Box>
 
             {/* Desktop Menu */}
