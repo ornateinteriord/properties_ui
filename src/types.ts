@@ -44,7 +44,7 @@ export interface Property {
     property_type: string;
     subtype: string;
     title: string;
-    image: string;
+    images: string[];
     location: string;
     price: string;
     sqft: string;

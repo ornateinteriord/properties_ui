@@ -58,19 +58,17 @@ export const useCreateProperty = ()=>{
 }
 
 export const getCloudinaryUrl = () => {
- 
   return useMutation({
-    
-    mutationFn : async (file :File) => {
+    mutationFn: async (file: File) => {
       const data = new FormData();
       data.append("file", file);
       data.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
       data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-      const response = await axios.post(import.meta.env.VITE_CLOUDINARY_BASE_URL, data)
-      return response.data
-    }
-  })
-}
+      const response = await axios.post(import.meta.env.VITE_CLOUDINARY_BASE_URL, data);
+      return response.data;
+    },
+  });
+};
 
 export const useUpdateProperty = (productId : string) => {
   const queryClient = useQueryClient();

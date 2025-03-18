@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { PropertyCard } from "../../components/property/card/PropertyCard";
 import { PropertyFilter } from "../../components/property/filter/PropertyFilter";
-import CreateProperty from "../../components/property/card/CreateProperty";
 import { toast } from "react-toastify";
 import { getAllProperties } from "../../api/product";
 import { LoadingComponent } from "../../App";
@@ -22,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { BUDGET_RANGES, SQUARE_FEET_RANGES } from "../../utils/constant";
 import usePagination from "../../hook/pagination/Pagination";
 import { CustomPagination } from "../../hook/pagination/CustomPagination";
+import PropertyForm from "../../components/property/card/PropertyForm";
 
 
 const Properties = () => {
@@ -257,7 +257,7 @@ const handleClearFilters = useCallback(() => {
            
           </Box>
 
-          <CreateProperty open={isDialogOpen} onClose={handleDialogToggle} />
+          <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} mode="create"/>
 
           {/* Content Area */}
           <Box sx={{ flex: 1 }}>

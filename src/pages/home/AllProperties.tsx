@@ -106,10 +106,10 @@ const AllPropertiesCards = () => {
           }}
           className="allproperty-card"
         >
-          {filteredProperties.map((property: Product) => (
+          {filteredProperties.map((property: Product , idx : number) => (
             <Card
               className="card"
-              key={property.property_id}
+              key={`${property.property_id}-${idx}`}
               sx={{
                 minWidth: 280,
                 maxWidth: 300,
@@ -121,7 +121,7 @@ const AllPropertiesCards = () => {
               <CardMedia
                 component="img"
                 height="180"
-                image={property.image}
+                image={property.images[0]}
                 alt={property.title}
               />
               <CardContent>
