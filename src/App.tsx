@@ -19,6 +19,7 @@ import UsersTable from "./pages/AdminPages/usertable/UsersTable";
 import MyProfile from "./pages/myProfile/MyProfile";
 import ProtectedRoute from "./routerProtector/RouterProtector";
 import PropertyCardView from "./components/property/card/PropertyCardView";
+import ForgotPassword from "./pages/auth/ForgotPassword";
 
 
 export const LoadingComponent = () => {
@@ -37,7 +38,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
-  const validRoutes = ["/", "/signin", "/signup", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" ];
+  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" ];
 
   const isValidRoute = validRoutes.some((route) => {
     if (route.includes(":id")) {
@@ -67,6 +68,7 @@ function App() {
         <Route path="/" element={<HomePage/>} />
         <Route path="/signin" element={<Signin/>} />
         <Route path="/signup" element={<Signup/>} />
+        <Route path="/reset-password" element={<ForgotPassword/>} />
         <Route path="/about" element={<About/>} />
         <Route path="/contact" element={<Contact/>} />
         <Route path="/properties" element={<Properties/>} />

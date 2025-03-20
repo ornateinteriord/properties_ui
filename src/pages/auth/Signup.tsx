@@ -22,7 +22,7 @@ import { LoadingComponent } from "../../App";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import WcIcon from "@mui/icons-material/Wc";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const navigate = useNavigate()
@@ -273,8 +273,14 @@ const Signup = () => {
                   "&:hover": { backgroundColor: "#4136bcc1" },
                 }}
               >
-                Sign In
+                Sign Up
               </Button>
+              <Typography variant="body2" sx={{ textAlign: "center", mt: 1 }}>
+              Do you forgot password?{" "}
+              <Link to="/reset-password" style={{ color: "#150b83c1", textDecoration: "none", fontWeight: "bold" }}>
+                Reset
+              </Link>
+            </Typography>
             </Box>
           </CardContent>
         </Card>
