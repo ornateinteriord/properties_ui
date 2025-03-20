@@ -5,8 +5,10 @@ import { MuiOtpInput } from "mui-one-time-password-input";
 import { useState } from "react";
 import { useResetpassword } from "../../api/auth";
 import { LoadingComponent } from "../../App";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate()
     const [step, setStep] = useState(1);
     const [otp, setOtp] = useState("");
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -50,6 +52,7 @@ const ForgotPassword = () => {
           return;
         }
         mutate({ email: formData.email, password: formData.password, otp });
+        navigate('/signin')
         setFormData({ email: "", password: "", confirmPassword: "" });
         setOtp("");
         setStep(1);
@@ -135,11 +138,15 @@ const ForgotPassword = () => {
                   length={6}
                   onChange={setOtp}
                   autoFocus
+                  validateChar={(char) => /^\d+$/.test(char)}
                   TextFieldsProps={{
                     disabled: step > 2,
                     sx: {
                       "& .MuiOutlinedInput-root": {
                         height: "40px",
+                      },
+                      "& .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input":{
+                        p:{xs:0,sm:0}
                       },
                       textAlign: "center",
                       "& .MuiInputBase-root": {
