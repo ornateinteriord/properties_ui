@@ -109,6 +109,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
         "Industrial Property",
     ];
 
+    const shouldHideSqrft = "Land".includes(selectedtype)
+
     const shouldHideFields =
         (propertyTypesWithSubtypes.includes(selectedtype) &&
             selectedtype !== "Penthouse" &&
@@ -542,6 +544,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     </Select>
                                 </FormControl>
                             )}
+                            {!shouldHideSqrft && (
                             <TextField
                                 name="sqft"
                                 value={formData.sqft}
@@ -566,7 +569,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                 variant="outlined"
                                 InputLabelProps={{ shrink: !!formData.sqft }}
                             />
-
+                        )}
+                         {!shouldHideSqrft && (
                             <TextField
                                 name="pricePerSqft"
                                 value={formData.pricePerSqft}
@@ -591,7 +595,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                 variant="outlined"
                                 InputLabelProps={{ shrink: !!formData.pricePerSqft }}
                             />
-
+                            )}
+                             {shouldHideSqrft && (
+                            <TextField
+                                name="acres"
+                                value={formData.acres}
+                                onChange={handleInputChange}
+                                type="number"
+                                fullWidth
+                                label="Acres"
+                                variant="outlined"
+                            />
+                             )}
                             <TextField
                                 name="price"
                                 value={formData.price}
