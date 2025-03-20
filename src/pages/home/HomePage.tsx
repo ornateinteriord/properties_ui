@@ -2,7 +2,6 @@ import { Box, Button, Typography } from "@mui/material";
 import { motion } from "framer-motion";
 import "./HomePage.scss";
 import AllPropertiesCards from "./AllProperties";
-import AgentCards from "./AgentsCards";
 import AdviceAndTools from "./Tools";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
@@ -132,17 +131,6 @@ const HomePage = () => {
           <Box>
             {" "}
             <AllPropertiesCards />
-          </Box>
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 0 }}
-          animate={{ opacity: 1, x: 20 }}
-          transition={{ duration: 2 }}
-          className="apartment-cards"
-        >
-          <Box >
-            {" "}
-            <AgentCards />
           </Box>
         </motion.div>
       </Box>
