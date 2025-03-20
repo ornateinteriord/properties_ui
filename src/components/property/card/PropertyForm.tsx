@@ -115,6 +115,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
             selectedtype !== "Farmhouse") ||
         selectedtype === "Site";
 
+
+    const propertiesStatushide =["Site","Land","Commercial Space","Industrial Property"]
+
+    const propertyStatusHide = propertiesStatushide.includes(selectedtype)
+
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
             const files = Array.from(event.target.files);
@@ -406,7 +411,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     </Select>
                                 </FormControl>
                             )}
-
+                          {!propertyStatusHide && (
                             <FormControl fullWidth>
                                 <Select
                                     required
@@ -439,6 +444,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     ))}
                                 </Select>
                             </FormControl>
+                              )}
                             {selectedStatus === "Under Construction" && (
                                 <TextField
                                     name="possession"
@@ -456,6 +462,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     }}
                                 />
                             )}
+                      
                             <TextField
                                 name="description"
                                 value={formData.description}

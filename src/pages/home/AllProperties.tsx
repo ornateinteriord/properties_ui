@@ -136,7 +136,7 @@ const AllPropertiesCards = () => {
                 </Typography>
                 <Typography variant="body2">{property.location}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {property.status}
+                  {property.propertyStatus}
                 </Typography>
                 <Button
                   sx={{

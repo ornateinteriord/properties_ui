@@ -130,6 +130,7 @@ export const ViewImagesComponent = ({ images }: any) => {
       {/* Dialog to show images */}
       <Dialog open={dialogOpen} onClose={handleDialogToggle} maxWidth="md" fullWidth>
         <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        {images && images.length > 0 ? ( 
           <Box sx={{ position: 'relative' }}>
             {/* Display current image */}
             <img
@@ -169,6 +170,9 @@ export const ViewImagesComponent = ({ images }: any) => {
               <ArrowForward />
             </IconButton>
           </Box>
+            ) : (
+              <Typography>No images available</Typography> // Fallback if images is empty or undefined
+            )}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleDialogToggle} color="primary">
