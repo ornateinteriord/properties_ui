@@ -138,6 +138,7 @@ const ForgotPassword = () => {
                   length={6}
                   onChange={setOtp}
                   autoFocus
+                  validateChar={(char) => /^\d+$/.test(char)}
                   TextFieldsProps={{
                     disabled: step > 2,
                     sx: {
