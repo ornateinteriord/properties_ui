@@ -346,29 +346,22 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                 sx={{ borderRadius: 2 }}
                             />
                             <FormControl fullWidth>
-                                <Select
-                                    name="state"
-                                    value={formData.state || 'karnataka'}
-                                    onChange={handleInputChange}
-                                    displayEmpty
-                                    sx={{
-                                        "& .MuiOutlinedInput-notchedOutline": {
-                                            "&:hover": {
-                                                borderColor: "#04112f",
-                                            },
-                                        },
-                                    }}
-                                    renderValue={(selected: any) => {
-                                        if (!selected) {
-                                            return (
-                                                <span style={{ color: "rgba(0,0,0,0.5)" }}>State</span>
-                                            );
-                                        }
-                                        return selected;
-                                    }}
-                                >
-                                    <MenuItem value="karnataka">Karnataka</MenuItem>
-                                </Select>
+                            <TextField
+                              name="state"
+                              label="State"
+                              value={formData.state || "Karnataka"}
+                            InputProps={{
+                           readOnly: true, 
+                              }}
+                                sx={{
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        "&:hover": {
+                                            borderColor: "#04112f",
+                                     },
+                                 },
+                             }}
+                            />
+                                  
                             </FormControl>
                             <DistrictTalukSelector
                                 onDistrictChange={handleDistrictChange}
@@ -376,7 +369,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                 districtValue={districtSearchTerm}
                                 talukValue={talukSearchTerm}
                             />
-                            {!shouldHideFields && (
+                            { selectedtype && !shouldHideFields && (
                                 <TextField
                                     name="bathrooms"
                                     value={formData.bathrooms}
@@ -387,7 +380,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     variant="outlined"
                                 />
                             )}
-                            {!shouldHideFields && (
+                            {selectedtype &&  !shouldHideFields && (
                                 <FormControl fullWidth>
                                     <Select
                                         name="bhk"
@@ -420,7 +413,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     </Select>
                                 </FormControl>
                             )}
-                          {!propertyStatusHide && (
+                          {selectedtype && !propertyStatusHide && (
                             <FormControl fullWidth>
                                 <Select
                                     required
@@ -492,7 +485,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                             }}
                         >
                             {" "}
-                            {!shouldHideFields && (
+                            {selectedtype && !shouldHideFields && (
                                 <FormControl fullWidth>
                                     <Select
                                         name="parking"
@@ -525,7 +518,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     </Select>
                                 </FormControl>
                             )}
-                            {!shouldHideFields && (
+                            {selectedtype &&  !shouldHideFields && (
                                 <FormControl fullWidth>
                                     <Select
                                         displayEmpty
@@ -610,7 +603,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                 InputLabelProps={{ shrink: !!formData.pricePerSqft }}
                             />
                             )}
-                             {shouldHideSqrft && (
+                             {selectedtype && shouldHideSqrft && (
                             <TextField
                                 name="acres"
                                 value={formData.acres}
@@ -674,10 +667,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                     </Box>
                                 )}
                             </FormControl>
-                        </form>
-                    </Box>
-
-                    <Button
+                            <Box sx={{display:"flex",justifyContent:"flex-end"}}>
+                            <Button
                         type="submit"
                         variant="contained"
                         sx={{
@@ -693,6 +684,9 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                     >
                         {mode === "create" ? "Create" : "Update"}
                     </Button>
+                    </Box>
+                        </form>
+                    </Box>
                 </Box>
             </DialogContent>
 
