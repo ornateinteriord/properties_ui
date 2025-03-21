@@ -241,7 +241,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                         }}
                     >
 
-                        <form
+                        <Box
                             style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -468,8 +468,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                                 label="Description"
                                 variant="outlined"
                             />
-                        </form>
-                        <form
+                        </Box>
+                        <Box
                             style={{
                                 display: "flex",
                                 flexDirection: "column",
@@ -678,7 +678,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ open, onClose, mode, proper
                         {mode === "create" ? "Create" : "Update"}
                     </Button>
                     </Box>
-                        </form>
+                        </Box>
                     </Box>
                 </Box>
             </DialogContent>
