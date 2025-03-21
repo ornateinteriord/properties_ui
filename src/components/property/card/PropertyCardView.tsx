@@ -1,38 +1,32 @@
 import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import useFormatPrice from "../../../hook/formatedprice/FormattedPrice";
-import PropertyForm from "./PropertyForm";
-import TokenService from "../../../api/token/TokenService";
 
 const PropertyCardView = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const location = useLocation()
-  const { property } = location.state || {}
+  const { property } = location.state ||{}
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = property?.images || [];
-  const [isEdit, setIsEdit] = useState(false);
-  const userId = TokenService.getuserId();
-  const handleDialogClose = useCallback(() => {
-    setIsEdit(false);
-  }, []);
 
-  useEffect(() => {
-    if (images.length > 1) {
-      const interval = setInterval(() => {
-        setCurrentImageIndex((prevIndex) =>
-          (prevIndex + 1) % images.length
-        );
-      }, 2500);
-      return () => clearInterval(interval);
-    }
-  }, [images.length]);
+
+   useEffect(() => {
+      if (images.length > 1) {
+        const interval = setInterval(() => {
+          setCurrentImageIndex((prevIndex) =>
+            (prevIndex + 1) % images.length
+          );
+        }, 2500); 
+        return () => clearInterval(interval); 
+      }
+    }, [images.length]);
 
   return (
-    <Box sx={{ pl: { xs: 1, sm: 3 }, pr: { xs: 1, sm: 3 }, minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
+    <Box sx={{ pl:{xs:1,sm:3}, pr: {xs:1,sm:3}, minHeight: "100vh",display:"flex",justifyContent:"center",alignItems:"center" }}>
       <Card
         sx={{
-          mt: 10,
+          mt: 10, 
           mb: { xs: 2, md: 0 },
           width: "100%",
           display: "flex",
@@ -43,7 +37,7 @@ const PropertyCardView = () => {
           "& .MuiCardMedia-root": {
             borderRadius: 1,
           },
-
+          
         }}
       >
         {/* Left Column - Image */}
@@ -62,23 +56,23 @@ const PropertyCardView = () => {
               opacity: 1, // Fade effect
               transition: "opacity 0.5s ease-in-out", // Smooth transition
             }}
-            src={images[currentImageIndex]} // Use current image index
-            alt={`Property Image ${currentImageIndex + 1}`}
+              src={images[currentImageIndex]} // Use current image index
+              alt={`Property Image ${currentImageIndex + 1}`}
           />
         </Box>
 
         {/* Middle Column - Content */}
         <Box
           sx={{
-            ml: { xs: 0, sm: 0.5 },
-            width: { xs: "100%", md: "60%" },
+            ml: {xs:0,sm:0.5},
+            width:{xs:"100%",md:"60%"},
             display: "flex",
             flexDirection: "column",
           }}
         >
           <Box
             sx={{
-              mb: 0.5,
+              mb:0.5,
               width: "100%",
               px: { xs: 1, md: 2 },
               pt: { xs: 2, md: 0 },
@@ -146,92 +140,92 @@ const PropertyCardView = () => {
                 </Typography>
               </Box>
               {property?.propertyStatus && (
-                <Box sx={{ mb: 2 }}>
-                  <Typography
-                    color="text.secondary"
-                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                  >
-                    Property Status
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.9rem" }}>
-                    {property?.propertyStatus}
-                  </Typography>
-                  {property?.propertyStatus === "Under Construction" && (
-                    <Typography
-                      color="text.secondary"
-                      sx={{ fontSize: "0.65rem", mb: 0.5 }}
-                    >
-                      Completion by {property?.possession}
-                    </Typography>
-                  )}
-                </Box>
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Property Status
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.propertyStatus}
+                </Typography>
+                {property?.propertyStatus === "Under Construction" && (
+              <Typography
+                color="text.secondary"
+                sx={{ fontSize: "0.65rem", mb: 0.5 }}
+              >
+                Completion by {property?.possession}
+              </Typography>
+            )}
+              </Box>
               )}
               {property?.furnishing && (
-                <Box sx={{ mb: 2 }}>
-                  <Typography
-                    color="text.secondary"
-                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                  >
-                    Furnishing
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.9rem" }}>
-                    {property?.furnishing}
-                  </Typography>
-                </Box>
-              )}
-              {property?.bathrooms && (
-                <Box>
-                  <Typography
-                    color="text.secondary"
-                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                  >
-                    Bathroom
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.9rem" }}>
-                    {property?.bathrooms}
-                  </Typography>
-                </Box>
-              )}
-              {property?.bhk && (
-                <Box>
-                  <Typography
-                    color="text.secondary"
-                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                  >
-                    BHK
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.9rem" }}>
-                    {property?.bhk}
-                  </Typography>
-                </Box>
-              )}
-              {property?.parking && (
-                <Box>
-                  <Typography
-                    color="text.secondary"
-                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                  >
-                    Parking
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.9rem" }}>
-                    {property?.parking}
-                  </Typography>
-                </Box>
-              )}
-              {property?.acres && (
-                <Box>
-                  <Typography
-                    color="text.secondary"
-                    sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                  >
-                    Acres
-                  </Typography>
-                  <Typography sx={{ fontSize: "0.9rem" }}>
-                    {property?.acres}
-                  </Typography>
-                </Box>
-              )}
               <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Furnishing
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.furnishing}
+                </Typography>
+              </Box>
+               )} 
+              {property?.bathrooms && (
+              <Box>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Bathroom
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.bathrooms}
+                </Typography>
+              </Box>
+              )} 
+              {property?.bhk && (
+              <Box>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  BHK
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.bhk}
+                </Typography>
+              </Box>
+               )}
+              {property?.parking && (
+              <Box>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Parking
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.parking}
+                </Typography>
+              </Box>
+               )} 
+              {property?.acres && (
+              <Box>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Acres
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.acres}
+                </Typography>
+              </Box>
+               )} 
+               <Box sx={{ mb: 2 }}>
                 <Typography
                   color="text.secondary"
                   sx={{ fontSize: "0.75rem", mb: 0.5 }}
@@ -291,22 +285,22 @@ const PropertyCardView = () => {
               </Typography>
 
               {property?.description && property?.description.length > 100 && (
-                <Button
-                  onClick={() => setIsExpanded(!isExpanded)}
-                  sx={{
-                    fontSize: "0.8rem",
-                    color: "#2196f3",
-                    textTransform: "none",
-                    p: 0,
-                    mt: 1,
-                    "&:hover": {
-                      backgroundColor: "transparent",
-                    },
-                  }}
-                >
-                  {isExpanded ? "Show Less" : "...more"}
-                </Button>
-              )}
+              <Button
+                onClick={() => setIsExpanded(!isExpanded)}
+                sx={{
+                  fontSize: "0.8rem",
+                  color: "#2196f3",
+                  textTransform: "none",
+                  p: 0,
+                  mt: 1,
+                  "&:hover": {
+                    backgroundColor: "transparent",
+                  },
+                }}
+              >
+                {isExpanded ? "Show Less" : "...more"}
+              </Button>
+             )}
             </Box>
           </Box>
 
@@ -315,9 +309,9 @@ const PropertyCardView = () => {
             sx={{
               px: { xs: 1, md: 2 },
               p: 1,
-              width: "100%",
+              width:"100%",
               display: "flex",
-              flexDirection: "row",
+              flexDirection:"row",
               mt: "auto",
             }}
           >
@@ -328,12 +322,12 @@ const PropertyCardView = () => {
                 mb: 2,
               }}
             >
-              <Typography
-                color="text.secondary"
-                sx={{ fontSize: "0.75rem", mb: 0.5 }}
-              >
-                Price
-              </Typography>
+                 <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Price
+                </Typography>
               <Typography
                 variant="h6"
                 sx={{ fontSize: "1.5rem", fontWeight: 600 }}
@@ -350,52 +344,36 @@ const PropertyCardView = () => {
               </Typography>
             </Box>
             <Box
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "flex-end" },
-                alignItems: "center",
-                gap : 2,
-                width: "100%",
-              }}
-            >
-              <Button
-                variant="outlined"
-                sx={{
-                  width: { xs: "60%", sm: "70%" },
-                  borderRadius: 5,
-                  textTransform: "none",
-                  color: "#150b83c1",
-                  borderColor: "#150b83c1",
-                  "&:hover": {
-                    borderColor: "#150b83c1",
-                    backgroundColor: "rgba(211, 47, 47, 0.04)",
-                  },
-                }}
-              >
-                Contact
-              </Button>
-              {userId === property.userid && (
-                <Button
-                  variant="contained"                  
-                  onClick={() => setIsEdit(true)}
-                  sx={{
-                    color: "#fff",
-                    width: { xs: "60%", sm: "70%" },
-                    backgroundColor: "#150b83c1",
-                    borderRadius: 5,
-                    textTransform: "none",
-                    borderColor: "#150b83c1",
-                  }}
-                >
-                  Edit
-                </Button>
-              )}
-
-            </Box>
+          sx={{
+            display:"flex",
+            justifyContent:{xs:"flex-end"},
+            alignItems:"center",
+            width: "100%",
+          }}
+        >
+          <Button
+            variant="outlined"
+            // component={Link}
+            // to="/property"
+            sx={{
+             width:{xs:"60%",sm:"70%"},
+              borderRadius: 5,
+              textTransform: "none",
+              color: "#150b83c1",
+              borderColor: "#150b83c1",
+              "&:hover": {
+                borderColor: "#150b83c1",
+                backgroundColor: "rgba(211, 47, 47, 0.04)",
+              },
+            }}
+          >
+          Contact
+          </Button>
+         
+        </Box>
           </Box>
         </Box>
       </Card>
-      {isEdit && <PropertyForm property={property} open={isEdit} onClose={handleDialogClose} mode="update" />}
     </Box>
   );
 };
