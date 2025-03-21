@@ -211,7 +211,7 @@ const Properties = () => {
               gap: 3,
             }}
           >
-            {/* Create Property Button */}
+            {/* post Property Button */}
             <Paper sx={{ p: 2, borderRadius: 2, textAlign: "center" }}>
               <Button
                 onClick={handleButtonClick}
@@ -223,7 +223,7 @@ const Properties = () => {
                   textTransform: "none",
                 }}
               >
-                Create Property
+                Post Property
               </Button>
             </Paper>
 
@@ -302,7 +302,7 @@ const Properties = () => {
           <PropertyForm
             open={isDialogOpen}
             onClose={handleDialogToggle}
-            mode="create"
+            mode="post"
           />
 
           {/* Content Area */}

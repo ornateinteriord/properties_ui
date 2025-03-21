@@ -1,7 +1,9 @@
 import { Card, CardMedia, Typography, Box, Button } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import useFormatPrice from "../../../hook/formatedprice/FormattedPrice";
+import TokenService from "../../../api/token/TokenService";
+import PropertyForm from "./PropertyForm";
 
 interface PropertyCardProps {
   property: any;
@@ -9,7 +11,12 @@ interface PropertyCardProps {
 
 export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isEdit, setIsEdit] = useState(false);
   const images = property.images || [];
+  const userId = TokenService.getuserId();  
+  const handleDialogClose = useCallback(() => {
+    setIsEdit(false);
+  }, []);
 
   useEffect(() => {
     if (images.length > 1) {
@@ -20,6 +27,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       return () => clearInterval(interval);
     }
   }, [images.length]);
+
 
   return (
     <Card
@@ -124,7 +132,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       <Box
         sx={{
           display: "flex",
-          flexDirection: "column",
+          flexDirection: "row",
+          justifyContent: "flex-end",
+          gap: 2,
           mt: "auto",
           width: "100%",
         }}
@@ -147,7 +157,23 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         >
           View More
         </Button>
+        {userId === property.userid && (
+          <Button
+            variant="contained"
+            onClick={() => setIsEdit(true)}
+            sx={{
+              color: "#fff",
+              backgroundColor: "#150b83c1",
+              borderRadius: 5,
+              textTransform: "none",
+              borderColor: "#150b83c1",
+            }}
+          >
+          Edit
+        </Button>
+        )}
       </Box>
+      {isEdit && <PropertyForm property={property} open={isEdit} onClose={handleDialogClose} mode="update" />}
     </Card>
   );
 };
