@@ -1,5 +1,5 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { karnatakaData } from "../property/data/State";
 
 interface DistrictTalukSelectorProps {
@@ -34,16 +34,6 @@ const DistrictTalukSelector = ({
     onTalukChange(value); // Notify parent of taluk change
   };
 
-  // Set initial taluk suggestions when districtValue changes
-  useEffect(() => {
-    if (districtValue) {
-      const selectedDistrict = karnatakaData.find(
-        (d) => d.district.toLowerCase() === districtValue.toLowerCase()
-      );
-      setTalukSuggestions(selectedDistrict?.taluks || []);
-    }
-  }, [districtValue]);
-
   return (
     <>
       <Autocomplete
@@ -61,23 +51,21 @@ const DistrictTalukSelector = ({
         )}
       />
 
-      {talukSuggestions.length > 0 && (
-        <Autocomplete
-          freeSolo
-          options={talukSuggestions}
-          value={talukValue}
-          onInputChange={handleTalukChange}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Search Taluk"
-              variant="outlined"
-              fullWidth
-              sx={{ mt: 2 }}
-            />
-          )}
-        />
-      )}
+      {talukSuggestions.length > 0 && <Autocomplete
+        freeSolo
+        options={talukSuggestions}
+        value={talukValue}
+        onInputChange={handleTalukChange}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            label="Search Taluk"
+            variant="outlined"
+            fullWidth
+            sx={{ mt: 2 }}
+          />
+        )}
+      />}
     </>
   );
 };
