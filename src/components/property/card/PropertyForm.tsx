@@ -67,21 +67,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     };
 
     if (mode === "create") {
-      createMutate(updatedFormData);
-      // createMutate(updatedFormData,{
-      //     onSuccess : () => {
-      //         onClose()
-      //     }
-      // });
+      createMutate(updatedFormData,{
+          onSuccess : () => {
+              onClose()
+          }
+      });
     } else if (mode === "update") {
-      updateMutate(updatedFormData);
-      // updateMutate(updatedFormData,{
-      //     onSuccess : () => {
-      //         onClose()
-      //     }
-      // });
+      updateMutate(updatedFormData,{
+          onSuccess : () => {
+              onClose()
+          }
+      });
     }
-    onClose();
   };
 
   const { data: properties } = useGetPropertyTypes();
