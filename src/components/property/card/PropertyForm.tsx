@@ -12,6 +12,7 @@ import {
   FormLabel,
   SelectChangeEvent,
   Typography,
+  DialogActions,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
@@ -25,6 +26,7 @@ import { useGetPropertyTypes } from "../../../api/Property-Types";
 import { LoadingComponent } from "../../../App";
 import { Product } from "../../../types";
 import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
+import LocationPicker from "../../../pages/Maps/LocationPicker";
 
 interface PropertyFormProps {
   open: boolean;
@@ -42,9 +44,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
   const [imagesNames, setImagesNames] = useState<string[]>([]);
+  const [location, setLocation] = useState<{ type: string; coordinates: [number, number] }>({
+    type: "Point",
+    coordinates: [0, 0], // Default coordinates
+  });
+  const [loactionDialog , setLoactionDialog] = useState(false)
   const [formData, setFormData] = useState<Product | any>(
     mode === "update" && property ? property : {}
   );
+
+  useEffect(()=>{
+    console.log(location)
+  },[location])
 
   const createPropertyMutation = useCreateProperty();
   const updatePropertyMutation = useUpdateProperty(property?._id || "");
@@ -58,8 +69,22 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 
   const cloudinary = getCloudinaryUrl();
 
-  const { data: properties } = useGetPropertyTypes();
+  const handleCloseLocation = () => {
+    setLoactionDialog(false)
+  }
 
+  const { data: properties } = useGetPropertyTypes();
+  const handleLocationSelect = (lat: number, lng: number) => {
+    const newLocation : any = {
+      type: "Point",
+      coordinates: [lng, lat], // Note: MongoDB expects [longitude, latitude]
+    };
+    setLocation(newLocation);
+    setFormData((prevData: any) => ({
+      ...prevData,
+      location: newLocation,
+    }));
+  };
   // Initialize selectedtype and selectedStatus when in update mode
   useEffect(() => {
     if (mode === "update" && property) {
@@ -676,6 +701,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 variant="outlined"
                 InputLabelProps={{ shrink: !!formData.price }}
               />
+              <Button onClick={()=>setLoactionDialog(true)}>Add Location</Button>
+              <LoactionDialog open={loactionDialog} onClose={handleCloseLocation} onLocationSelect={handleLocationSelect}  />
               <FormControl>
                 <FormLabel
                   sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
@@ -740,3 +767,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 };
 
 export default PropertyForm;
+
+
+const LoactionDialog = ({open , onClose , onLocationSelect } : any) => {
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Location Picker</DialogTitle>
+      <DialogContent>
+        <LocationPicker onLocationSelect={onLocationSelect} />
+      </DialogContent>
+      <DialogActions sx={{cursor:"pointer"}} onClick={onClose}>Close</DialogActions>
+    </Dialog>
+  )
+}

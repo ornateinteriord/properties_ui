@@ -320,8 +320,8 @@ const Properties = () => {
           >
             {tab === 0 &&
               (currentProperties?.length > 0 ? (
-                currentProperties?.map((property: any) => (
-                  <PropertyCard key={property.id} property={property} />
+                currentProperties?.map((property: any , idx : number) => (
+                  <PropertyCard key={`${property.id}-${idx}`} property={property} />
                 ))
               ) : (
                 <Paper sx={{ p: 4, borderRadius: 2, textAlign: "center" }}>

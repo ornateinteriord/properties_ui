@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, matchPath } from "react-router-dom";
 import "./App.css";
 import Navbar from "./components/home/Navbar";
 import HomePage from "./pages/home/HomePage";
@@ -20,6 +20,7 @@ import MyProfile from "./pages/myProfile/MyProfile";
 import ProtectedRoute from "./routerProtector/RouterProtector";
 import PropertyCardView from "./components/property/card/PropertyCardView";
 import ForgotPassword from "./pages/auth/ForgotPassword";
+import PropertyMap from "./pages/Maps/PropertyMap";
 
 
 export const LoadingComponent = () => {
@@ -40,14 +41,11 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
   const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" ];
 
-  const isValidRoute = validRoutes.some((route) => {
-    if (route.includes(":id")) {
-      return location.pathname.startsWith(route.split(":id")[0]);
-    } else {
-      return location.pathname === route;
-    }
-  });
-  const isAdminRoute = adminRoutes.includes(location.pathname);
+  const isValidRoute = validRoutes.some((route) =>
+    matchPath(route, location.pathname)
+  );
+  const isAdminRoute = !!adminRoutes.find(route => matchPath(route, location.pathname));
+
 
   return (
     <>
@@ -75,6 +73,7 @@ function App() {
         <Route path="/my-properties" element={<MyProperty/>} />
         <Route path="/my-profile" element={<MyProfile/>} />
         <Route path="/property/:id" element={<PropertyCardView/>} />
+        {/* <Route path="/properties-map" element={<PropertyMap searchRadius={10} />} /> */}
 
          {/* admin pages -------------- */}
          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
