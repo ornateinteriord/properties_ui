@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { PropertyCard } from "../../components/property/card/PropertyCard";
 import { getUserProperties } from "../../api/product";
 import { useEffect } from "react";
@@ -31,29 +31,48 @@ const MyProperty = () => {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
+          justifyContent: "center",
           color: "#000",
         }}
       >
-        No properties found
+        <Typography variant="h6" fontWeight={500} color="textSecondary">
+          No properties found
+        </Typography>
       </Box>
     );
   }
 
- 
   const currentProperties = getCurrentData();
 
   return (
     <>
       <Box
         sx={{
-          mt: 15,
-          mb: 12,
+          mt: 12,
+          textAlign: "center",
+          p: 2,
+          backgroundColor: "#f5f5f5",
+          borderRadius: "8px",
+        }}
+      >
+        <Typography variant="h4" fontWeight={600} color="primary">
+          Your Properties
+        </Typography>
+      </Box>
+      
+      <Box
+        sx={{
+          display: "grid",
+          mt: 3,
           minHeight: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          ml: 2,
-          mr: 2,
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr",
+            md: "1fr 1fr 1fr",
+            lg: "1fr 1fr 1fr 1fr",
+          },
+          gap: 2,
+          p: 2,
         }}
       >
         {currentProperties?.map((property: any, idx: any) => (
@@ -61,23 +80,22 @@ const MyProperty = () => {
         ))}
         {isLoading && <LoadingComponent />}
       </Box>
+      
       <Box
-  sx={{
-    m: 2,
-    display: "flex",
-    justifyContent: "flex-end",
-    marginRight: "12px",
-  }}
->
-   <CustomPagination
+        sx={{
+          m: 2,
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <CustomPagination
           totalPages={totalPages}
           currentPage={currentPage}
           handlePageChange={handlePageChange}
-          sx={{ marginTop: '20px' }} // Custom styles
-          previousLabel="Prev" // Custom labels
+          previousLabel="Prev"
           nextLabel="Next"
-          />
-</Box>
+        />
+      </Box>
     </>
   );
 };

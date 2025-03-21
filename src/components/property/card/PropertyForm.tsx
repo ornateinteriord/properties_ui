@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   getCloudinaryUrl,
   useCreateProperty,
@@ -29,7 +29,7 @@ import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
 interface PropertyFormProps {
   open: boolean;
   onClose: () => void;
-  mode: "create" | "update";
+  mode: "post" | "update";
   property?: Product | any; // Optional, only used in "update" mode
 }
 
@@ -58,6 +58,18 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 
   const cloudinary = getCloudinaryUrl();
 
+  const { data: properties } = useGetPropertyTypes();
+
+  // Initialize selectedtype and selectedStatus when in update mode
+  useEffect(() => {
+    if (mode === "update" && property) {
+      setSelectedtype(property.property_type || "");
+      setSelectedStatus(property.propertyStatus || "");
+      setDistrictSearchTerm(property.district || ""); // Initialize district
+      setTalukSearchTerm(property.taluk || ""); // Initialize taluk
+    }
+  }, [mode, property]);
+
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     const updatedFormData = {
@@ -66,22 +78,20 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       taluk: talukSearchTerm,
     };
 
-    if (mode === "create") {
-      createMutate(updatedFormData,{
-          onSuccess : () => {
-              onClose()
-          }
+    if (mode === "post") {
+      createMutate(updatedFormData, {
+        onSuccess: () => {
+          onClose();
+        },
       });
     } else if (mode === "update") {
-      updateMutate(updatedFormData,{
-          onSuccess : () => {
-              onClose()
-          }
+      updateMutate(updatedFormData, {
+        onSuccess: () => {
+          onClose();
+        },
       });
     }
   };
-
-  const { data: properties } = useGetPropertyTypes();
 
   const clearForm = () => {
     setFormData({});
@@ -126,7 +136,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     "Industrial Property",
   ];
 
-  const shouldHideSqrft = "Land".includes(selectedtype);
+  const shouldHideSqrft = selectedtype === "Land";
 
   const shouldHideFields =
     (propertyTypesWithSubtypes.includes(selectedtype) &&
@@ -211,6 +221,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     }));
   };
 
+  // Determine if fields should be shown in update mode
+  const showField = (fieldName: keyof Product) => {
+    return mode === "update" && formData[fieldName] !== undefined;
+  };
+
   return (
     <Dialog
       open={open}
@@ -232,11 +247,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
           alignItems: "center",
         }}
       >
-        {mode === "create" ? "Create Property" : "Update Property"}
+        {mode === "post" ? "Post Property" : "Update Property"}
         <IconButton
           onClick={() => {
             onClose();
-            if (mode === "create") clearForm();
+            if (mode === "post") clearForm();
           }}
           sx={{ color: "text.secondary" }}
         >
@@ -382,7 +397,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 districtValue={districtSearchTerm}
                 talukValue={talukSearchTerm}
               />
-              {selectedtype && !shouldHideFields && (
+              {(showField("bathrooms") || (selectedtype && !shouldHideFields)) && (
                 <TextField
                   name="bathrooms"
                   value={formData.bathrooms}
@@ -393,7 +408,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   variant="outlined"
                 />
               )}
-              {selectedtype && !shouldHideFields && (
+              {(showField("bhk") || (selectedtype && !shouldHideFields)) && (
                 <FormControl fullWidth>
                   <Select
                     name="bhk"
@@ -426,7 +441,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {selectedtype && !propertyStatusHide && (
+              {(showField("propertyStatus") || (selectedtype && !propertyStatusHide)) && (
                 <FormControl fullWidth>
                   <Select
                     required
@@ -460,7 +475,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {selectedStatus === "Under Construction" && (
+              {(showField("possession") || selectedStatus === "Under Construction") && (
                 <TextField
                   name="possession"
                   value={formData.possession}
@@ -477,7 +492,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   }}
                 />
               )}
-
               <TextField
                 name="description"
                 value={formData.description}
@@ -497,8 +511,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 gap: "15px",
               }}
             >
-              {" "}
-              {selectedtype && !shouldHideFields && (
+              {(showField("parking") || (selectedtype && !shouldHideFields)) && (
                 <FormControl fullWidth>
                   <Select
                     name="parking"
@@ -531,7 +544,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {selectedtype && !shouldHideFields && (
+              {(showField("furnishing") || (selectedtype && !shouldHideFields)) && (
                 <FormControl fullWidth>
                   <Select
                     displayEmpty
@@ -564,7 +577,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {!shouldHideSqrft && (
+              {(showField("sqft") || !shouldHideSqrft) && (
                 <TextField
                   name="sqft"
                   value={formData.sqft}
@@ -594,7 +607,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   InputLabelProps={{ shrink: !!formData.sqft }}
                 />
               )}
-              {!shouldHideSqrft && (
+              {(showField("pricePerSqft") || !shouldHideSqrft) && (
                 <TextField
                   name="pricePerSqft"
                   value={formData.pricePerSqft}
@@ -624,7 +637,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   InputLabelProps={{ shrink: !!formData.pricePerSqft }}
                 />
               )}
-              {selectedtype && shouldHideSqrft && (
+              {(showField("acres") || (selectedtype && shouldHideSqrft)) && (
                 <TextField
                   name="acres"
                   value={formData.acres}
@@ -711,7 +724,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                     },
                   }}
                 >
-                  {mode === "create" ? "Create" : "Update"}
+                  {mode === "post" ? "Post" : "Update"}
                 </Button>
               </Box>
             </Box>
