@@ -92,7 +92,7 @@ const ReviewProperty = () => {
           />
         </CardContent>
       </Card>
-      <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} mode="create" />
+      <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} mode="post" />
     </Box>
   );
 };0

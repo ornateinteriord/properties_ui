@@ -48,6 +48,7 @@ export interface Property {
     location: string;
     price: string;
     sqft: string;
+    acres : string
     status: string; 
     pramote: string; 
     pricePerSqft: string;
