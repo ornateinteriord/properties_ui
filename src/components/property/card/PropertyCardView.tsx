@@ -26,8 +26,8 @@ const PropertyCardView = () => {
     <Box sx={{ pl:{xs:1,sm:3}, pr: {xs:1,sm:3}, minHeight: "100vh",display:"flex",justifyContent:"center",alignItems:"center" }}>
       <Card
         sx={{
-         mt:{xs:10,sm:13,md:0,},
-         mb:{xs:2,md:0},
+          mt: 10, 
+          mb: { xs: 2, md: 0 },
           width: "100%",
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
@@ -37,6 +37,7 @@ const PropertyCardView = () => {
           "& .MuiCardMedia-root": {
             borderRadius: 1,
           },
+          
         }}
       >
         {/* Left Column - Image */}
@@ -103,10 +104,6 @@ const PropertyCardView = () => {
                   {property?.subtype}
                 </Typography>
               </Typography>
-              <Typography sx={{ fontSize: "0.9rem" }}>
-                Address
-                {property?.address ? `${property.address},` : ""}  {property?.taluk ? `${property.taluk},` : ""}   {property?.district ? `${property.district},` : ""}   {property?.state ? `${property.state},` : ""}
-              </Typography>
             </Box>
 
             <Box
@@ -136,6 +133,18 @@ const PropertyCardView = () => {
                   color="text.secondary"
                   sx={{ fontSize: "0.75rem", mb: 0.5 }}
                 >
+                  Super Area
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {`${property?.sqft} sqft`}
+                </Typography>
+              </Box>
+              {property?.propertyStatus && (
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
                   Property Status
                 </Typography>
                 <Typography sx={{ fontSize: "0.9rem" }}>
@@ -150,6 +159,7 @@ const PropertyCardView = () => {
               </Typography>
             )}
               </Box>
+              )}
               {property?.furnishing && (
               <Box sx={{ mb: 2 }}>
                 <Typography
@@ -202,6 +212,63 @@ const PropertyCardView = () => {
                 </Typography>
               </Box>
                )} 
+              {property?.acres && (
+              <Box>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Acres
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.acres}
+                </Typography>
+              </Box>
+               )} 
+               <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Address
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.address}
+                </Typography>
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  Taluk
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.taluk}
+                </Typography>
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  District
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.district}
+                </Typography>
+              </Box>
+              <Box sx={{ mb: 2 }}>
+                <Typography
+                  color="text.secondary"
+                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
+                >
+                  State
+                </Typography>
+                <Typography sx={{ fontSize: "0.9rem" }}>
+                  {property?.state}
+                </Typography>
+              </Box>
             </Box>
             <Box>
               <Typography
