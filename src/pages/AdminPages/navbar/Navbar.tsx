@@ -31,7 +31,8 @@ const AdminNavbar = () => {
           </IconButton>
           <Box
             sx={{
-              ml: 10,
+              mt:{xs:1,md:0},
+              ml:{xs:1,sm:3,md:10},
               display: "flex",
               justifyContent: "flex-start",
               alignItems: "center",

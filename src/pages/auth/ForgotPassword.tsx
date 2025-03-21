@@ -19,6 +19,10 @@ const ForgotPassword = () => {
       ...prev,
       [name]: value,
     }));
+
+    if (name === "confirmPassword" && value === "") {
+      setErrorMessage(""); // Assuming setErrorMessage updates the error state
+    }
   };
   const ResetPasswordMutation = useResetpassword();
   const { mutate, isPending } = ResetPasswordMutation;
@@ -51,12 +55,21 @@ const ForgotPassword = () => {
           setErrorMessage("Passwords do not match");
           return;
         }
-        mutate({ email: formData.email, password: formData.password, otp });
-        navigate('/signin')
-        setFormData({ email: "", password: "", confirmPassword: "" });
-        setOtp("");
-        setStep(1);
-        setErrorMessage("");
+        
+        mutate({ email: formData.email, password: formData.password, otp },
+          {
+            onSuccess: () => {
+              navigate("/signin"); // Navigate only on success
+              setFormData({ email: "", password: "", confirmPassword: "" });
+              setOtp("");
+              setStep(1);
+              setErrorMessage("");
+            },
+            onError: (error) => {
+                console.log(error.response?.data?.message) 
+            },
+          }
+        );
       }
     } catch (error) {
       console.error("Error", error);
@@ -134,6 +147,7 @@ const ForgotPassword = () => {
               )}
               {!isPending && step >= 2 && (
                 <MuiOtpInput
+                sx={{display:"flex",gap:{xs:1.5,sm:2,md:3}}}
                   value={otp}
                   length={6}
                   onChange={setOtp}
@@ -146,7 +160,9 @@ const ForgotPassword = () => {
                         height: "40px",
                       },
                       "& .css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input":{
-                        p:{xs:0,sm:0}
+                        p:{xs:0,sm:0},
+                        height:"30px",
+                        
                       },
                       textAlign: "center",
                       "& .MuiInputBase-root": {

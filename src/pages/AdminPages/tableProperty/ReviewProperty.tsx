@@ -129,14 +129,17 @@ export const ViewImagesComponent = ({ images }: any) => {
 
       {/* Dialog to show images */}
       <Dialog open={dialogOpen} onClose={handleDialogToggle} maxWidth="md" fullWidth>
-        <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: { xs: 1, sm: 2, md: 3 }, }}>
         {images && images.length > 0 ? ( 
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: 'relative',width: '100%', textAlign: 'center'  }}>
             {/* Display current image */}
             <img
               src={images[currentImageIndex]}
               alt={`property-image-${currentImageIndex}`}
-              style={{ maxHeight: '500px', width: 'auto', borderRadius: '8px' }}
+              style={{  maxHeight: '70vh', // Use viewport height for scaling
+                width: 'auto',
+                maxWidth: '100%', // Ensure image doesn't overflow
+                borderRadius: '8px', }}
             />
 
             {/* Navigation buttons */}
@@ -145,7 +148,7 @@ export const ViewImagesComponent = ({ images }: any) => {
               sx={{
                 position: 'absolute',
                 top: '50%',
-                left: '10px',
+                left: "2px",
                 transform: 'translateY(-50%)',
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 color: 'white',
@@ -160,7 +163,7 @@ export const ViewImagesComponent = ({ images }: any) => {
               sx={{
                 position: 'absolute',
                 top: '50%',
-                right: '10px',
+                right: "2px",
                 transform: 'translateY(-50%)',
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 color: 'white',
@@ -174,7 +177,7 @@ export const ViewImagesComponent = ({ images }: any) => {
               <Typography>No images available</Typography> // Fallback if images is empty or undefined
             )}
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ padding: { xs: 1, sm: 2 } }}>
           <Button onClick={handleDialogToggle} color="primary">
             Close
           </Button>
