@@ -51,7 +51,7 @@ const PropertyCardView = () => {
             sx={{
               mb: 2,
               height: { xs: 370, md: 450 },
-              objectFit: "cover",
+              objectFit: "contain",
               opacity: 1, // Fade effect
               transition: "opacity 0.5s ease-in-out", // Smooth transition
             }}

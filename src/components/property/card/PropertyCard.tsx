@@ -39,9 +39,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
       <Box
         sx={{
           width: "100%",
-          height: { xs: 200, sm: 220 },
+          height: { xs: "50vh", sm: "60vh", md: "70vh" },
           position: "relative",
           overflow: "hidden",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <CardMedia
@@ -49,7 +52,8 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
           sx={{
             width: "100%",
             height: "100%",
-            objectFit: "cover",
+            objectFit: "contain",
+            
             opacity: 1,
             transition: "opacity 0.5s ease-in-out",
           }}
