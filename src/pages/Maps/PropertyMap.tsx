@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, TextField, Button, Grid, IconButton } from "@mui/material";
+import { Box, TextField, Button, Grid, IconButton, Typography } from "@mui/material";
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -243,6 +243,7 @@ const PropertyMap = () => {
             onClick={() => navigate('/')}
           />
         </Box>
+        <Typography sx={{color : "#000"}}>Property Count : <strong style={{color : "green"}}>{properties.length ?? 0}</strong></Typography>
         <Box
           sx={{
             display: "flex",
