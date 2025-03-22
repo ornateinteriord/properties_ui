@@ -83,29 +83,32 @@ const AllPropertiesCards = () => {
 
   return (
     <Box sx={{ p: 3, display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold" }}>
-        Modern Living, Elevated Comfortable Properties
+      <Typography variant="h4" sx={{ml:{xs:1,sm:0}, mb:{xs:0,sm:2}, fontWeight: "bold",textAlign:"center",width:{xs:"360px",sm:"700px",md:"100%",} }}>
+         Comfortable Properties
       </Typography>
 
       {/* Card Carousel */}
-      <Box sx={{ position: "relative", width: "100%", maxWidth: "1200px", margin: "0 auto" }}>
+      <Box  className="allproperty-card-container" >
         <Box
+        className="allproperty-card-content"
           ref={scrollRef}
-          sx={{
-            display: "flex",
-            gap: 2,
-            overflowX: "auto",
-            scrollBehavior: "smooth",
-            "&::-webkit-scrollbar": { display: "none" },
-          }}
         >
           {filteredProperties.map((property: Product, idx: number) => (
-            <PropertyCard key={`${property.property_id}-${idx}`} property={property} isShowEdit={false} />
+            <Box
+            key={`${property.property_id}-${idx}`}
+            className="property-card"
+            sx={{
+              flex: "0 0 auto", // Ensure cards don't shrink
+              width:"25%", // Responsive card width
+            }}
+          >
+            <PropertyCard  key={`${property.property_id}-${idx}`} property={property} isShowEdit={false} />
+            </Box>
           ))}
         </Box>
 
         {/* Navigation Dots */}
-        <Box sx={{ display: "flex", justifyContent: "center", gap: 1, mt: 2 }}>
+        <Box className="navigation-dots">
           {filteredProperties.map((_ : any, index : number) => (
             <Box
               key={index}
@@ -126,6 +129,7 @@ const AllPropertiesCards = () => {
       </Box>
 
       {/* See All Properties Button */}
+      <Box  sx={{width:{xs:"700px",sm:"700px",md:"100%",},display:"flex",justifyContent:{xs:"center",sm:"flex-end",md:"flex-end"}}}>
       <Button
         variant="text"
         sx={{ mt: 2, color: "red", fontWeight: "bold" }}
@@ -134,6 +138,7 @@ const AllPropertiesCards = () => {
       >
         See All Properties
       </Button>
+      </Box>
     </Box>
   );
 };
