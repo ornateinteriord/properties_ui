@@ -17,13 +17,18 @@ import { toast } from "react-toastify";
 import { getAllProperties } from "../../api/product";
 import { LoadingComponent } from "../../App";
 import useAuth from "../../hook/UseAuth";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { BUDGET_RANGES, SQUARE_FEET_RANGES } from "../../utils/constant";
 import usePagination from "../../hook/pagination/Pagination";
 import { CustomPagination } from "../../hook/pagination/CustomPagination";
 import PropertyForm from "../../components/property/card/PropertyForm";
 
+interface LocationState {
+  openDialog?: boolean;
+}
+
 const Properties = () => {
+  const location = useLocation() as unknown as Location & { state?: LocationState };
   const { isLoggedIn } = useAuth();
   const navigate = useNavigate();
   const [tab, setTab] = useState(0);
@@ -86,6 +91,12 @@ const Properties = () => {
   const handleDialogToggle = useCallback(() => {
     setIsDialogOpen((prev) => !prev);
   }, []);
+
+  useEffect(() => {
+    if (location.state?.openDialog) {
+      setIsDialogOpen(true);
+    }
+  }, [location.state]);
 
   const handleButtonClick = useCallback(() => {
     isLoggedIn ? handleDialogToggle() : navigate("/signin");
