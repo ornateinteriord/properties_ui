@@ -39,7 +39,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
-  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" ];
+  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id", "properties-map" ];
 
   const isValidRoute = validRoutes.some((route) =>
     matchPath(route, location.pathname)
@@ -73,7 +73,7 @@ function App() {
         <Route path="/my-properties" element={<MyProperty/>} />
         <Route path="/my-profile" element={<MyProfile/>} />
         <Route path="/property/:id" element={<PropertyCardView/>} />
-        {/* <Route path="/properties-map" element={<PropertyMap searchRadius={10} />} /> */}
+        <Route path="/properties-map" element={<PropertyMap />} />
 
          {/* admin pages -------------- */}
          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>

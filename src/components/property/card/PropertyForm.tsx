@@ -12,7 +12,6 @@ import {
   FormLabel,
   SelectChangeEvent,
   Typography,
-  DialogActions,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
@@ -26,7 +25,7 @@ import { useGetPropertyTypes } from "../../../api/Property-Types";
 import { LoadingComponent } from "../../../App";
 import { Product } from "../../../types";
 import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
-import LocationPicker from "../../../pages/Maps/LocationPicker";
+import {LocationDialog} from "../../../pages/Maps/LocationPicker";
 
 interface PropertyFormProps {
   open: boolean;
@@ -701,8 +700,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 variant="outlined"
                 InputLabelProps={{ shrink: !!formData.price }}
               />
-              <Button onClick={()=>setLoactionDialog(true)}>Add Location</Button>
-              <LoactionDialog open={loactionDialog} onClose={handleCloseLocation} onLocationSelect={handleLocationSelect}  />
+              <Button onClick={()=>setLoactionDialog(true)}>{(mode === 'update') ? "Update Location" : "Add Location"}</Button>
+              <LocationDialog open={loactionDialog} onClose={handleCloseLocation} onLocationSelect={handleLocationSelect}  />
               <FormControl>
                 <FormLabel
                   sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
@@ -767,16 +766,3 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 };
 
 export default PropertyForm;
-
-
-const LoactionDialog = ({open , onClose , onLocationSelect } : any) => {
-  return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Location Picker</DialogTitle>
-      <DialogContent>
-        <LocationPicker onLocationSelect={onLocationSelect} />
-      </DialogContent>
-      <DialogActions sx={{cursor:"pointer"}} onClick={onClose}>Close</DialogActions>
-    </Dialog>
-  )
-}

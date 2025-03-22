@@ -8,13 +8,14 @@ import PropertyForm from "./PropertyForm";
 interface PropertyCardProps {
   property: any;
   isShowEdit: boolean;
+  isAnimate?: boolean;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdit }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit, isAnimate }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
   const images = property.images || [];
-  const userId = TokenService.getuserId();  
+  const userId = TokenService.getuserId();
   const handleDialogClose = useCallback(() => {
     setIsEdit(false);
   }, []);
@@ -62,11 +63,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdi
             width: "100%",
             height: "100%",
             objectFit: "contain",
-            
+
             opacity: 1,
             transition: "opacity 0.5s ease-in-out",
           }}
-          src={images[currentImageIndex]}
+          src={isAnimate ? images[currentImageIndex] : images[0]}
           alt={`Property Image ${currentImageIndex + 1}`}
         />
       </Box>
@@ -84,7 +85,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdi
             variant="h6"
             component="h2"
             sx={{
-              mt:"auto",
+              mt: "auto",
               fontSize: "1.1rem",
               fontWeight: 600,
               color: "#303030",
@@ -94,26 +95,26 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdi
           >
             {property.title}
           </Typography>
-          <Typography color="text.secondary" sx={{ fontSize: "0.9rem", mt:"auto", }}>
+          <Typography color="text.secondary" sx={{ fontSize: "0.9rem", mt: "auto", }}>
             {property?.district ? `${property.district},` : ""}
           </Typography>
           <Typography
             sx={{
-              mt:"auto",
+              mt: "auto",
               fontSize: "0.9rem",
               color: "#303030",
               display: "-webkit-box",
               WebkitBoxOrient: "vertical",
-              WebkitLineClamp: 1, 
+              WebkitLineClamp: 1,
               overflow: "hidden",
-              textOverflow: "ellipsis", 
-              whiteSpace: "nowrap", 
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
             }}
           >
             {
               property.description.length > 34
-                ? `${property.description.slice(0, 34)}....` 
-                : property.description 
+                ? `${property.description.slice(0, 34)}....`
+                : property.description
             }
           </Typography>
         </Box>
@@ -129,11 +130,10 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdi
           </Typography>
         </Box>
       </Box>
-
       <Box
         sx={{
           display: "flex",
-          flexDirection: "row",
+          flexDirection: { xs: "column", md : "column", sm: "row" }, // Column on small screens, row on larger screens
           justifyContent: "flex-end",
           gap: 2,
           mt: "auto",
@@ -154,6 +154,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdi
               borderColor: "#150b83c1",
               backgroundColor: "rgba(211, 47, 47, 0.04)",
             },
+            width: { xs: "100%", sm: "auto" }, // Full width on small screens, auto width on larger screens
           }}
         >
           View More
@@ -168,10 +169,11 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdi
               borderRadius: 5,
               textTransform: "none",
               borderColor: "#150b83c1",
+              width: { xs: "100%", sm: "auto" }, // Full width on small screens, auto width on larger screens
             }}
           >
-          Edit
-        </Button>
+            Edit
+          </Button>
         )}
       </Box>
       {isEdit && <PropertyForm property={property} open={isEdit} onClose={handleDialogClose} mode="update" />}

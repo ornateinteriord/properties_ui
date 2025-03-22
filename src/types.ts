@@ -45,7 +45,7 @@ export interface Property {
     subtype: string;
     title: string;
     images: string[];
-    location: string;
+    location: Loction;
     price: string;
     sqft: string;
     acres : string
@@ -65,6 +65,10 @@ export interface Property {
     description: string;
     createdAt: Date;
     updatedAt: Date;
+  }
+  interface Loction {
+    coordinates: [number, number];
+    type: string;
   }
   
 

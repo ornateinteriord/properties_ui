@@ -1,13 +1,15 @@
-import { Box, Button, Card, CardMedia, Typography } from "@mui/material";
+import { Box, Button, Card, CardMedia, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import useFormatPrice from "../../../hook/formatedprice/FormattedPrice";
 import PropertyForm from "./PropertyForm";
 import TokenService from "../../../api/token/TokenService";
+import { MapPin } from "lucide-react";
 
 const PropertyCardView = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const location = useLocation()
+  const navigate = useNavigate()
   const { property } = location.state || {}
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = property?.images || [];
@@ -27,6 +29,16 @@ const PropertyCardView = () => {
       return () => clearInterval(interval);
     }
   }, [images.length]);
+
+  const navigateToPropertyMap = (lat: number, lng: number) => {
+    let url;
+    if(!lat && !lng){
+      url = `/properties-map`;
+    }else{
+      url = `/properties-map?lat=${lat}&lng=${lng}`;
+    }
+    navigate(url);
+  };
 
   return (
     <Box sx={{ pl: { xs: 1, sm: 3 }, pr: { xs: 1, sm: 3 }, minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -85,6 +97,7 @@ const PropertyCardView = () => {
             }}
           >
             <Box sx={{ mb: 2, mt: 1 }}>
+              <Box sx={{display:"flex" , justifyContent:"space-between" , alignItems:"center"}}>
               <Typography
                 variant="h5"
                 sx={{
@@ -96,6 +109,10 @@ const PropertyCardView = () => {
               >
                 {property?.title}
               </Typography>
+              <IconButton onClick={() => navigateToPropertyMap(property.location.coordinates[1],property.location.coordinates[0])}>
+                  <MapPin size={30} style={{color:"#0026ff" }}/>
+                </IconButton>
+              </Box>
               <Typography
                 sx={{
                   mb: 0.5,
