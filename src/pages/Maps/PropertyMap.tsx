@@ -97,10 +97,9 @@ const PropertyMarkers = ({
   loadingDirections,
 }: {
   properties: Product[];
-  handleGetDirections: (propertyLat: number, propertyLng: number, map: L.Map) => void;
+  handleGetDirections: (propertyLat: number, propertyLng: number) => void;
   loadingDirections: boolean;
 }) => {
-  const map = useMap(); // Access the map instance
 
   return (
     <>
@@ -110,7 +109,7 @@ const PropertyMarkers = ({
             <PropertyCard property={property} isShowEdit={false} isAnimate={false} />
             <Button
               variant="contained"
-              onClick={() => handleGetDirections(property.location.coordinates[1], property.location.coordinates[0], map)}
+              onClick={() => handleGetDirections(property.location.coordinates[1], property.location.coordinates[0])}
               sx={{ mt: 2, width: '100%' }}
               disabled={loadingDirections}
             >
@@ -185,7 +184,7 @@ const PropertyMap = () => {
     fetchProperties();
   }, [userLat, userLng, appliedSearchRadius]);
 
-  const fetchDirections = async (startLat: number, startLng: number, endLat: number, endLng: number, map: L.Map) => {
+  const fetchDirections = async (startLat: number, startLng: number, endLat: number, endLng: number) => {
     setLoadingDirections(true);
     try {
       const response = await fetch(
@@ -196,9 +195,6 @@ const PropertyMap = () => {
       if (data.routes && data.routes.length > 0) {
         const routeCoordinates = data.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]);
         setDirections(routeCoordinates);
-
-        // Zoom to the user's location after fetching directions
-        map.setView([startLat, startLng], 30);
       } else {
         toast.error('No route found.');
       }
@@ -210,9 +206,9 @@ const PropertyMap = () => {
     }
   };
 
-  const handleGetDirections = (propertyLat: number, propertyLng: number, map: L.Map) => {
+  const handleGetDirections = (propertyLat: number, propertyLng: number) => {
     if (userLat && userLng) {
-      fetchDirections(userLat, userLng, propertyLat, propertyLng, map);
+      fetchDirections(userLat, userLng, propertyLat, propertyLng);
     }
   };
 
