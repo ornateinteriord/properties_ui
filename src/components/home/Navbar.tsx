@@ -33,7 +33,7 @@ import "./Navbar.scss";
 import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hook/UseAuth";
 import logo from "../../assets/images/logo.png";
-import { ChevronDown, LogOutIcon, Settings, User } from "lucide-react";
+import { ChevronDown, HousePlus, LogOutIcon, MapPin, Settings, User } from "lucide-react";
 import TokenService from "../../api/token/TokenService";
 import { useGetuserDetails } from "../../api/user";
 
@@ -297,6 +297,24 @@ const Navbar = () => {
         >
           <Settings size={18} style={{ marginRight: "8px" }} />
           profile Setting
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/properties", { state: { openDialog: true } });
+            setAnchorEl(null);
+          }}
+        >
+          <HousePlus size={18} style={{ marginRight: "8px" }} />
+          post Property
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            navigate("/properties-map");
+            setAnchorEl(null);
+          }}
+        >
+          <MapPin size={18} style={{ marginRight: "8px" }} />
+          Map
         </MenuItem>
 
         {isRole === "admin" && (

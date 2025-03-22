@@ -10,9 +10,9 @@ import {
   import {
     Facebook,
     Instagram,
-    LinkedIn,
     YouTube,
   } from "@mui/icons-material"; // Social media icons
+import { MailIcon } from "lucide-react";
   
   const Footer = () => {
     return (
@@ -100,7 +100,7 @@ import {
                 <Facebook />
               </IconButton>
               <IconButton
-                href="#"
+                href="https://www.youtube.com/channel/UCXHSB_NCQAxo9hBxrEypIlg"
                 target="_blank"
                 rel="noopener"
                 sx={{ color: "white" }}
@@ -116,12 +116,12 @@ import {
                 <Instagram />
               </IconButton>
               <IconButton
-                href="#"
-                target="_blank"
+                  href="https://mail.google.com/mail/?view=cm&fs=1&to=sproperties49@gmail.com"
+                  target="_blank"
                 rel="noopener"
                 sx={{ color: "white" }}
               >
-                <LinkedIn />
+                <MailIcon />
               </IconButton>
             </Box>
           </Grid>
