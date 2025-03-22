@@ -1,62 +1,62 @@
-import { MapContainer, TileLayer, Marker, Circle, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Circle, Popup, useMap, Polyline } from 'react-leaflet';
 import { useEffect, useState } from 'react';
-import L from 'leaflet'; // Import Leaflet for custom icons
+import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useNavigate, useSearchParams } from 'react-router-dom'; // Import useSearchParams
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Box, TextField, Button, Grid, IconButton } from "@mui/material";
-
-// Import Leaflet marker images
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
 import { get } from '../../api/Api';
 import { Product } from '../../types';
 import { PropertyCard } from '../../components/property/card/PropertyCard';
 import { Locate } from 'lucide-react';
 import { LoadingComponent } from '../../App';
 import logo from "../../assets/images/logo.png";
+import { toast } from 'react-toastify';
 
 // Fix for default marker icons
-delete (L.Icon.Default.prototype as any)._getIconUrl; // Use type assertion to avoid TypeScript error
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
 
-// Define a custom icon for the user's location
+// Custom icons
 const userLocationIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png', // Example icon URL
-  iconSize: [32, 32], // Size of the icon
-  iconAnchor: [16, 32], // Point of the icon that corresponds to the marker's location
-  popupAnchor: [0, -32], // Point from which the popup should open relative to the iconAnchor
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/684/684908.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
 });
 
 const buildingIcon = new L.Icon({
-  iconUrl: 'https://cdn-icons-png.flaticon.com/512/619/619153.png', // Example building icon URL
-  iconSize: [38, 38], // Size of the icon
-  iconAnchor: [16, 32], // Point of the icon that corresponds to the marker's location
-  popupAnchor: [0, -32], // Point from which the popup should open relative to the iconAnchor
+  iconUrl: 'https://cdn-icons-png.flaticon.com/512/619/619153.png',
+  iconSize: [38, 38],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32],
 });
 
-// Component to handle map zooming to a specific location
+// Zoom to location component
 const ZoomToLocation = ({ lat, lng }: { lat: number; lng: number }) => {
   const map = useMap();
   useEffect(() => {
     if (lat && lng) {
-      map.setView([lat, lng], 30); // Zoom to the specified location
+      map.setView([lat, lng], 30);
     }
   }, [lat, lng, map]);
   return null;
 };
 
-// Component to zoom to the user's location
+// Zoom to user location component
 const ZoomToUserLocation = ({ lat, lng }: { lat: number; lng: number }) => {
   const map = useMap();
 
   const handleZoomToUserLocation = () => {
     if (lat && lng) {
-      map.setView([lat, lng], 30); // Zoom to the user's location
+      map.setView([lat, lng], 30);
     }
   };
 
@@ -64,14 +64,14 @@ const ZoomToUserLocation = ({ lat, lng }: { lat: number; lng: number }) => {
     <IconButton
       onClick={handleZoomToUserLocation}
       sx={{
-        position: 'absolute', // Position the button absolutely
-        top: 16, // Adjust top position
-        right: 16, // Adjust right position
-        zIndex: 1000, // Ensure the button is above the map
-        backgroundColor: '#fff', // White background
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)', // Add a shadow
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        zIndex: 1000,
+        backgroundColor: '#fff',
+        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
         '&:hover': {
-          backgroundColor: '#f5f5f5', // Light gray background on hover
+          backgroundColor: '#f5f5f5',
         },
       }}
     >
@@ -79,7 +79,6 @@ const ZoomToUserLocation = ({ lat, lng }: { lat: number; lng: number }) => {
     </IconButton>
   );
 };
-
 // Custom CSS for the popup
 const popupStyle = `
   .custom-popup .leaflet-popup-content-wrapper {
@@ -91,29 +90,62 @@ const popupStyle = `
   }
 `;
 
+// PropertyMarkers component
+const PropertyMarkers = ({
+  properties,
+  handleGetDirections,
+  loadingDirections,
+}: {
+  properties: Product[];
+  handleGetDirections: (propertyLat: number, propertyLng: number, map: L.Map) => void;
+  loadingDirections: boolean;
+}) => {
+  const map = useMap(); // Access the map instance
+
+  return (
+    <>
+      {properties.map((property: Product, idx: number) => (
+        <Marker key={idx} position={[property.location.coordinates[1], property.location.coordinates[0]]} icon={buildingIcon}>
+          <Popup className="custom-popup">
+            <PropertyCard property={property} isShowEdit={false} isAnimate={false} />
+            <Button
+              variant="contained"
+              onClick={() => handleGetDirections(property.location.coordinates[1], property.location.coordinates[0], map)}
+              sx={{ mt: 2, width: '100%' }}
+              disabled={loadingDirections}
+            >
+              {loadingDirections ? 'Loading Directions...' : 'Get Directions'}
+            </Button>
+          </Popup>
+        </Marker>
+      ))}
+    </>
+  );
+};
+
+// Main PropertyMap component
 const PropertyMap = () => {
   const [userLat, setUserLat] = useState<number | null>(null);
   const [userLng, setUserLng] = useState<number | null>(null);
-  const [properties, setProperties] = useState<Product[]>([]); // Initialize as empty array
+  const [properties, setProperties] = useState<Product[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [directions, setDirections] = useState<[number, number][] | null>(null);
+  const [loadingDirections, setLoadingDirections] = useState<boolean>(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const [searchRadius, setSearchRadius] = useState<number>(200); // Default search radius
-  const [appliedSearchRadius, setAppliedSearchRadius] = useState<number>(200); // Applied search radius
+  const [searchRadius, setSearchRadius] = useState<number>(200);
+  const [appliedSearchRadius, setAppliedSearchRadius] = useState<number>(200);
 
-  // Use useSearchParams to get query parameters from the URL
   const [searchParams] = useSearchParams();
   const queryLat = searchParams.get('lat');
   const queryLng = searchParams.get('lng');
 
-  // Handle Apply button click
-  const handleApply = (e : any) => {
-    e.preventDefault()
-    setAppliedSearchRadius(searchRadius); // Update the applied search radius
+  const handleApply = (e: any) => {
+    e.preventDefault();
+    setAppliedSearchRadius(searchRadius);
   };
 
-  // Fetch the user's current location using the Geolocation API
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -132,7 +164,6 @@ const PropertyMap = () => {
     }
   }, []);
 
-  // Fetch properties within the search radius when the user's location is available
   useEffect(() => {
     const fetchProperties = async () => {
       if (userLat && userLng) {
@@ -154,7 +185,37 @@ const PropertyMap = () => {
     fetchProperties();
   }, [userLat, userLng, appliedSearchRadius]);
 
-  // Show a loading or error message if the user's location is not available
+  const fetchDirections = async (startLat: number, startLng: number, endLat: number, endLng: number, map: L.Map) => {
+    setLoadingDirections(true);
+    try {
+      const response = await fetch(
+        `https://router.project-osrm.org/route/v1/driving/${startLng},${startLat};${endLng},${endLat}?overview=full&geometries=geojson`
+      );
+      const data = await response.json();
+
+      if (data.routes && data.routes.length > 0) {
+        const routeCoordinates = data.routes[0].geometry.coordinates.map((coord: [number, number]) => [coord[1], coord[0]]);
+        setDirections(routeCoordinates);
+
+        // Zoom to the user's location after fetching directions
+        map.setView([startLat, startLng], 30);
+      } else {
+        toast.error('No route found.');
+      }
+    } catch (err) {
+      console.error('Error fetching directions:', err);
+      toast.error('Failed to fetch directions.');
+    } finally {
+      setLoadingDirections(false);
+    }
+  };
+
+  const handleGetDirections = (propertyLat: number, propertyLng: number, map: L.Map) => {
+    if (userLat && userLng) {
+      fetchDirections(userLat, userLng, propertyLat, propertyLng, map);
+    }
+  };
+
   if (error) {
     return <div>{error}</div>;
   }
@@ -164,14 +225,13 @@ const PropertyMap = () => {
   }
 
   return (
-    <Grid sx={{minHeight:"100vh"}}>
-      {/* Add custom CSS for the popup */}
+    <Grid sx={{ minHeight: "100vh" }}>
       <style>{popupStyle}</style>
 
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", sm: "row" }, // Stack on small screens, row on larger screens
+          flexDirection: { xs: "column", sm: "row" },
           justifyContent: "space-between",
           alignItems: "center",
           gap: 2,
@@ -180,21 +240,19 @@ const PropertyMap = () => {
           borderRadius: 2,
         }}
       >
-        {/* Left Side: Heading */}
         <Box sx={{ display: "flex", alignItems: "center" }}>
           <img
             src={logo}
-            style={{ width: "100px", height: "auto", objectFit: "contain" , cursor:"pointer" }}
+            style={{ width: "100px", height: "auto", objectFit: "contain", cursor: "pointer" }}
             onClick={() => navigate('/')}
           />
         </Box>
-        {/* Right Side: Search Textbox and Apply Button */}
         <Box
           sx={{
             display: "flex",
-            flexDirection: { xs: "column", sm: "row" }, // Stack on small screens, row on larger screens
+            flexDirection: { xs: "column", sm: "row" },
             gap: 2,
-            width: { xs: "100%", sm: "auto" }, // Full width on small screens, auto on larger screens
+            width: { xs: "100%", sm: "auto" },
           }}
           component={"form"}
           onSubmit={handleApply}
@@ -205,12 +263,12 @@ const PropertyMap = () => {
             label="Radius"
             type="number"
             value={searchRadius}
-            onChange={(e) => setSearchRadius(Number(e.target.value))} // Update search radius state
+            onChange={(e) => setSearchRadius(Number(e.target.value))}
             sx={{
-              width: { xs: "100%", sm: 300 }, // Full width on small screens, fixed width on larger screens
+              width: { xs: "100%", sm: 300 },
             }}
           />
-           <Button
+          <Button
             variant="contained"
             type="submit"
             sx={{
@@ -221,7 +279,7 @@ const PropertyMap = () => {
               "&:hover": {
                 backgroundColor: "#0d065f",
               },
-              width: { xs: "100%", sm: "auto" }, // Full width on small screens, auto on larger screens
+              width: { xs: "100%", sm: "auto" },
             }}
           >
             Apply
@@ -231,36 +289,37 @@ const PropertyMap = () => {
       <MapContainer center={[userLat, userLng]} zoom={12} style={{ height: '100vh', width: '100%' }}>
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-        {/* Zoom to the location if query parameters are provided */}
         {queryLat && queryLng && (
           <ZoomToLocation lat={parseFloat(queryLat)} lng={parseFloat(queryLng)} />
         )}
 
-        {/* Zoom to the user's location */}
         {userLat && userLng && (
           <ZoomToUserLocation lat={userLat} lng={userLng} />
         )}
 
-        {/* Circle to indicate the search radius */}
         <Circle
           center={[userLat, userLng]}
           radius={appliedSearchRadius * 1000}
-          pathOptions={{ fillColor: '#000', color: '#8d575759' }} // Use pathOptions for styling
+          pathOptions={{ fillColor: '#000', color: '#8d575759' }}
         />
 
-        {/* Marker for the user's location with a label */}
         <Marker position={[userLat, userLng]} icon={userLocationIcon}>
           <Popup>Your Location</Popup>
         </Marker>
 
-        {/* Markers for properties */}
-        {properties.map((property: Product, idx: number) => (
-          <Marker key={idx} position={[property.location.coordinates[1], property.location.coordinates[0]]} icon={buildingIcon}>
-            <Popup className="custom-popup"> {/* Apply custom class */}
-              <PropertyCard property={property} isShowEdit={false} isAnimate={false} />
-            </Popup>
-          </Marker>
-        ))}
+        {/* Render PropertyMarkers inside MapContainer */}
+        <PropertyMarkers
+          properties={properties}
+          handleGetDirections={handleGetDirections}
+          loadingDirections={loadingDirections}
+        />
+
+        {directions && (
+          <Polyline
+            positions={directions}
+            pathOptions={{ color: 'blue', weight: 3 }}
+          />
+        )}
       </MapContainer>
     </Grid>
   );
