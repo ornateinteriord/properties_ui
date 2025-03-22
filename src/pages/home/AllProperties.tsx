@@ -1,98 +1,94 @@
+import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
-  Card,
-  CardMedia,
-  CardContent,
   Button,
   CircularProgress,
 } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
-import { useRef, useEffect, useState } from "react";
-import "./AllProperties.scss";
 import { getAllProperties } from "../../api/product";
-import { useNavigate } from "react-router-dom";
 import { Product } from "../../types";
+import "./AllProperties.scss";
+import { PropertyCard } from "../../components/property/card/PropertyCard";
 
 const AllPropertiesCards = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const cardWidth = 300;
-  const gap = 16;
+  const cardWidth = 300; // Width of each card
+  const gap = 16; // Gap between cards
 
+  // Fetch properties data
   const { data: properties, isLoading } = getAllProperties();
   const navigate = useNavigate();
 
   // Filter properties with "active" status and "pramote" set to "active"
-  const filteredProperties = properties?.filter(
-    (property: Product) => property.status === "active" && property.pramote === "active"
-  ) || [];
+  const filteredProperties = React.useMemo(() => {
+    return Array.isArray(properties)
+      ? properties.filter(
+          (property: Product) =>
+            property.status === "active" && property.pramote === "active"
+        )
+      : [];
+  }, [properties]);
+  
 
+  // Scroll to a specific index
   const scrollToIndex = (index: number) => {
     if (scrollRef.current) {
-      const cardWidth = scrollRef.current.children[0]?.clientWidth || 300;
       scrollRef.current.scrollTo({
-        left: index * (cardWidth + 16),
+        left: index * (cardWidth + gap),
         behavior: "smooth",
       });
       setActiveIndex(index);
     }
   };
 
-  const updateActiveIndexOnScroll = () => {
-    if (scrollRef.current) {
-      const { scrollLeft } = scrollRef.current;
-      const newIndex = Math.floor((scrollLeft + cardWidth / 2) / (cardWidth + gap));
-      setActiveIndex(Math.min(newIndex, filteredProperties.length - 1));
-    }
-  };
-
+  // Handle scroll events to update the active index
   useEffect(() => {
     const container = scrollRef.current;
-    if (container) {
-      container.addEventListener("scroll", updateActiveIndexOnScroll);
-    }
-    return () => container?.removeEventListener("scroll", updateActiveIndexOnScroll);
-  }, [filteredProperties]); // Depend on filtered properties
+    if (!container) return;
 
+    const handleScroll = () => {
+      const { scrollLeft } = container;
+      const newIndex = Math.floor((scrollLeft + cardWidth / 2) / (cardWidth + gap));
+      setActiveIndex(Math.min(newIndex, filteredProperties.length - 1));
+    };
+
+    container.addEventListener("scroll", handleScroll);
+
+    // Cleanup function to remove the event listener
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [filteredProperties]);
+
+  // Show loading spinner while data is being fetched
   if (isLoading) {
-    return <CircularProgress />;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <CircularProgress />
+      </Box>
+    );
   }
 
+  // Show a message if no properties are available
   if (filteredProperties.length === 0) {
-    return <Typography m={4} p={2}>Properties coming soon</Typography>;
+    return (
+      <Typography m={4} p={2} textAlign="center">
+        Properties are coming soon
+      </Typography>
+    );
   }
 
   return (
-    <Box
-      className="property-card-container"
-      sx={{
-        p: 3,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Box className="property-heading-box">
-        <Typography
-          variant="h4"
-          className="property-heading"
-          sx={{ mb: 2, fontWeight: "bold", fontSize: { xs: "25px" } }}
-        >
-          Modern Living, Elevated Comfortable Properties
-        </Typography>
-      </Box>
+    <Box sx={{ p: 3, display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <Typography variant="h4" sx={{ mb: 2, fontWeight: "bold" }}>
+        Modern Living, Elevated Comfortable Properties
+      </Typography>
 
-      <Box
-        className="property-card-box"
-        sx={{
-          position: "relative",
-          width: "100%",
-          maxWidth: { xs: "800px", md: "1000px", xl: "1200px" },
-          margin: "0 auto",
-        }}
-      >
+      {/* Card Carousel */}
+      <Box sx={{ position: "relative", width: "100%", maxWidth: "1200px", margin: "0 auto" }}>
         <Box
           ref={scrollRef}
           sx={{
@@ -100,70 +96,17 @@ const AllPropertiesCards = () => {
             gap: 2,
             overflowX: "auto",
             scrollBehavior: "smooth",
-            whiteSpace: "nowrap",
-            width: "100%",
             "&::-webkit-scrollbar": { display: "none" },
           }}
-          className="allproperty-card"
         >
-          {filteredProperties.map((property: Product , idx : number) => (
-            <Card
-              className="card"
-              key={`${property.property_id}-${idx}`}
-              sx={{
-                minWidth: 280,
-                maxWidth: 300,
-                borderRadius: 2,
-                boxShadow: 3,
-                flexShrink: 0,
-              }}
-            >
-              <CardMedia
-                component="img"
-                height="180"
-                image={property.images[0]}
-                alt={property.title}
-              />
-              <CardContent>
-                <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
-                  {property.title}
-                </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{ fontWeight: "bold", color: "green" }}
-                >
-                  {property.price}
-                </Typography>
-                <Typography variant="body2">{property.location}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {property.propertyStatus}
-                </Typography>
-                <Button
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "#150b83c1",
-                    width: "110px",
-                    borderRadius: "30px",
-                    color: "#fff",
-                    textTransform: "none",
-                  }}
-                >
-                  View More
-                </Button>
-              </CardContent>
-            </Card>
+          {filteredProperties.map((property: Product, idx: number) => (
+            <PropertyCard key={`${property.property_id}-${idx}`} property={property} isShowEdit={false} />
           ))}
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            gap: 1,
-            mt: 2,
-          }}
-        >
-          {filteredProperties.map((_x: Product, index: number) => (
+        {/* Navigation Dots */}
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 1, mt: 2 }}>
+          {filteredProperties.map((_ : any, index : number) => (
             <Box
               key={index}
               onClick={() => scrollToIndex(index)}
@@ -182,22 +125,15 @@ const AllPropertiesCards = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          width: "100%",
-          display: "flex",
-          justifyContent: { xs: "center", md: "flex-end" },
-        }}
+      {/* See All Properties Button */}
+      <Button
+        variant="text"
+        sx={{ mt: 2, color: "red", fontWeight: "bold" }}
+        endIcon={<ArrowForward />}
+        onClick={() => navigate("/properties")}
       >
-        <Button
-          variant="text"
-          sx={{ mt: 2, color: "red", fontWeight: "bold", float: "right" }}
-          endIcon={<ArrowForward />}
-          onClick={() => navigate("/properties")}
-        >
-          See All Properties
-        </Button>
-      </Box>
+        See All Properties
+      </Button>
     </Box>
   );
 };
