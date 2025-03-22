@@ -5,6 +5,7 @@ import useFormatPrice from "../../../hook/formatedprice/FormattedPrice";
 import PropertyForm from "./PropertyForm";
 import TokenService from "../../../api/token/TokenService";
 import { MapPin } from "lucide-react";
+import { toast } from "react-toastify";
 
 const PropertyCardView = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -31,12 +32,12 @@ const PropertyCardView = () => {
   }, [images.length]);
 
   const navigateToPropertyMap = (lat: number, lng: number) => {
-    let url;
-    if(!lat && !lng){
-      url = `/properties-map`;
-    }else{
-      url = `/properties-map?lat=${lat}&lng=${lng}`;
+    // Check if lat and lng are valid numbers
+    if (isNaN(lat) || isNaN(lng)) {
+      toast.info('Location not available for this property');
+      return; // Exit the function if location is invalid
     }
+    const url = `/properties-map?lat=${lat}&lng=${lng}`;
     navigate(url);
   };
 
@@ -97,20 +98,27 @@ const PropertyCardView = () => {
             }}
           >
             <Box sx={{ mb: 2, mt: 1 }}>
-              <Box sx={{display:"flex" , justifyContent:"space-between" , alignItems:"center"}}>
-              <Typography
-                variant="h5"
-                sx={{
-                  fontWeight: 600,
-                  color: "#303030",
-                  textDecoration: "underline",
-                  mb: 0.5,
-                }}
-              >
-                {property?.title}
-              </Typography>
-              <IconButton onClick={() => navigateToPropertyMap(property.location.coordinates[1],property.location.coordinates[0])}>
-                  <MapPin size={30} style={{color:"#0026ff" }}/>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontWeight: 600,
+                    color: "#303030",
+                    textDecoration: "underline",
+                    mb: 0.5,
+                  }}
+                >
+                  {property?.title}
+                </Typography>
+                <IconButton onClick={() => {
+                  // Check if property.location and property.location.coordinates exist
+                  if (property?.location?.coordinates) {
+                    navigateToPropertyMap(property.location.coordinates[1], property.location.coordinates[0]);
+                  } else {
+                    toast.info('Location not available for this property');
+                  }
+                }}>
+                  <MapPin size={30} style={{ color: "#0026ff" }} />
                 </IconButton>
               </Box>
               <Typography
@@ -371,7 +379,7 @@ const PropertyCardView = () => {
                 display: "flex",
                 justifyContent: { xs: "flex-end" },
                 alignItems: "center",
-                gap : 2,
+                gap: 2,
                 width: "100%",
               }}
             >
@@ -396,7 +404,7 @@ const PropertyCardView = () => {
               </Button>
               {userId === property?.userid && (
                 <Button
-                  variant="contained"                  
+                  variant="contained"
                   onClick={() => setIsEdit(true)}
                   sx={{
                     color: "#fff",

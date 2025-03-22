@@ -21,6 +21,7 @@ import ProtectedRoute from "./routerProtector/RouterProtector";
 import PropertyCardView from "./components/property/card/PropertyCardView";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import PropertyMap from "./pages/Maps/PropertyMap";
+import EMICalculator from "./pages/Emi/Calculator";
 
 
 export const LoadingComponent = () => {
@@ -39,7 +40,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
-  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" ];
+  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" , '/emi-calculator' ];
 
   const isValidRoute = validRoutes.some((route) =>
     matchPath(route, location.pathname)
@@ -74,6 +75,7 @@ function App() {
         <Route path="/my-profile" element={<MyProfile/>} />
         <Route path="/property/:id" element={<PropertyCardView/>} />
         <Route path="/properties-map" element={<PropertyMap />} />
+        <Route path="/emi-calculator" element={<EMICalculator />} />
 
          {/* admin pages -------------- */}
          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
