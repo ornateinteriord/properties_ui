@@ -388,10 +388,13 @@ const PropertyCardView = () => {
                     backgroundColor: "rgba(211, 47, 47, 0.04)",
                   },
                 }}
+                onClick={() => {
+                  window.location.href = "tel:+918971396189";
+                }}
               >
                 Contact
               </Button>
-              {userId === property.userid && (
+              {userId === property?.userid && (
                 <Button
                   variant="contained"                  
                   onClick={() => setIsEdit(true)}

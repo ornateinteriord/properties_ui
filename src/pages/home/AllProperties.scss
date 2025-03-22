@@ -1,39 +1,104 @@
-@media (max-width: 840px){
-  .property-card-container{
-    margin-top: 10px;
-    max-width:100%;
-    padding: 0% !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    
-    }
-    .property-heading-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .property-card-box{
-      max-width:580px !important ;
-      margin: 0% !important;
-    }
+.allproperty-card-content {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+  scroll-behavior: smooth;
+  overflow-x: auto; /* Enable horizontal scrolling */
 }
 
-@media (max-width: 768px) {
-  
-  .property-card-box{
-   max-width:300px !important;
-   margin: 0% !important;
-   padding: 0% !important;
- 
+.allproperty-card-content::-webkit-scrollbar {
+  display: none; /* Hide scrollbar */
+}
+
+.allproperty-card-container {
+  width: 100%;
+  max-width: 1400px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto; /* Center the container */
+}
+
+/* Navigation Dots */
+.navigation-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #ccc;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.dot.active,
+.dot:hover {
+  background-color: #150b83c1;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 1070px) {
+  .allproperty-card-container {
+    max-width: 900px;
+  }
+  .property-card{
+    width: 32% !important;
+  }
+  .allproperty-card-content {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 860px){
+  .allproperty-card-container {
+    max-width: 700px;
+  }
+  .property-card{
+    width: 48% !important;
    
   }
-  .card{
-    width: 295px !important;
-    margin: 2px !important;
-    box-shadow: 0 10px 10px -1px rgb(0 0 0 / 0.3)
+  .allproperty-card-content {
+    gap: 20px;
   }
- 
+}
 
+
+
+@media (max-width: 720px) {
+  .allproperty-card-container {
+    max-width: 600px !important;
+  }
+
+  .allproperty-card-content {
+    gap: 15px;
+    overflow-x: auto; 
+  }
+
+  .navigation-dots {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 580px) {
+  .allproperty-card-container {
+    max-width:310px !important;
+  
+  }
+  .property-card{
+    width: 100% !important;
+  
+  }
+
+  .allproperty-card-content {
+    gap: 25px;
+  }
+
+  .navigation-dots {
+    gap: 4px;
+  }
 }

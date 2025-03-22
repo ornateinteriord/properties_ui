@@ -9,9 +9,9 @@ import {
   } from "@mui/material";
   import {
     Facebook,
-    Twitter,
     Instagram,
     LinkedIn,
+    YouTube,
   } from "@mui/icons-material"; // Social media icons
   
   const Footer = () => {
@@ -105,7 +105,7 @@ import {
                 rel="noopener"
                 sx={{ color: "white" }}
               >
-                <Twitter />
+                <YouTube />
               </IconButton>
               <IconButton
                 href="#"
