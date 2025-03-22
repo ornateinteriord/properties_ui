@@ -76,7 +76,7 @@ const MyProperty = () => {
         }}
       >
         {currentProperties?.map((property: any, idx: any) => (
-          <PropertyCard key={`${property.id}-${idx}`} property={property} />
+          <PropertyCard key={`${property.id}-${idx}`} property={property} isShowEdit />
         ))}
         {isLoading && <LoadingComponent />}
       </Box>
