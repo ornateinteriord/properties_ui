@@ -2,8 +2,8 @@ import { MapContainer, TileLayer, Marker, Circle, Popup, useMap } from 'react-le
 import { useEffect, useState } from 'react';
 import L from 'leaflet'; // Import Leaflet for custom icons
 import 'leaflet/dist/leaflet.css';
-import { useSearchParams } from 'react-router-dom'; // Import useSearchParams
-import { Box, TextField, Button, Typography, Grid, IconButton } from "@mui/material";
+import { useNavigate, useSearchParams } from 'react-router-dom'; // Import useSearchParams
+import { Box, TextField, Button, Grid, IconButton } from "@mui/material";
 
 // Import Leaflet marker images
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
@@ -14,6 +14,7 @@ import { Product } from '../../types';
 import { PropertyCard } from '../../components/property/card/PropertyCard';
 import { Locate } from 'lucide-react';
 import { LoadingComponent } from '../../App';
+import logo from "../../assets/images/logo.png";
 
 // Fix for default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl; // Use type assertion to avoid TypeScript error
@@ -96,6 +97,8 @@ const PropertyMap = () => {
   const [properties, setProperties] = useState<Product[]>([]); // Initialize as empty array
   const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate()
+
   const [searchRadius, setSearchRadius] = useState<number>(200); // Default search radius
   const [appliedSearchRadius, setAppliedSearchRadius] = useState<number>(200); // Applied search radius
 
@@ -105,7 +108,8 @@ const PropertyMap = () => {
   const queryLng = searchParams.get('lng');
 
   // Handle Apply button click
-  const handleApply = () => {
+  const handleApply = (e : any) => {
+    e.preventDefault()
     setAppliedSearchRadius(searchRadius); // Update the applied search radius
   };
 
@@ -160,7 +164,7 @@ const PropertyMap = () => {
   }
 
   return (
-    <Grid sx={{ mt: 12 }}>
+    <Grid sx={{minHeight:"100vh"}}>
       {/* Add custom CSS for the popup */}
       <style>{popupStyle}</style>
 
@@ -177,16 +181,13 @@ const PropertyMap = () => {
         }}
       >
         {/* Left Side: Heading */}
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: "bold",
-            color: "#150b83c1",
-          }}
-        >
-          All Properties
-        </Typography>
-
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <img
+            src={logo}
+            style={{ width: "100px", height: "auto", objectFit: "contain" , cursor:"pointer" }}
+            onClick={() => navigate('/')}
+          />
+        </Box>
         {/* Right Side: Search Textbox and Apply Button */}
         <Box
           sx={{
@@ -195,6 +196,8 @@ const PropertyMap = () => {
             gap: 2,
             width: { xs: "100%", sm: "auto" }, // Full width on small screens, auto on larger screens
           }}
+          component={"form"}
+          onSubmit={handleApply}
         >
           <TextField
             variant="outlined"
@@ -207,9 +210,9 @@ const PropertyMap = () => {
               width: { xs: "100%", sm: 300 }, // Full width on small screens, fixed width on larger screens
             }}
           />
-          <Button
+           <Button
             variant="contained"
-            onClick={handleApply} // Trigger handleApply on click
+            type="submit"
             sx={{
               backgroundColor: "#150b83c1",
               color: "#fff",

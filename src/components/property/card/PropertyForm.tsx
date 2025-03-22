@@ -700,8 +700,15 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 variant="outlined"
                 InputLabelProps={{ shrink: !!formData.price }}
               />
-              <Button onClick={()=>setLoactionDialog(true)}>{(mode === 'update') ? "Update Location" : "Add Location"}</Button>
-              <LocationDialog open={loactionDialog} onClose={handleCloseLocation} onLocationSelect={handleLocationSelect}  />
+                <FormControl>
+                <FormLabel
+                  sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
+                >
+                  {mode === 'post' ? 'Add Location' : 'Update Location'}
+                </FormLabel>
+                <Button variant="outlined" onClick={()=>setLoactionDialog(true)}>{(mode === 'update') ? "Update Location" : "Add Location"}</Button>
+                </FormControl>
+              <LocationDialog open={loactionDialog} onClose={handleCloseLocation} onLocationSelect={handleLocationSelect} initialLocation={property?.location}  />
               <FormControl>
                 <FormLabel
                   sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}

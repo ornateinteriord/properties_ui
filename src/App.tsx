@@ -39,7 +39,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
-  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id", "properties-map" ];
+  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" ];
 
   const isValidRoute = validRoutes.some((route) =>
     matchPath(route, location.pathname)
