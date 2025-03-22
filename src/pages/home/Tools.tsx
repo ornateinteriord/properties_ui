@@ -1,30 +1,37 @@
 import { Box, Grid, Card, CardContent, Typography, Button } from "@mui/material";
 import { TrendingUp, Calculate, LocationOn, Insights, } from "@mui/icons-material"; // Import MUI icons
+import { useNavigate } from "react-router-dom";
 
 const AdviceAndTools = () => {
+
+  const navigate = useNavigate()
   const tools = [
     {
       title: "Rates & Trends",
       description: "Know all about Property Rates & Trends in your city",
       action: "View now →",
+      path : '/',
       icon: <TrendingUp fontSize="large" sx={{ color: "primary.main" }} />, // Add icon
     },
     {
       title: "EMI Calculator",
       description: "Know how much you'll have to pay every month on your loan",
       action: "View now →",
+      path : '/emi-calculator',
       icon: <Calculate fontSize="large" sx={{ color: "primary.main" }} />, // Add icon
     },
     {
-      title: "Investment Hotspot",
-      description: "Discover the top localities in your city for investment",
+      title: "Properties Hotspot",
+      description: "Discover the top localities in your city for Property",
       action: "View now →",
+      path : '/properties-map',
       icon: <LocationOn fontSize="large" sx={{ color: "primary.main" }} />, // Add icon
     },
     {
       title: "Research Insights",
       description: "Get experts insights and research reports on real estate",
       action: "View now →",
+      path : '/',
       icon: <Insights fontSize="large" sx={{ color: "primary.main" }} />, // Add icon
     },
   ];
@@ -66,8 +73,11 @@ const AdviceAndTools = () => {
               <Box sx={{ p: 2, textAlign: "center" }}>
                 <Button
                   variant="text"
-                  sx={{ color: "red", fontWeight: "bold" }}
+                  sx={{ color: "red", fontWeight: "bold","&:hover": {
+                  border:"1px solid black",
+                }, }}
                   endIcon={""}
+                  onClick={()=>navigate(tool.path)}
                 >
                   {tool.action}
                 </Button>
