@@ -7,9 +7,10 @@ import PropertyForm from "./PropertyForm";
 
 interface PropertyCardProps {
   property: any;
+  isShowEdit: boolean;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({ property , isShowEdit }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
   const images = property.images || [];
@@ -157,7 +158,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
         >
           View More
         </Button>
-        {userId === property.userid && (
+        {(isShowEdit && userId === property.userid) && (
           <Button
             variant="contained"
             onClick={() => setIsEdit(true)}
