@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, CardContent, Typography, Box, Grid } from '@mui/material';
+import { Button, CardContent, Typography, Box, Card } from '@mui/material';
 import LocationOffIcon from '@mui/icons-material/LocationOff';
 
 
@@ -44,7 +44,7 @@ const LocationPermissionHandler = () => {
   // Render the error UI if permission is denied
   if (permissionDenied) {
     return (
-      <Grid sx={{ maxWidth: 400,
+      <Card sx={{ maxWidth: 400,
         margin: 'auto',
         marginTop: 10,
         textAlign: 'center',
@@ -69,7 +69,7 @@ const LocationPermissionHandler = () => {
             Try Again
           </Button>
         </CardContent>
-      </Grid>
+      </Card>
     );
   }
 
