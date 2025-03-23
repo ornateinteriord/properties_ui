@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Card, CardContent, Typography, Box, Grid } from '@mui/material';
+import { Button, CardContent, Typography, Box, Grid } from '@mui/material';
 import LocationOffIcon from '@mui/icons-material/LocationOff';
 
 
@@ -49,7 +49,7 @@ const LocationPermissionHandler = () => {
         marginTop: 10,
         textAlign: 'center',
         padding: 3,
-        backgroundColor: white,}}>
+        backgroundColor: "white",}}>
         <CardContent>
           <Box sx={{ color: 'error.main', mb: 2 }}>
             <LocationOffIcon sx={{ fontSize: 60 }} />
