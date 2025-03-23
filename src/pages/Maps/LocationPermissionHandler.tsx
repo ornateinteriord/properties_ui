@@ -7,10 +7,10 @@ import { styled } from '@mui/system';
 const ErrorCard = styled(Card)(({ theme }) => ({
   maxWidth: 400,
   margin: 'auto',
-  marginTop: theme.spacing(10),
+  marginTop: 10,
   textAlign: 'center',
-  padding: theme.spacing(3),
-  backgroundColor: theme.palette.background.paper,
+  padding: 3,
+  backgroundColor: white,
 }));
 
 const LocationPermissionHandler = () => {
