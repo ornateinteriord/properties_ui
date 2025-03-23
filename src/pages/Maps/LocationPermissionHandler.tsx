@@ -1,17 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Button, Card, CardContent, Typography, Box } from '@mui/material';
+import { Button, Card, CardContent, Typography, Box, Grid } from '@mui/material';
 import LocationOffIcon from '@mui/icons-material/LocationOff';
-import { styled } from '@mui/system';
 
-// Styled component for the error card
-const ErrorCard = styled(Card)(({ theme }) => ({
-  maxWidth: 400,
-  margin: 'auto',
-  marginTop: 10,
-  textAlign: 'center',
-  padding: 3,
-  backgroundColor: white,
-}));
 
 const LocationPermissionHandler = () => {
   const [permissionDenied, setPermissionDenied] = useState(false);
@@ -54,7 +44,12 @@ const LocationPermissionHandler = () => {
   // Render the error UI if permission is denied
   if (permissionDenied) {
     return (
-      <ErrorCard>
+      <Grid sx={{ maxWidth: 400,
+        margin: 'auto',
+        marginTop: 10,
+        textAlign: 'center',
+        padding: 3,
+        backgroundColor: white,}}>
         <CardContent>
           <Box sx={{ color: 'error.main', mb: 2 }}>
             <LocationOffIcon sx={{ fontSize: 60 }} />
@@ -74,7 +69,7 @@ const LocationPermissionHandler = () => {
             Try Again
           </Button>
         </CardContent>
-      </ErrorCard>
+      </Grid>
     );
   }
 
