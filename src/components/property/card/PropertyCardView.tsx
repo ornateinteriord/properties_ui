@@ -365,8 +365,7 @@ const PropertyCardView = () => {
                 color="text.secondary"
                 sx={{ fontSize: "0.9rem" }}
               >
-                ₹{property?.pricePerSqft}
-                1234 per sqft
+                ₹{property?.pricePerSqft} per sqft
               </Typography>
             </Box>
             <Box
