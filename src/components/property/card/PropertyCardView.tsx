@@ -110,16 +110,11 @@ const PropertyCardView = () => {
                 >
                   {property?.title}
                 </Typography>
-                <IconButton onClick={() => {
-                  // Check if property.location and property.location.coordinates exist
-                  if (property?.location?.coordinates) {
-                    navigateToPropertyMap(property.location.coordinates[1], property.location.coordinates[0]);
-                  } else {
-                    toast.info('Location not available for this property');
-                  }
-                }}>
-                  <MapPin size={30} style={{ color: "#0026ff" }} />
-                </IconButton>
+                {property?.location?.coordinates && (
+                  <IconButton onClick={() => navigateToPropertyMap(property.location.coordinates[1], property.location.coordinates[0])}>
+                    <MapPin size={30} style={{ color: "#0026ff" }} />
+                  </IconButton>
+                )}
               </Box>
               <Typography
                 sx={{

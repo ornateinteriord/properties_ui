@@ -21,14 +21,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
   }, []);
 
   useEffect(() => {
-    if (images.length > 1) {
+    if (images?.length > 1) {
       const interval = setInterval(() => {
-        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images?.length);
       }, 2500);
 
       return () => clearInterval(interval);
     }
-  }, [images.length]);
+  }, [images?.length]);
 
 
   return (
@@ -112,7 +112,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
             }}
           >
             {
-              property.description.length > 34
+              property.description?.length > 34
                 ? `${property.description.slice(0, 34)}....`
                 : property.description
             }
