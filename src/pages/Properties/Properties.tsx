@@ -263,7 +263,7 @@ const Properties = () => {
                         Properties
                       </Typography>
                       <Typography variant="caption" color="text.secondary">
-                        {!isLoading && sortedAndFilteredProperties.length}
+                        {!isLoading && sortedAndFilteredProperties?.length}
                       </Typography>
                     </Box>
                   }
@@ -331,14 +331,13 @@ const Properties = () => {
           >
             {tab === 0 &&
               (currentProperties?.length > 0 ? (
-                currentProperties?.map((property: any) => (
-                  <PropertyCard key={property.id} property={property} isShowEdit={false} />
+                currentProperties?.map((property: any , indx : number) => (
+                  <PropertyCard key={`${property.id}-${indx}`} property={property} isShowEdit={false} />
                 ))
               ) : (
                 <Paper sx={{ p: 4, borderRadius: 2, textAlign: "center" }}>
                   <Typography variant="h6" color="text.secondary">
-                    No properties found matching your criteria. Try adjusting
-                    the filters.
+                    No properties found.
                   </Typography>
                 </Paper>
               ))}

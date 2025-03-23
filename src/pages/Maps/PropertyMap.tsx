@@ -15,6 +15,7 @@ import { Locate } from 'lucide-react';
 import { LoadingComponent } from '../../App';
 import logo from "../../assets/images/logo.png";
 import { toast } from 'react-toastify';
+import LocationPermissionHandler from './LocationPermissionHandler';
 
 // Fix for default marker icons
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -213,7 +214,7 @@ const PropertyMap = () => {
   };
 
   if (error) {
-    return <div>{error}</div>;
+    return <LocationPermissionHandler />
   }
 
   if (!userLat || !userLng) {
