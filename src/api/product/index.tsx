@@ -18,6 +18,23 @@ export const getAllProperties =()=>{
 })
 }
 
+
+export const getPropertyDetails =(propertyid: any)=>{
+  return useQuery({
+    queryKey:["get-Property",propertyid],
+    queryFn:async()=>{
+      const response = await get(`/product/getproperty/${propertyid}`)
+      if(response.success){
+        return response.property
+      }else{
+        throw new Error(response.message )
+      }
+    },
+    enabled: !!propertyid 
+  })
+}
+
+
 export const getUserProperties= ()=>{
   const userId = TokenService.getuserId()
   return useQuery({

@@ -1,24 +1,63 @@
-import { Card, CardMedia, Typography, Box, Button } from "@mui/material";
+import { Card, CardMedia, Typography, Box, Button, Menu, MenuItem } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import useFormatPrice from "../../../hook/formatedprice/FormattedPrice";
 import TokenService from "../../../api/token/TokenService";
 import PropertyForm from "./PropertyForm";
+import { Edit, MapPin, MoreVertical, Share2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface PropertyCardProps {
   property: any;
   isShowEdit: boolean;
   isAnimate?: boolean;
+  showMenu?:boolean;
 }
 
-export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit, isAnimate }) => {
+export const PropertyCard: React.FC<PropertyCardProps> = ({
+  property,
+  isAnimate,
+  showMenu,
+}) => {
+  const navigate = useNavigate()
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [anchorEl, setAnchorEl] = useState(null); 
+  const open = Boolean(anchorEl);
+  const [isCopied, setIsCopied] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const images = property.images || [];
   const userId = TokenService.getuserId();
   const handleDialogClose = useCallback(() => {
     setIsEdit(false);
   }, []);
+ 
+
+  const shareableLink = `${window.location.origin}/property/${property.property_id}`;
+  
+  const handleShareClick = async () => {
+    if (navigator.share ) {
+      try {
+        await navigator.share({
+          title: property.title,
+          text: `Check out this property: ${property.title}`,
+          url: shareableLink, 
+        });
+      
+      } catch (error) {
+        console.error("Error sharing:", error);
+      }finally{
+        setAnchorEl(null);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareableLink);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000); 
+      } catch (error) {
+        console.error("Error copying to clipboard:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     if (images?.length > 1) {
@@ -30,6 +69,28 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
     }
   }, [images?.length]);
 
+  const handleMenuOpen = (event:any) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+ 
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+  const navigateToPropertyMap = (lat: number, lng: number) => {
+      // Check if lat and lng are valid numbers
+      if (isNaN(lat) || isNaN(lng)) {
+        toast.info('Location not available for this property');
+        return; // Exit the function if location is invalid
+      }
+      const url = `/properties-map?lat=${lat}&lng=${lng}`;
+      navigate(url);
+      setAnchorEl(null);
+    };
+
+    const handlePropertyClick = (propertyId:any) => {
+      navigate(`/property/${propertyId}`);
+    };
 
   return (
     <Card
@@ -46,6 +107,48 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
         },
       }}
     >
+      {showMenu &&(
+      <Box sx={{textAlign:"end"}}>
+          <MoreVertical
+            size={20} 
+            color="#303030"
+            style={{ cursor: "pointer" }}
+            onClick={handleMenuOpen}
+          />
+          <Menu
+        anchorEl={anchorEl} 
+        open={open} 
+        onClose={handleMenuClose} 
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        {/* Menu Item 1: View Map */}
+        <MenuItem onClick={() => navigateToPropertyMap(property.location.coordinates[1], property.location.coordinates[0])}>
+          <MapPin size={16} style={{ marginRight: "8px" }} /> 
+          <Typography variant="body2">View Map</Typography>
+        </MenuItem>
+
+        {/* Menu Item 2: Edit */}
+       {userId === property.userid &&(
+        <MenuItem onClick={() => (setIsEdit(true), setAnchorEl(null))}  >
+          <Edit size={16} style={{ marginRight: "8px" }} /> 
+          <Typography variant="body2">Edit</Typography>
+        </MenuItem>
+        )}
+        {/* Menu Item 3: Share */}
+        <MenuItem onClick={handleShareClick} >
+          <Share2 size={16} style={{ marginRight: "8px" }} /> 
+          <Typography variant="body2">{isCopied ? "Link Copied!" : "Share"}</Typography>
+        </MenuItem>
+      </Menu>
+      </Box>
+      )}
       <Box
         sx={{
           width: "100%",
@@ -95,8 +198,12 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
           >
             {property.title}
           </Typography>
-          <Typography color="text.secondary" sx={{ fontSize: "0.9rem", mt: "auto", }}>
-          {property?.property_type},   {property?.district ? `${property.district}.` : ""}
+          <Typography
+            color="text.secondary"
+            sx={{ fontSize: "0.9rem", mt: "auto" }}
+          >
+            {property?.property_type},{" "}
+            {property?.district ? `${property.district}.` : ""}
           </Typography>
           <Typography
             sx={{
@@ -111,11 +218,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
               whiteSpace: "nowrap",
             }}
           >
-            {
-              property.description?.length > 34
-                ? `${property.description.slice(0, 34)}....`
-                : property.description
-            }
+            {property.description?.length > 34
+              ? `${property.description.slice(0, 34)}....`
+              : property.description}
           </Typography>
         </Box>
 
@@ -133,7 +238,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
       <Box
         sx={{
           display: "flex",
-          flexDirection: { xs: "column", md : "column", sm: "row" }, // Column on small screens, row on larger screens
+          flexDirection: { xs: "column", md: "column", sm: "row" }, // Column on small screens, row on larger screens
           justifyContent: "flex-end",
           gap: 2,
           mt: "auto",
@@ -142,9 +247,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
       >
         <Button
           variant="outlined"
-          component={Link}
-          to={`/property/${property.property_id}`}
-          state={{ property }}
+          onClick={() => handlePropertyClick(property.property_id)}
           sx={{
             borderRadius: 5,
             textTransform: "none",
@@ -159,24 +262,15 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
         >
           View More
         </Button>
-        {(isShowEdit && userId === property.userid) && (
-          <Button
-            variant="contained"
-            onClick={() => setIsEdit(true)}
-            sx={{
-              color: "#fff",
-              backgroundColor: "#150b83c1",
-              borderRadius: 5,
-              textTransform: "none",
-              borderColor: "#150b83c1",
-              width: { xs: "100%", sm: "auto" }, // Full width on small screens, auto width on larger screens
-            }}
-          >
-            Edit
-          </Button>
-        )}
       </Box>
-      {isEdit && <PropertyForm property={property} open={isEdit} onClose={handleDialogClose} mode="update" />}
+      {isEdit && (
+        <PropertyForm
+          property={property}
+          open={isEdit}
+          onClose={handleDialogClose}
+          mode="update"
+        />
+      )}
     </Card>
   );
 };

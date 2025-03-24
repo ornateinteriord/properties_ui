@@ -1,17 +1,19 @@
 import { Box, Button, Card, CardMedia, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import useFormatPrice from "../../../hook/formatedprice/FormattedPrice";
 import PropertyForm from "./PropertyForm";
 import TokenService from "../../../api/token/TokenService";
 import { MapPin } from "lucide-react";
 import { toast } from "react-toastify";
+import { getPropertyDetails } from "../../../api/product";
+import { LoadingComponent } from "../../../App";
 
 const PropertyCardView = () => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const location = useLocation()
   const navigate = useNavigate()
-  const { property } = location.state || {}
+  const {propertyid} = useParams()
+  const {data:property,isLoading,isError,error} = getPropertyDetails(propertyid || '')
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = property?.images || [];
   const [isEdit, setIsEdit] = useState(false);
@@ -19,6 +21,17 @@ const PropertyCardView = () => {
   const handleDialogClose = useCallback(() => {
     setIsEdit(false);
   }, []);
+
+
+  useEffect(() => {
+    if (isError) {
+      const err = error as any;
+      toast.error(
+        err?.response?.data?.message 
+      );
+    }
+  }, [isError, error]);
+
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -411,6 +424,7 @@ const PropertyCardView = () => {
         </Box>
       </Card>
       {isEdit && <PropertyForm property={property} open={isEdit} onClose={handleDialogClose} mode="update" />}
+      {isLoading && <LoadingComponent/>}
     </Box>
   );
 };
