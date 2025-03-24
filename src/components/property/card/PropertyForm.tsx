@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   getCloudinaryUrl,
   useCreateProperty,
@@ -97,6 +97,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setTalukSearchTerm(property.taluk || ""); // Initialize taluk
     }
   }, [mode, property]);
+
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
