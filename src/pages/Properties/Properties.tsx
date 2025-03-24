@@ -332,10 +332,10 @@ const Properties = () => {
             {tab === 0 &&
               (currentProperties?.length > 0 ? (
                 currentProperties?.map((property: any , indx : number) => (
-                  <PropertyCard key={`${property.id}-${indx}`} property={property} isShowEdit={false} />
+                  <PropertyCard key={`${property.id}-${indx}`} property={property} isShowEdit={false} showMenu={true} />
                 ))
               ) : (
-                <Paper sx={{ p: 4, borderRadius: 2, textAlign: "center" }}>
+                <Paper sx={{ p: 4, borderRadius: 2, textAlign: "center",height:"fit-content" }}>
                   <Typography variant="h6" color="text.secondary">
                     No properties found.
                   </Typography>

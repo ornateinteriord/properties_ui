@@ -39,6 +39,11 @@ const ReviewProperty = () => {
       sortable: true,
     },
     {
+      name: 'Updated At',
+      cell: (row: Product) => getRelativeTime(row.updatedAt),
+      sortable: true,
+    },
+    {
       name: 'Status',
       cell: (row: Product) => (
         <Typography variant="body2" sx={{ color: row.status === "active" ? "success.main" : "warning.main" }}>

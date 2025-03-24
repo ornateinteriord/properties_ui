@@ -109,7 +109,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         },
       });
     } else if (mode === "update") {
-      updateMutate(updatedFormData, {
+      updateMutate( {
+        ...updatedFormData,status:"pending",pramote:"pending",
         onSuccess: () => {
           onClose();
         },

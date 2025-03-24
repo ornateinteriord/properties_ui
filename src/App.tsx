@@ -40,7 +40,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
-  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:id" , '/emi-calculator' ];
+  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:propertyid" , '/emi-calculator' ];
 
   const isValidRoute = validRoutes.some((route) =>
     matchPath(route, location.pathname)
@@ -73,7 +73,7 @@ function App() {
         <Route path="/properties" element={<Properties/>} />
         <Route path="/my-properties" element={<MyProperty/>} />
         <Route path="/my-profile" element={<MyProfile/>} />
-        <Route path="/property/:id" element={<PropertyCardView/>} />
+        <Route path="/property/:propertyid" element={<PropertyCardView/>} />
         <Route path="/properties-map" element={<PropertyMap />} />
         <Route path="/emi-calculator" element={<EMICalculator />} />
 
