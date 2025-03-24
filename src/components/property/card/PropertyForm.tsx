@@ -59,10 +59,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     mode === "update" && property ? property : {}
   );
 
-  useEffect(() => {
-    console.log(location);
-  }, [location]);
-
   const createPropertyMutation = useCreateProperty();
   const updatePropertyMutation = useUpdateProperty(property?._id || "");
   const { mutate: createMutate, isPending: isCreatePending } =
