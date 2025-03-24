@@ -25,7 +25,8 @@ import { useGetPropertyTypes } from "../../../api/Property-Types";
 import { LoadingComponent } from "../../../App";
 import { Product } from "../../../types";
 import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
-import {LocationDialog} from "../../../pages/Maps/LocationPicker";
+import { LocationDialog } from "../../../pages/Maps/LocationPicker";
+import { MapContainer, Marker, TileLayer } from "react-leaflet";
 
 interface PropertyFormProps {
   open: boolean;
@@ -43,18 +44,20 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
   const [imagesNames, setImagesNames] = useState<string[]>([]);
-  const [location, setLocation] = useState<{ type: string; coordinates: [number, number] }>({
+  const [location, setLocation] = useState<{
+    type: string;
+    coordinates: [number, number];
+  }>({
     type: "Point",
     coordinates: [0, 0], // Default coordinates
   });
-  const [loactionDialog , setLoactionDialog] = useState(false)
+  const [selectedLocation, setSelectedLocation] = useState<
+    [number, number] | null
+  >(null);
+  const [loactionDialog, setLoactionDialog] = useState(false);
   const [formData, setFormData] = useState<Product | any>(
     mode === "update" && property ? property : {}
   );
-
-  useEffect(()=>{
-    console.log(location)
-  },[location])
 
   const createPropertyMutation = useCreateProperty();
   const updatePropertyMutation = useUpdateProperty(property?._id || "");
@@ -69,12 +72,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const cloudinary = getCloudinaryUrl();
 
   const handleCloseLocation = () => {
-    setLoactionDialog(false)
-  }
+    setLoactionDialog(false);
+  };
 
   const { data: properties } = useGetPropertyTypes();
   const handleLocationSelect = (lat: number, lng: number) => {
-    const newLocation : any = {
+    const newLocation: any = {
       type: "Point",
       coordinates: [lng, lat], // Note: MongoDB expects [longitude, latitude]
     };
@@ -83,6 +86,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       ...prevData,
       location: newLocation,
     }));
+    setSelectedLocation([lat, lng]);
   };
   // Initialize selectedtype and selectedStatus when in update mode
   useEffect(() => {
@@ -93,6 +97,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setTalukSearchTerm(property.taluk || ""); // Initialize taluk
     }
   }, [mode, property]);
+
+  useEffect(() => {
+    console.log(location);
+  }, [location]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -109,8 +117,10 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         },
       });
     } else if (mode === "update") {
-      updateMutate( {
-        ...updatedFormData,status:"pending",pramote:"pending",
+      updateMutate({
+        ...updatedFormData,
+        status: "pending",
+        pramote: "pending",
         onSuccess: () => {
           onClose();
         },
@@ -422,7 +432,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 districtValue={districtSearchTerm}
                 talukValue={talukSearchTerm}
               />
-              {(showField("bathrooms") || (selectedtype && !shouldHideFields)) && (
+              {(showField("bathrooms") ||
+                (selectedtype && !shouldHideFields)) && (
                 <TextField
                   name="bathrooms"
                   value={formData.bathrooms}
@@ -466,7 +477,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {(showField("propertyStatus") || (selectedtype && !propertyStatusHide)) && (
+              {(showField("propertyStatus") ||
+                (selectedtype && !propertyStatusHide)) && (
                 <FormControl fullWidth>
                   <Select
                     required
@@ -500,7 +512,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {(showField("possession") || selectedStatus === "Under Construction") && (
+              {(showField("possession") ||
+                selectedStatus === "Under Construction") && (
                 <TextField
                   name="possession"
                   value={formData.possession}
@@ -536,7 +549,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 gap: "15px",
               }}
             >
-              {(showField("parking") || (selectedtype && !shouldHideFields)) && (
+              {(showField("parking") ||
+                (selectedtype && !shouldHideFields)) && (
                 <FormControl fullWidth>
                   <Select
                     name="parking"
@@ -569,7 +583,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                   </Select>
                 </FormControl>
               )}
-              {(showField("furnishing") || (selectedtype && !shouldHideFields)) && (
+              {(showField("furnishing") ||
+                (selectedtype && !shouldHideFields)) && (
                 <FormControl fullWidth>
                   <Select
                     displayEmpty
@@ -701,15 +716,56 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 variant="outlined"
                 InputLabelProps={{ shrink: !!formData.price }}
               />
-                <FormControl>
+              <FormControl>
                 <FormLabel
                   sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
                 >
-                  {mode === 'post' ? 'Add Location' : 'Update Location'}
+                  {mode === "post" ? "Add Location" : "Update Location"}
                 </FormLabel>
-                <Button variant="outlined" onClick={()=>setLoactionDialog(true)}>{(mode === 'update') ? "Update Location" : "Add Location"}</Button>
-                </FormControl>
-              <LocationDialog open={loactionDialog} onClose={handleCloseLocation} onLocationSelect={handleLocationSelect} initialLocation={property?.location}  />
+                <Button
+                  variant="outlined"
+                  onClick={() => setLoactionDialog(true)}
+                >
+                  {mode === "update" ? "Update Location" : "Add Location"}
+                </Button>
+              </FormControl>
+              {selectedLocation && (
+               <Box >
+                   <FormLabel
+                  sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
+                >
+                  Selected Location
+                </FormLabel>
+
+        <Box sx={{ 
+           height: "150px", 
+           width: "100%", 
+           borderRadius: 1, 
+           overflow: 'hidden',
+           border: '1px solid rgba(0, 0, 0, 0.12)' 
+         }}>
+      <MapContainer
+        center={selectedLocation}
+        zoom={15}
+        style={{ height: "100%", width: "100%" }}
+        dragging={false}
+        touchZoom={false}
+        doubleClickZoom={false}
+        scrollWheelZoom={false}
+        zoomControl={false}
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <Marker position={selectedLocation} />
+      </MapContainer>
+    </Box>
+  </Box>
+)}
+              <LocationDialog
+                open={loactionDialog}
+                onClose={handleCloseLocation}
+                onLocationSelect={handleLocationSelect}
+                initialLocation={property?.location}
+              />
               <FormControl>
                 <FormLabel
                   sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
