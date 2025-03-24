@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   getCloudinaryUrl,
   useCreateProperty,
