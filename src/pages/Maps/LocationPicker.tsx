@@ -166,16 +166,41 @@ export const LocationDialog = ({ open, onClose, onLocationSelect, initialLocatio
       open={open}
       onClose={onClose}
       maxWidth="lg" // Increase the max width of the dialog
-      fullWidth // Make the dialog take up the full width allowed by maxWidth
+      fullWidth 
+      sx={{
+        '& .MuiDialog-paper': {
+          width: '100%', 
+          maxWidth: '1200px', 
+          margin: '16px', 
+          '@media (max-width: 600px)': {
+            margin: '8px', 
+          },
+        },
+      }}
     >
       <DialogTitle>Select Location</DialogTitle>
-      <DialogContent sx={{ width: '100%', minWidth: '800px' }}> {/* Set a minimum width for the content */}
+      <DialogContent sx={{
+      width: '100%',
+      minWidth: '800px', 
+      '@media (max-width: 900px)': {
+        minWidth: '600px',
+      },
+      '@media (max-width: 600px)': {
+        minWidth: 'unset', 
+        padding: '8px',
+      },
+    }}> 
         <LocationPicker
           onLocationSelect={handleLocationSelect}
-          initialLocation={initialLocation} // Pass initialLocation to LocationPicker
+          initialLocation={initialLocation} 
         />
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{
+      padding: '16px',
+      '@media (max-width: 600px)': {
+        padding: '8px', 
+      },
+    }}>
         <Button variant="text" onClick={onClose}>Cancel</Button>
         <Button variant="contained" onClick={handleConfirm} color="primary" disabled={!selectedLocation}>
           Confirm
