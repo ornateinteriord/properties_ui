@@ -73,9 +73,7 @@ const AdviceAndTools = () => {
               <Box sx={{ p: 2, textAlign: "center" }}>
                 <Button
                   variant="text"
-                  sx={{ color: "red", fontWeight: "bold","&:hover": {
-                  border:"1px solid black",
-                }, }}
+                  sx={{ color: "red", fontWeight: "bold" }}
                   endIcon={""}
                   onClick={()=>navigate(tool.path)}
                 >

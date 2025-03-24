@@ -96,7 +96,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, isShowEdit
             {property.title}
           </Typography>
           <Typography color="text.secondary" sx={{ fontSize: "0.9rem", mt: "auto", }}>
-            {property?.district ? `${property.district},` : ""}
+          {property?.property_type},   {property?.district ? `${property.district}.` : ""}
           </Typography>
           <Typography
             sx={{

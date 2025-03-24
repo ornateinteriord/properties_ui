@@ -21,6 +21,10 @@ const PropertyCardView = () => {
   }, []);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (images.length > 1) {
       const interval = setInterval(() => {
         setCurrentImageIndex((prevIndex) =>
@@ -143,17 +147,6 @@ const PropertyCardView = () => {
                 mb: 2,
               }}
             >
-              <Box sx={{ mb: 2 }}>
-                <Typography
-                  color="text.secondary"
-                  sx={{ fontSize: "0.75rem", mb: 0.5 }}
-                >
-                  Super Area
-                </Typography>
-                <Typography sx={{ fontSize: "0.9rem" }}>
-                  {`${property?.sqft} sqft`}
-                </Typography>
-              </Box>
               <Box sx={{ mb: 2 }}>
                 <Typography
                   color="text.secondary"
