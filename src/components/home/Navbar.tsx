@@ -77,7 +77,7 @@ const Navbar = () => {
   };
 
   const drawer = (
-    <Box sx={{ width: 250 }}>
+    <Box sx={{ width:{xs:250,md:290} }}>
       <Box
         sx={{
           display: "flex",
@@ -132,7 +132,7 @@ const Navbar = () => {
   return (
     <>
       <AppBar position="fixed" className="app-bar">
-        <Container maxWidth="lg">
+        <Container  sx={{maxWidth:"1400px"}} maxWidth={false}>
           <Toolbar disableGutters  className="tool-bar" >
             <Box
               sx={{
@@ -256,8 +256,7 @@ const Navbar = () => {
               </Box>
 
               {/* Mobile Menu Button */}
-
-              {isMobile && (
+              {(isLoggedIn || isMobile) &&(
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -350,8 +349,12 @@ const Navbar = () => {
           keepMounted: true, // Better open performance on mobile.
         }}
         sx={{
-          display: { xs: "block", md: "none" },
-          "& .MuiDrawer-paper": { width: 250 },
+          "& .MuiDrawer-paper": { 
+            width: 250,
+            '@media (min-width: 600px)': {
+              width: 300
+            }
+          },
         }}
       >
         {drawer}

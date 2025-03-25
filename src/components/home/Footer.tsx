@@ -44,17 +44,17 @@ import { MailIcon } from "lucide-react";
               About Website
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
+              <MuiLink component={RouterLink} to="/" color="inherit" underline="hover">
                 Our Story
               </MuiLink>
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
+              <MuiLink component={RouterLink} to="/" color="inherit" underline="hover">
                 Mission & Vision
               </MuiLink>
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
+              <MuiLink component={RouterLink} to="/" color="inherit" underline="hover">
                 Team
               </MuiLink>
             </Typography>
