@@ -160,6 +160,7 @@ const PropertyCardView = () => {
                 mb: 2,
               }}
             >
+              {property?.sqft && (
               <Box sx={{ mb: 2 }}>
                 <Typography
                   color="text.secondary"
@@ -171,6 +172,7 @@ const PropertyCardView = () => {
                   {`${property?.sqft} sqft`}
                 </Typography>
               </Box>
+              )}
               {property?.propertyStatus && (
                 <Box sx={{ mb: 2 }}>
                   <Typography
