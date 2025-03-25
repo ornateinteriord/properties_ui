@@ -4,9 +4,12 @@ import {
     Typography,
     TextField,
     Button,
-    Link,
+
     IconButton,
   } from "@mui/material";
+  import { Link as RouterLink } from 'react-router-dom';
+import { Link as MuiLink } from '@mui/material';
+
   import {
     Facebook,
     Instagram,
@@ -41,43 +44,43 @@ import { MailIcon } from "lucide-react";
               About Website
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <Link href="#" color="inherit" underline="hover">
+              <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
                 Our Story
-              </Link>
+              </MuiLink>
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <Link href="#" color="inherit" underline="hover">
+              <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
                 Mission & Vision
-              </Link>
+              </MuiLink>
             </Typography>
             <Typography variant="body2" sx={{ mb: 1 }}>
-              <Link href="#" color="inherit" underline="hover">
+              <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
                 Team
-              </Link>
+              </MuiLink>
             </Typography>
           </Grid>
   
           {/* Column 2: Terms & Conditions */}
           <Grid item xs={12} sm={6} md={3}>
-            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
-              Terms & Conditions
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              <Link href="#" color="inherit" underline="hover">
-                Privacy Policy
-              </Link>
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              <Link href="#" color="inherit" underline="hover">
-                Terms of Use
-              </Link>
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1 }}>
-              <Link href="#" color="inherit" underline="hover">
-                Cookie Policy
-              </Link>
-            </Typography>
-          </Grid>
+  <Typography variant="h6" sx={{ fontWeight: "bold", mb: 2 }}>
+    Terms & Conditions
+  </Typography>
+  <Typography variant="body2" sx={{ mb: 1 }}>
+    <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
+      Privacy Policy
+    </MuiLink>
+  </Typography>
+  <Typography variant="body2" sx={{ mb: 1 }}>
+    <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
+      Terms of Use
+    </MuiLink>
+  </Typography>
+  <Typography variant="body2" sx={{ mb: 1 }}>
+    <MuiLink component={RouterLink} to="/help-support" color="inherit" underline="hover">
+      Cookie Policy
+    </MuiLink>
+  </Typography>
+</Grid>
   
           {/* Column 3: Social Network */}
           <Grid item xs={12} sm={6} md={3}>

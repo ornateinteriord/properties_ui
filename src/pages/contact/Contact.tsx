@@ -48,7 +48,7 @@ const Contact = () => {
   return (
     <Box sx={{ width: "100%", mt: 8, py: 6, bgcolor: "#f5f5f5" }}>
       <Container>
-        <Typography variant="h3" color="primary" sx={{ textAlign: "center", fontWeight: "bold", mb: 3 }}>
+        <Typography variant="h3"  sx={{ textAlign: "center", fontWeight: "bold", mb: 3, color: "#150b83c1" }}>
           Contact Us
         </Typography>
         <Typography variant="body1" sx={{ textAlign: "center", mb: 4, color: "text.secondary" }}>
@@ -96,7 +96,7 @@ const Contact = () => {
                 multiline
                 rows={4}
               />
-              <Button type="submit" variant="contained" color="primary" sx={{ py: 1.5 }}>
+              <Button type="submit" variant="contained"  sx={{ py: 1.5,color: '#fff',background: '#150b83c1' }}>
                 Send Message
               </Button>
             </Box>

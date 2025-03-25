@@ -22,6 +22,7 @@ import PropertyCardView from "./components/property/card/PropertyCardView";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import PropertyMap from "./pages/Maps/PropertyMap";
 import EMICalculator from "./pages/Emi/Calculator";
+import HelpandSupport from "./pages/help&support/HelpandSupport";
 
 
 export const LoadingComponent = () => {
@@ -40,7 +41,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
 
   const adminRoutes = ["/admin/properties", "/admin/dashboard","/admin/users"];
-  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact", "/properties","/my-properties","/review-properties","/my-profile","/property/:propertyid" , '/emi-calculator' ];
+  const validRoutes = ["/", "/signin", "/signup","/reset-password", "/about", "/contact","/help-support", "/properties","/my-properties","/review-properties","/my-profile","/property/:propertyid" , '/emi-calculator' ];
 
   const isValidRoute = validRoutes.some((route) =>
     matchPath(route, location.pathname)
@@ -70,6 +71,7 @@ function App() {
         <Route path="/reset-password" element={<ForgotPassword/>} />
         <Route path="/about" element={<About/>} />
         <Route path="/contact" element={<Contact/>} />
+        <Route path="/help-support" element={<HelpandSupport/>} />
         <Route path="/properties" element={<Properties/>} />
         <Route path="/my-properties" element={<MyProperty/>} />
         <Route path="/my-profile" element={<MyProfile/>} />
