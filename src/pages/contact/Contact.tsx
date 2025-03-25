@@ -7,6 +7,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { useContact } from "../../api/user";
+import { LoadingComponent } from "../../App";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -27,7 +29,8 @@ const Contact = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors({ ...errors, [e.target.name]: false }); // Reset errors on input
   };
-
+  const sendDetails = useContact()
+  const {mutate,isPending} = sendDetails
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     let newErrors = {
@@ -40,8 +43,12 @@ const Contact = () => {
     setErrors(newErrors);
 
     if (!Object.values(newErrors).includes(true)) {
-      alert("Thank you! We will get back to you soon.");
-      setFormData({ name: "", email: "", phone: "", message: "" });
+      mutate(formData,{
+        onSuccess: () => {
+          setFormData({ name: "", email: "", phone: "", message: "" });
+        }
+      })
+      
     }
   };
 
@@ -103,6 +110,7 @@ const Contact = () => {
           </Grid>
         </Grid>
       </Container>
+      {isPending && <LoadingComponent/>}
     </Box>
   );
 };
