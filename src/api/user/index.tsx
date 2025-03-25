@@ -2,7 +2,7 @@ import { useContext } from "react";
 import UserContext from "../../context/user/userContext";
 import {  useMutation, useQuery, useQueryClient, } from "@tanstack/react-query";
 import TokenService from "../token/TokenService";
-import { get } from "../Api";
+import { get, post } from "../Api";
 import { put } from "../Api";
 import { toast } from "react-toastify";
 
@@ -59,4 +59,22 @@ export const useGetuserDetails = () => {
         toast.error(error?.response?.data?.message);
       },
     })
+  }
+
+  export const useContact = ()=>{
+      return useMutation({
+          mutationFn: async (data: any) => {
+            return await post("/user/contact", data);
+          },
+          onSuccess: (response) => {
+            if (response.success) {
+              toast.success(response.message);
+            } else {
+              console.error(response.message);
+            }
+          },
+          onError: (error: any) => {
+            toast.error(error.response.data.message);
+          },
+        });
   }
