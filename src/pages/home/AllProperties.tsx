@@ -15,8 +15,8 @@ import { PropertyCard } from "../../components/property/card/PropertyCard";
 const AllPropertiesCards = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const cardWidth = 300; // Width of each card
-  const gap = 16; // Gap between cards
+  const cardWidth = 300; 
+  const gap = 16;
 
   // Fetch properties data
   const { data: properties, isLoading } = getAllProperties();
@@ -44,7 +44,7 @@ const AllPropertiesCards = () => {
     }
   };
 
-  // Handle scroll events to update the active index
+
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
@@ -52,16 +52,48 @@ const AllPropertiesCards = () => {
     const handleScroll = () => {
       const { scrollLeft } = container;
       const newIndex = Math.floor((scrollLeft + cardWidth / 2) / (cardWidth + gap));
-      setActiveIndex(Math.min(newIndex, filteredProperties.length - 1));
+      const virtualIndex = newIndex % filteredProperties.length;
+      setActiveIndex(virtualIndex);
     };
 
     container.addEventListener("scroll", handleScroll);
 
-    // Cleanup function to remove the event listener
     return () => {
       container.removeEventListener("scroll", handleScroll);
     };
   }, [filteredProperties]);
+
+  const renderNavigationDots = () => {
+    const dots = [];
+    const totalDots = 4; 
+    
+    for (let i = 0; i < totalDots; i++) {
+      const isActive = activeIndex % totalDots === i;
+      
+      dots.push(
+        <Box
+          key={i}
+          onClick={() => {
+            const targetIndex = Math.floor(activeIndex / totalDots) * totalDots + i;
+            scrollToIndex(targetIndex);
+          }}
+          sx={{
+            width: 8,
+            height: 8,
+            borderRadius: "50%",
+            backgroundColor: isActive ? "#150b83c1" : "#ccc",
+            cursor: "pointer",
+            "&:hover": {
+              backgroundColor: "#150b83c1",
+            },
+            margin: "0 4px",
+          }}
+        />
+      );
+    }
+    
+    return dots;
+  };
 
   // Show loading spinner while data is being fetched
   if (isLoading) {
@@ -108,24 +140,16 @@ const AllPropertiesCards = () => {
         </Box>
 
         {/* Navigation Dots */}
-        <Box className="navigation-dots">
-          {filteredProperties.map((_ : any, index : number) => (
-            <Box
-              key={index}
-              onClick={() => scrollToIndex(index)}
-              sx={{
-                width: 10,
-                height: 10,
-                borderRadius: "50%",
-                backgroundColor: activeIndex === index ? "#150b83c1" : "#ccc",
-                cursor: "pointer",
-                "&:hover": {
-                  backgroundColor: "#150b83c1",
-                },
-              }}
-            />
-          ))}
-        </Box>
+        <Box 
+        className="navigation-dots"
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          marginTop: 2,
+        }}
+      >
+        {renderNavigationDots()}
+      </Box>
       </Box>
 
       {/* See All Properties Button */}
