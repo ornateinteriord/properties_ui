@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Container,
   Typography,
@@ -15,6 +15,9 @@ const EMICalculator: React.FC = () => {
   const [interestRate, setInterestRate] = useState<number>(7.5);
   const [loanTenure, setLoanTenure] = useState<number>(12);
 
+   useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
 
   // Calculate EMI
   const calculateEMI = (): number => {
