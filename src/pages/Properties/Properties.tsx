@@ -190,7 +190,7 @@ const Properties = () => {
     return result;
   }, [properties, matchesFilter, filters.sortOrder]);
 
-  const itemsPerPage = 9;
+  const itemsPerPage = 6;
   const { currentPage, totalPages, getCurrentData, handlePageChange } =
     usePagination(sortedAndFilteredProperties || [], itemsPerPage);
   const currentProperties = getCurrentData();
@@ -317,31 +317,50 @@ const Properties = () => {
           />
 
           {/* Content Area */}
-          <Box
+          <Box sx={{width:"100%"}}>
+  {tab === 0 && (
+    <>
+      {currentProperties?.length > 0 ? (
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "1fr 1fr",
+              md: "1fr 1fr 1fr",
+            },
+            gap: 1,
+          }}
+        >
+          {currentProperties.map((property: any, indx: number) => (
+            <PropertyCard
+              key={`${property.id}-${indx}`}
+              property={property}
+              isShowEdit={false}
+              showMenu={true}
+            />
+          ))}
+        </Box>
+      ) : (
+        <Box sx={{width:"100%", display: "flex", justifyContent: "center" }}>
+          <Paper
             sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                sm: "1fr 1fr",
-                md: "1fr 1fr 1fr",
-              }, 
-              gap: 1,
-              
+              width:"100%",
+              p: 4,
+              borderRadius: 2,
+              textAlign: "center",
+              height: "fit-content",
             }}
           >
-            {tab === 0 &&
-              (currentProperties?.length > 0 ? (
-                currentProperties?.map((property: any , indx : number) => (
-                  <PropertyCard key={`${property.id}-${indx}`} property={property} isShowEdit={false} showMenu={true} />
-                ))
-              ) : (
-                <Paper sx={{ p: 4, borderRadius: 2, textAlign: "center",height:"fit-content" }}>
-                  <Typography variant="h6" color="text.secondary">
-                    No properties found.
-                  </Typography>
-                </Paper>
-              ))}
-          </Box>
+            <Typography variant="h6" color="text.secondary">
+              No properties found.
+            </Typography>
+          </Paper>
+        </Box>
+      )}
+    </>
+  )}
+</Box>
         </Container>
         <Box sx={{ m: 2, display: "flex", justifyContent: "flex-end" }}>
           <CustomPagination
