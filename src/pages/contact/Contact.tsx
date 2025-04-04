@@ -178,10 +178,7 @@ const Contact = () => {
                             Call Us
                           </Typography>
                           <Typography color="text.secondary">
-                            +1 (555) 123-4567
-                          </Typography>
-                          <Typography color="text.secondary">
-                            +1 (555) 765-4321
+                          +91 8971396189
                           </Typography>
                         </Box>
                       </Box>
@@ -196,10 +193,7 @@ const Contact = () => {
                             Email Us
                           </Typography>
                           <Typography color="text.secondary">
-                            info@skproperties.com
-                          </Typography>
-                          <Typography color="text.secondary">
-                            support@skproperties.com
+                          sproperties49@gmail.com
                           </Typography>
                         </Box>
                       </Box>

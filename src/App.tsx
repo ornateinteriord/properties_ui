@@ -23,6 +23,7 @@ import ForgotPassword from "./pages/auth/ForgotPassword";
 import PropertyMap from "./pages/Maps/PropertyMap";
 import EMICalculator from "./pages/Emi/Calculator";
 import HelpandSupport from "./pages/help&support/HelpandSupport";
+import ScrollToTop from "./components/scroll/ScrollToTop";
 
 
 export const LoadingComponent = () => {
@@ -64,6 +65,7 @@ function App() {
   return (
     <Router>
       <Layout >
+        <ScrollToTop/>
       <Routes>
         <Route path="/" element={<HomePage/>} />
         <Route path="/signin" element={<Signin/>} />
