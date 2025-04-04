@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const usePagination = <T,>(data: T[], itemsPerPage: number) => {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(data.length / itemsPerPage);
+  
+
+  useEffect(() => {
+    window.scrollTo({top:0,behavior:'smooth'});
+  }, [currentPage]);
 
   // Get the subset of data for the current page
   const getCurrentData = (): T[] => {
@@ -22,6 +27,7 @@ const usePagination = <T,>(data: T[], itemsPerPage: number) => {
     getCurrentData,
     handlePageChange,
   };
+
 };
 
 export default usePagination;
