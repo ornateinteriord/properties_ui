@@ -1,5 +1,5 @@
 import { MapContainer, TileLayer, Marker, Circle, Popup, useMap, Polyline } from 'react-leaflet';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -323,4 +323,4 @@ const PropertyMap = () => {
   );
 };
 
-export default PropertyMap;
+export default memo(PropertyMap);

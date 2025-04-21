@@ -1,5 +1,5 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo } from "react";
 import { karnatakaData } from "../property/data/State";
 
 interface DistrictTalukSelectorProps {
@@ -82,4 +82,4 @@ const DistrictTalukSelector = ({
   );
 };
 
-export default DistrictTalukSelector;
+export default memo(DistrictTalukSelector);

@@ -77,14 +77,14 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const handleLocationSelect = (lat: number, lng: number) => {
     const newLocation: any = {
       type: "Point",
-      coordinates: [lng, lat], // Note: MongoDB expects [longitude, latitude]
+      coordinates: [lng, lat], // MongoDB expects [longitude, latitude]
     };
     setLocation(newLocation);
     setFormData((prevData: any) => ({
       ...prevData,
       location: newLocation,
     }));
-    setSelectedLocation([lat, lng]);
+    setSelectedLocation([lat, lng]); // For display, we use [latitude, longitude]
   };
   // Initialize selectedtype and selectedStatus when in update mode
   useEffect(() => {
@@ -95,9 +95,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setDistrictSearchTerm(property.district || "");
       setTalukSearchTerm(property.taluk || "");
       if (property.location?.coordinates) {
+        // Set the location coordinates (swapping to [lat, lng] for display)
+        setLocation(property.location);
         setSelectedLocation([
-          property.location.coordinates[1], // lat
-          property.location.coordinates[0]  // lng
+          property.location.coordinates[1], // latitude
+          property.location.coordinates[0]  // longitude
         ]);
       }
     } else {
