@@ -128,6 +128,7 @@ const PropertyMap = () => {
   const [userLat, setUserLat] = useState<number | null>(null);
   const [userLng, setUserLng] = useState<number | null>(null);
   const [properties, setProperties] = useState<Product[]>([]);
+  const [loading , setLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null);
   const [directions, setDirections] = useState<[number, number][] | null>(null);
   const [loadingDirections, setLoadingDirections] = useState<boolean>(false);
@@ -168,6 +169,7 @@ const PropertyMap = () => {
     const fetchProperties = async () => {
       if (userLat && userLng) {
         try {
+          setLoading(true)
           const data = await get('/product/properties', { lat: userLat, lng: userLng, radius: appliedSearchRadius });
           if (Array.isArray(data)) {
             setProperties(data);
@@ -178,6 +180,8 @@ const PropertyMap = () => {
         } catch (err) {
           console.error('API Error:', err);
           setProperties([]);
+        } finally {
+          setLoading(false)
         }
       }
     };
@@ -319,6 +323,9 @@ const PropertyMap = () => {
           />
         )}
       </MapContainer>
+      {loading && (
+        <LoadingComponent />
+      )}
     </Grid>
   );
 };

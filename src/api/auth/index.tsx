@@ -42,6 +42,8 @@ export const useLoginMutation = ()=>{
             else{
                 console.error("Invalid user:", user);
                 localStorage.clear()
+                sessionStorage.clear()
+                TokenService.removeToken()
                 toast.error("Invalid user");
             }
          }else{

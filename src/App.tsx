@@ -7,7 +7,7 @@ import Contact from "./pages/contact/Contact";
 import Footer from "./components/home/Footer";
 import Signin from "./pages/auth/Signin";
 import Signup from "./pages/auth/Signup";
-import { Dialog, DialogContent } from "@mui/material";
+import { Box } from "@mui/material";
 import Properties from "./pages/Properties/Properties";
 import NotFound from "./pages/notfound/NotFound";
 import CustomLoader from "./components/ui/Loader";
@@ -25,14 +25,34 @@ import EMICalculator from "./pages/Emi/Calculator";
 import HelpandSupport from "./pages/help&support/HelpandSupport";
 import ScrollToTop from "./components/scroll/ScrollToTop";
 
-
 export const LoadingComponent = () => {
   return (
-    <Dialog open={true}>
-      <DialogContent >
+    <Box 
+      sx={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "transparent", // Semi-transparent white
+        backdropFilter: "blur(2.5px)", // Blur effect
+        zIndex: 9999, // Make sure it's on top
+      }}
+    >
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: 2,
+        }}
+      >
         <CustomLoader />
-      </DialogContent>
-    </Dialog>
+      </Box>
+    </Box>
   );
 };
 

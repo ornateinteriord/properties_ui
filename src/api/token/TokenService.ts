@@ -2,19 +2,25 @@ import { jwtDecode } from "jwt-decode";
 
 class TokenService {
   static setToken(token: string): void {
-    localStorage.setItem("token", token);
+    sessionStorage.setItem("token", token);
   }
 
   static getToken(): string | null {
-    return localStorage.getItem("token");
+    return sessionStorage.getItem("token");
   }
 
-  static decodeToken(): { id: string; userid: string;role: string } | null {
+  static decodeToken(): { id: string; userid: string; role: string } | null {
     const token = this.getToken();
     if (!token) return null;
 
     try {
-      const decoded = jwtDecode<{ id: string; userid: string; role: string }>(token);
+      const decoded = jwtDecode<{ id: string; userid: string; role: string; exp: number }>(token);
+      // Check if the token is expired
+      if (decoded.exp * 1000 < Date.now()) {
+        this.removeToken();  // Remove the expired token
+        return null;
+      }
+
       return decoded;
     } catch (error) {
       console.error("Invalid token", error);
@@ -35,7 +41,7 @@ class TokenService {
   }
 
   static removeToken(): void {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
   }
 }
 

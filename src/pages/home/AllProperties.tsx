@@ -5,8 +5,9 @@ import {
   Typography,
   Button,
   CircularProgress,
+  IconButton,
 } from "@mui/material";
-import { ArrowForward } from "@mui/icons-material";
+import { ArrowForward, ArrowBack } from "@mui/icons-material";
 import { getAllProperties } from "../../api/product";
 import { Product } from "../../types";
 import "./AllProperties.scss";
@@ -14,7 +15,8 @@ import { PropertyCard } from "../../components/property/card/PropertyCard";
 
 const AllPropertiesCards = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [showLeftArrow, setShowLeftArrow] = useState(false);
+  const [showRightArrow, setShowRightArrow] = useState(true);
   const cardWidth = 300; 
   const gap = 16;
 
@@ -31,69 +33,48 @@ const AllPropertiesCards = () => {
         )
       : [];
   }, [properties]);
-  
 
-  // Scroll to a specific index
-  const scrollToIndex = (index: number) => {
+  // Scroll left
+  const scrollLeft = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        left: index * (cardWidth + gap),
+      scrollRef.current.scrollBy({
+        left: -(cardWidth + gap),
         behavior: "smooth",
       });
-      setActiveIndex(index);
     }
   };
 
+  // Scroll right
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({
+        left: cardWidth + gap,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     const container = scrollRef.current;
     if (!container) return;
 
     const handleScroll = () => {
-      const { scrollLeft } = container;
-      const newIndex = Math.floor((scrollLeft + cardWidth / 2) / (cardWidth + gap));
-      const virtualIndex = newIndex % filteredProperties.length;
-      setActiveIndex(virtualIndex);
+      const { scrollLeft, scrollWidth, clientWidth } = container;
+      
+      // Show/hide arrows based on scroll position
+      setShowLeftArrow(scrollLeft > 0);
+      setShowRightArrow(scrollLeft < scrollWidth - clientWidth);
     };
 
     container.addEventListener("scroll", handleScroll);
+    
+    // Initial check for arrows
+    handleScroll();
 
     return () => {
       container.removeEventListener("scroll", handleScroll);
     };
   }, [filteredProperties]);
-
-  const renderNavigationDots = () => {
-    const dots = [];
-    const totalDots = 4; 
-    
-    for (let i = 0; i < totalDots; i++) {
-      const isActive = activeIndex % totalDots === i;
-      
-      dots.push(
-        <Box
-          key={i}
-          onClick={() => {
-            const targetIndex = Math.floor(activeIndex / totalDots) * totalDots + i;
-            scrollToIndex(targetIndex);
-          }}
-          sx={{
-            width: 8,
-            height: 8,
-            borderRadius: "50%",
-            backgroundColor: isActive ? "#150b83c1" : "#ccc",
-            cursor: "pointer",
-            "&:hover": {
-              backgroundColor: "#150b83c1",
-            },
-            margin: "0 4px",
-          }}
-        />
-      );
-    }
-    
-    return dots;
-  };
 
   // Show loading spinner while data is being fetched
   if (isLoading) {
@@ -114,54 +95,86 @@ const AllPropertiesCards = () => {
   }
 
   return (
-    <Box sx={{ p: 3, display: "flex", flexDirection: "column", alignItems: "center" }}>
+    <Box sx={{ p: 3, display: "flex", flexDirection: "column", alignItems: "center", position: "relative" , userSelect : 'none'}}>
       <Typography variant="h4" sx={{ml:{xs:1,sm:0}, mb:{xs:0,sm:2}, fontWeight: "bold",textAlign:"center",width:{xs:"360px",sm:"700px",md:"100%",} }}>
          Comfortable Properties
       </Typography>
 
       {/* Card Carousel */}
-      <Box  className="allproperty-card-container" >
+      <Box className="allproperty-card-container">
+        {/* Left Arrow Button */}
+        {showLeftArrow && (
+          <IconButton
+            onClick={scrollLeft}
+            sx={{
+              position: "absolute",
+              left: { xs: 0, sm: -40 },
+              top: "50%",
+              display : 'flex',
+              justifyContent : 'center',
+              alignItems : 'center',
+              backgroundColor: "#A5A0CF",
+              boxShadow: 1,
+              zIndex: 1,
+              "&:hover": {
+                backgroundColor: "#A5A0CF",
+              },
+            }}
+          >
+            <ArrowBack sx={{color : '#000'}}/>
+          </IconButton>
+        )}
+
         <Box
-        className="allproperty-card-content"
+          className="allproperty-card-content"
           ref={scrollRef}
         >
           {filteredProperties.map((property: Product, idx: number) => (
             <Box
-            key={`${property.property_id}-${idx}`}
-            className="property-card"
-            sx={{
-              flex: "0 0 auto", // Ensure cards don't shrink
-              width:"25%", // Responsive card width
-            }}
-          >
-            <PropertyCard  key={`${property.property_id}-${idx}`} property={property} isShowEdit={false} />
+              key={`${property.property_id}-${idx}`}
+              className="property-card"
+              sx={{
+                flex: "0 0 auto",
+                width: "25%",
+              }}
+            >
+              <PropertyCard property={property} isShowEdit={false} />
             </Box>
           ))}
         </Box>
 
-        {/* Navigation Dots */}
-        <Box 
-        className="navigation-dots"
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          marginTop: 2,
-        }}
-      >
-        {renderNavigationDots()}
-      </Box>
+        {/* Right Arrow Button */}
+        {showRightArrow && (
+          <IconButton
+            onClick={scrollRight}
+            sx={{
+              position: "absolute",
+              right: { xs: 0, sm: -40 },
+              top: "50%",
+              transform: "translateY(-50%)",
+              backgroundColor: "#A5A0CF",
+              boxShadow: 1,
+              zIndex: 1,
+              "&:hover": {
+                backgroundColor: "#A5A0CF",
+              },
+            }}
+          >
+            <ArrowForward sx={{color : '#000'}} />
+          </IconButton>
+        )}
       </Box>
 
       {/* See All Properties Button */}
-      <Box  sx={{width:{xs:"700px",sm:"700px",md:"100%",},display:"flex",justifyContent:{xs:"center",sm:"flex-end",md:"flex-end"}}}>
-      <Button
-        variant="text"
-        sx={{ mt: 2, color: "red", fontWeight: "bold" }}
-        endIcon={<ArrowForward />}
-        onClick={() => navigate("/properties")}
-      >
-        See All Properties
-      </Button>
+      <Box sx={{width:{xs:"700px",sm:"700px",md:"100%",},display:"flex",justifyContent:{xs:"center",sm:"flex-end",md:"flex-end"}}}>
+        <Button
+          variant="text"
+          sx={{ mt: 2, color: "red", fontWeight: "bold" }}
+          endIcon={<ArrowForward />}
+          onClick={() => navigate("/properties")}
+        >
+          See All Properties
+        </Button>
       </Box>
     </Box>
   );
