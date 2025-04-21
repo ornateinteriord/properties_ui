@@ -55,9 +55,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     [number, number] | null
   >(null);
   const [loactionDialog, setLoactionDialog] = useState(false);
-  const [formData, setFormData] = useState<Product | any>(
-    mode === "update" && property ? property : {}
-  );
+  const [formData, setFormData] = useState<Product | any>({});
 
   const createPropertyMutation = useCreateProperty();
   const updatePropertyMutation = useUpdateProperty(property?._id || "");
@@ -91,12 +89,27 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   // Initialize selectedtype and selectedStatus when in update mode
   useEffect(() => {
     if (mode === "update" && property) {
+      setFormData({ ...property });
       setSelectedtype(property.property_type || "");
       setSelectedStatus(property.propertyStatus || "");
-      setDistrictSearchTerm(property.district || ""); // Initialize district
-      setTalukSearchTerm(property.taluk || ""); // Initialize taluk
+      setDistrictSearchTerm(property.district || "");
+      setTalukSearchTerm(property.taluk || "");
+      if (property.location?.coordinates) {
+        setSelectedLocation([
+          property.location.coordinates[1], // lat
+          property.location.coordinates[0]  // lng
+        ]);
+      }
+    } else {
+      // Reset form for new property
+      setFormData({});
+      setSelectedtype("");
+      setSelectedStatus("");
+      setDistrictSearchTerm("");
+      setTalukSearchTerm("");
+      setSelectedLocation(null);
     }
-  }, [mode, property]);
+  }, [open, property, mode]);
 
   useEffect(() => {
     console.log(location);
@@ -434,16 +447,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               />
               {(showField("bathrooms") ||
                 (selectedtype && !shouldHideFields)) && (
-                <TextField
-                  name="bathrooms"
-                  value={formData.bathrooms}
-                  onChange={handleInputChange}
-                  fullWidth
-                  label="Bathrooms"
-                  type="number"
-                  variant="outlined"
-                />
-              )}
+                  <TextField
+                    name="bathrooms"
+                    value={formData.bathrooms}
+                    onChange={handleInputChange}
+                    fullWidth
+                    label="Bathrooms"
+                    type="number"
+                    variant="outlined"
+                  />
+                )}
               {(showField("bhk") || (selectedtype && !shouldHideFields)) && (
                 <FormControl fullWidth>
                   <Select
@@ -479,57 +492,57 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
               )}
               {(showField("propertyStatus") ||
                 (selectedtype && !propertyStatusHide)) && (
-                <FormControl fullWidth>
-                  <Select
-                    required
-                    name="propertyStatus"
-                    value={selectedStatus || formData.propertyStatus}
-                    onChange={handleInputChange}
-                    displayEmpty
-                    sx={{
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        "&:hover": {
-                          borderColor: "#04112f",
+                  <FormControl fullWidth>
+                    <Select
+                      required
+                      name="propertyStatus"
+                      value={selectedStatus || formData.propertyStatus}
+                      onChange={handleInputChange}
+                      displayEmpty
+                      sx={{
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          "&:hover": {
+                            borderColor: "#04112f",
+                          },
                         },
-                      },
-                    }}
-                    renderValue={(selected: any) => {
-                      if (!selected) {
-                        return (
-                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                            Property Status
-                          </span>
-                        );
-                      }
-                      return selected;
-                    }}
-                  >
-                    {propertyStatus.map((x) => (
-                      <MenuItem key={x.name} value={x.name}>
-                        {`${x.name}`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
+                      }}
+                      renderValue={(selected: any) => {
+                        if (!selected) {
+                          return (
+                            <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                              Property Status
+                            </span>
+                          );
+                        }
+                        return selected;
+                      }}
+                    >
+                      {propertyStatus.map((x) => (
+                        <MenuItem key={x.name} value={x.name}>
+                          {`${x.name}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               {(showField("possession") ||
                 selectedStatus === "Under Construction") && (
-                <TextField
-                  name="possession"
-                  value={formData.possession}
-                  onChange={handleInputChange}
-                  fullWidth
-                  label="Expected Completion Date"
-                  type="date"
-                  InputLabelProps={{ shrink: true }}
-                  variant="outlined"
-                  sx={{
-                    "input[type='date' i]": {
-                      cursor: "pointer",
-                    },
-                  }}
-                />
-              )}
+                  <TextField
+                    name="possession"
+                    value={formData.possession}
+                    onChange={handleInputChange}
+                    fullWidth
+                    label="Expected Completion Date"
+                    type="date"
+                    InputLabelProps={{ shrink: true }}
+                    variant="outlined"
+                    sx={{
+                      "input[type='date' i]": {
+                        cursor: "pointer",
+                      },
+                    }}
+                  />
+                )}
               <TextField
                 name="description"
                 value={formData.description}
@@ -551,72 +564,72 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
             >
               {(showField("parking") ||
                 (selectedtype && !shouldHideFields)) && (
-                <FormControl fullWidth>
-                  <Select
-                    name="parking"
-                    value={formData.parking}
-                    onChange={handleInputChange}
-                    displayEmpty
-                    sx={{
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        "&:hover": {
-                          borderColor: "#04112f",
+                  <FormControl fullWidth>
+                    <Select
+                      name="parking"
+                      value={formData.parking}
+                      onChange={handleInputChange}
+                      displayEmpty
+                      sx={{
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          "&:hover": {
+                            borderColor: "#04112f",
+                          },
                         },
-                      },
-                    }}
-                    renderValue={(selected: any) => {
-                      if (!selected) {
-                        return (
-                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                            Parking
-                          </span>
-                        );
-                      }
-                      return selected;
-                    }}
-                  >
-                    {parking.map((par) => (
-                      <MenuItem key={par.name} value={par.name}>
-                        {`${par.name}`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
+                      }}
+                      renderValue={(selected: any) => {
+                        if (!selected) {
+                          return (
+                            <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                              Parking
+                            </span>
+                          );
+                        }
+                        return selected;
+                      }}
+                    >
+                      {parking.map((par) => (
+                        <MenuItem key={par.name} value={par.name}>
+                          {`${par.name}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               {(showField("furnishing") ||
                 (selectedtype && !shouldHideFields)) && (
-                <FormControl fullWidth>
-                  <Select
-                    displayEmpty
-                    name="furnishing"
-                    value={formData.furnishing}
-                    onChange={handleInputChange}
-                    sx={{
-                      "& .MuiOutlinedInput-notchedOutline": {
-                        "&:hover": {
-                          borderColor: "#04112f",
+                  <FormControl fullWidth>
+                    <Select
+                      displayEmpty
+                      name="furnishing"
+                      value={formData.furnishing}
+                      onChange={handleInputChange}
+                      sx={{
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          "&:hover": {
+                            borderColor: "#04112f",
+                          },
                         },
-                      },
-                    }}
-                    renderValue={(selected: any) => {
-                      if (!selected) {
-                        return (
-                          <span style={{ color: "rgba(0,0,0,0.5)" }}>
-                            Select Furnished Type
-                          </span>
-                        );
-                      }
-                      return selected;
-                    }}
-                  >
-                    {furnishing.map((x) => (
-                      <MenuItem key={x.name} value={x.name}>
-                        {`${x.name}`}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              )}
+                      }}
+                      renderValue={(selected: any) => {
+                        if (!selected) {
+                          return (
+                            <span style={{ color: "rgba(0,0,0,0.5)" }}>
+                              Select Furnished Type
+                            </span>
+                          );
+                        }
+                        return selected;
+                      }}
+                    >
+                      {furnishing.map((x) => (
+                        <MenuItem key={x.name} value={x.name}>
+                          {`${x.name}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )}
               {(showField("sqft") || !shouldHideSqrft) && (
                 <TextField
                   name="sqft"
@@ -730,36 +743,36 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 </Button>
               </FormControl>
               {selectedLocation && (
-               <Box >
-                   <FormLabel
-                  sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
-                >
-                  Selected Location
-                </FormLabel>
+                <Box >
+                  <FormLabel
+                    sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
+                  >
+                    Selected Location
+                  </FormLabel>
 
-        <Box sx={{ 
-           height: "150px", 
-           width: "100%", 
-           borderRadius: 1, 
-           overflow: 'hidden',
-           border: '1px solid rgba(0, 0, 0, 0.12)' 
-         }}>
-      <MapContainer
-        center={selectedLocation}
-        zoom={15}
-        style={{ height: "100%", width: "100%" }}
-        dragging={false}
-        touchZoom={false}
-        doubleClickZoom={false}
-        scrollWheelZoom={false}
-        zoomControl={false}
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={selectedLocation} />
-      </MapContainer>
-    </Box>
-  </Box>
-)}
+                  <Box sx={{
+                    height: "150px",
+                    width: "100%",
+                    borderRadius: 1,
+                    overflow: 'hidden',
+                    border: '1px solid rgba(0, 0, 0, 0.12)'
+                  }}>
+                    <MapContainer
+                      center={selectedLocation}
+                      zoom={15}
+                      style={{ height: "100%", width: "100%" }}
+                      dragging={false}
+                      touchZoom={false}
+                      doubleClickZoom={false}
+                      scrollWheelZoom={false}
+                      zoomControl={false}
+                    >
+                      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                      <Marker position={selectedLocation} />
+                    </MapContainer>
+                  </Box>
+                </Box>
+              )}
               <LocationDialog
                 open={loactionDialog}
                 onClose={handleCloseLocation}

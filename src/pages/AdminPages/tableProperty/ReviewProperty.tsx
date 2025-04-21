@@ -15,11 +15,12 @@ import { ArrowBack, ArrowForward } from "@mui/icons-material";
 const ReviewProperty = () => {
   const { data: products, isLoading } = getAllProperties();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedProperty, setSelectedProperty] = useState<Product | null>(null);
 
-  const handleDialogToggle = useCallback(() => {
+  const handleDialogToggle = useCallback((property: Product | null = null) => {
+    setSelectedProperty(property);
     setIsDialogOpen((prev) => !prev);
   }, []);
-
 
 
   const columns = [
@@ -70,7 +71,13 @@ const ReviewProperty = () => {
     },
     {
       name: 'Action',
-      cell: (row: Product) => <ActionMenuComponent row={row} ActionMenuItems={ActionPropertyMenuItems} />,
+      cell: (row: Product) => (
+        <ActionMenuComponent 
+          row={row} 
+          ActionMenuItems={ActionPropertyMenuItems} 
+          onEditClick={() => handleDialogToggle(row)}
+        />
+      ),
       center: true,
     },
   ];
@@ -97,7 +104,12 @@ const ReviewProperty = () => {
           />
         </CardContent>
       </Card>
-      <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} mode="post" />
+      <PropertyForm 
+        open={isDialogOpen} 
+        onClose={() => handleDialogToggle(null)} 
+        property={selectedProperty}
+        mode={selectedProperty ? "update" : "post"} 
+      />
     </Box>
   );
 };0
@@ -192,13 +204,12 @@ export const ViewImagesComponent = ({ images }: any) => {
   );
 };
 
-export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
+export const ActionMenuComponent = ({ row, ActionMenuItems ,onEditClick  }: any) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const updateProperty = useUpdateProperty(row._id);
   const deleteProperty = useDeleteProperty(row._id);
   const updateUser = useUpdateUser(row?.username);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   // Open the delete confirmation dialog
@@ -217,10 +228,6 @@ export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
     setIsDeleteDialogOpen(false); // Close the dialog after deletion
   };
 
-  const handleDialogToggle = useCallback(() => {
-    setIsDialogOpen((prev) => !prev);
-  }, []);
-
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -231,7 +238,7 @@ export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
 
   const handleUpdatePropertyActions = (action: any) => {
     if (action.payload === "edit") {
-      setIsDialogOpen(true);
+      onEditClick(row)
     } else if (action.payload === "delete") {
       handleOpenDeleteDialog(); // Open the delete confirmation dialog
     } else if (action.payload === "role") {
@@ -252,6 +259,7 @@ export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
       return row.status === 'active' ? action.label === 'De-Active' : action.label === 'Active';
     } else if (action.payload === 'pramote') {
       // Show "De-Promote" if pramote is 'active', otherwise show "Promote"
+      if(row.status === 'pending') return false; // Don't show promote/de-promote if status is pending
       return row.pramote === 'active' ? action.label === 'De-Promote' : action.label === 'Promote';
     }
     // Always show other actions (Edit, Delete)
@@ -301,9 +309,6 @@ export const ActionMenuComponent = ({ row, ActionMenuItems }: any) => {
           </MenuItem>
         ))}
       </Menu>
-
-      {/* Update Property Dialog */}
-      <PropertyForm open={isDialogOpen} onClose={handleDialogToggle} property={row} mode="update" />
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmationDialog
