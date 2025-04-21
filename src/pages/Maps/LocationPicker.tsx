@@ -1,12 +1,13 @@
 import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import { LatLngExpression } from 'leaflet';
 import { Paper, Dialog, DialogTitle, DialogContent, DialogActions, Button, IconButton } from '@mui/material';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Locate } from 'lucide-react';
+import L from 'leaflet';
 
 interface LocationPickerProps {
   onLocationSelect: (lat: number, lng: number) => void;
@@ -54,35 +55,45 @@ const LocationPicker = ({ onLocationSelect, initialLocation }: LocationPickerPro
   };
 
   // Component to zoom to the user's location
+
   const ZoomToUserLocation = () => {
     const map = useMap();
-
+    const buttonRef = useRef<HTMLButtonElement>(null);
+  
     const handleZoomToUserLocation = (e: React.MouseEvent) => {
-      e.stopPropagation(); // Stop event propagation
+      e.stopPropagation(); // React-level propagation
       if (userLocation) {
-        map.setView(userLocation, 15); // Zoom to the user's location
+        map.setView(userLocation, 15);
       }
     };
-
+  
+    useEffect(() => {
+      if (buttonRef.current) {
+        L.DomEvent.disableClickPropagation(buttonRef.current);
+      }
+    }, []);
+  
     return (
       <IconButton
+        ref={buttonRef}
         onClick={handleZoomToUserLocation}
         sx={{
-          position: 'absolute', // Position the button absolutely
-          top: 16, // Adjust top position
-          right: 16, // Adjust right position
-          zIndex: 1000, // Ensure the button is above the map
-          backgroundColor: '#fff', // White background
-          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)', // Add a shadow
+          position: 'absolute',
+          top: 16,
+          right: 16,
+          zIndex: 1000,
+          backgroundColor: '#fff',
+          boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
           '&:hover': {
-            backgroundColor: '#f5f5f5', // Light gray background on hover
+            backgroundColor: '#f5f5f5',
           },
         }}
       >
-        <Locate color="blue" size={25} /> {/* Use the Locate icon */}
+        <Locate color="blue" size={25} />
       </IconButton>
     );
   };
+  
 
   // Validate if the location is in Karnataka using reverse geocoding
   const validateLocationInKarnataka = async (lat: number, lng: number) => {
