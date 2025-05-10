@@ -129,13 +129,14 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
         }}
       >
         {/* Menu Item 1: View Map */}
+        {property?.location?.coordinates && (
         <MenuItem onClick={() => navigateToPropertyMap(property.location.coordinates[1], property.location.coordinates[0])}>
           <MapPin size={16} style={{ marginRight: "8px" }} /> 
           <Typography variant="body2">View Map</Typography>
         </MenuItem>
-
+        )}
         {/* Menu Item 2: Edit */}
-       {userId === property.userid &&(
+       {userId === property?.userid &&(
         <MenuItem onClick={() => (setIsEdit(true), setAnchorEl(null))}  >
           <Edit size={16} style={{ marginRight: "8px" }} /> 
           <Typography variant="body2">Edit</Typography>
@@ -196,7 +197,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               mb: 0.5,
             }}
           >
-            {property.title}
+            {property?.title}
           </Typography>
           <Typography
             color="text.secondary"
@@ -218,9 +219,9 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
               whiteSpace: "nowrap",
             }}
           >
-            {property.description?.length > 34
+            {property?.description?.length > 34
               ? `${property.description.slice(0, 34)}....`
-              : property.description}
+              : property?.description}
           </Typography>
         </Box>
 
@@ -231,7 +232,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({
           }}
         >
           <Typography variant="h6" sx={{ fontSize: "1.5rem", fontWeight: 600 }}>
-            {useFormatPrice(property.price)}
+            {useFormatPrice(property?.price)}
           </Typography>
         </Box>
       </Box>
