@@ -23,16 +23,16 @@ api.interceptors.request.use(
     }
   );
 
-  // api.interceptors.response.use(
-  //   (response) => response,
-  //   (error) => {
-  //       if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-  //           localStorage.removeItem("token"); // Remove token
-  //           window.location.href = "/"; 
-  //       }
-  //       return Promise.reject(error);
-  //   }
-  // );
+  api.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+            localStorage.removeItem("token"); // Remove token
+            window.location.href = "/"; 
+        }
+        return Promise.reject(error);
+    }
+  );
 
 //post
 export const post = async (path: string, data: any) => {

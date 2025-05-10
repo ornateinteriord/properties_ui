@@ -131,3 +131,23 @@ export const useDeleteProperty = (productId : string) => {
   },
 })
 }
+
+export const useDeleteImage = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn : async ({productId , imageUrl}:any) => {
+      return await deleteApi(`product/deleteproperty/${productId}/images?imageUrl=${imageUrl}`)
+    },
+    onSuccess : ()=>{
+      toast.success("Image deleted successfully")
+      queryClient.invalidateQueries({ queryKey: ["allProperties"] });
+    },
+    onError: (err: any) => {
+      const errorMessage =
+        err.response.data.message ;
+        console.error("Delete aerro:", errorMessage);
+        toast.error(errorMessage || 'Error deleting image');
+    },
+  })
+    
+}
