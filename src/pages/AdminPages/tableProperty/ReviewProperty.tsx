@@ -1,19 +1,20 @@
 import { Button, Card, CardContent, CircularProgress, Menu, MenuItem, Typography, Box, Grid, Dialog, DialogContent, IconButton, DialogActions } from "@mui/material";
 import DataTable from 'react-data-table-component';
-import { getAllProperties, useDeleteProperty } from "../../../api/product";
+import { getAllProperties, useDeleteImage, useDeleteProperty } from "../../../api/product";
 import { Product } from "../../../types";
 import { ActionPropertyMenuItems, DASHBOARD_CUTSOM_STYLE, getFormattedName, getRelativeTime } from "../../../utils/constant";
 import { useCallback, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, } from "lucide-react";
 import { useUpdateProperty } from '../../../api/product/index';
 import { useUpdateUser } from "../../../api/user";
 import DeleteConfirmationDialog from "../../../components/ui/DeletePopup";
 import PropertyForm from "../../../components/property/card/PropertyForm";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, DeleteForever } from "@mui/icons-material";
+import { LoadingComponent } from "../../../App";
 
 
 const ReviewProperty = () => {
-  const { data: products, isLoading } = getAllProperties();
+  const { data: products, isLoading , isFetching} = getAllProperties();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState<Product | null>(null);
 
@@ -65,7 +66,7 @@ const ReviewProperty = () => {
     {
       name: 'Images',
       cell: (row: Product) => (
-       <ViewImagesComponent images={row.images} />
+       <ViewImagesComponent images={row.images} id={row._id} loading={isFetching}/>
       ),
       sortable: true,
     },
@@ -116,13 +117,13 @@ const ReviewProperty = () => {
 
 export default ReviewProperty;
 
-export const ViewImagesComponent = ({ images }: any) => {
+export const ViewImagesComponent = ({ images , id, loading}: {images : string[] , id: string, loading : boolean}) => {
   const [dialogOpen, setDialogOpen] = useState(false);  // To control dialog visibility
   const [currentImageIndex, setCurrentImageIndex] = useState(0);  // To track current image in the dialog
-
   // Open and close the dialog
   const handleDialogToggle = () => setDialogOpen(!dialogOpen);
 
+  const deletePropertyImage = useDeleteImage()
   // Go to next image
   const handleNext = () => {
     if (currentImageIndex < images.length - 1) {
@@ -134,6 +135,15 @@ export const ViewImagesComponent = ({ images }: any) => {
   const handlePrevious = () => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
+    }
+  };
+
+  const handleDeleteImage = async (imageUrl: string) => {
+    try {
+      await deletePropertyImage.mutateAsync({ productId: id, imageUrl });
+      // Optional: Show success message or refresh data
+    } catch (error) {
+      console.error('Error deleting image:', error);
     }
   };
 
@@ -195,10 +205,25 @@ export const ViewImagesComponent = ({ images }: any) => {
             )}
         </DialogContent>
         <DialogActions sx={{ padding: { xs: 1, sm: 2 } }}>
+              {images && images.length > 0 && (
+                <IconButton
+                onClick={() => handleDeleteImage(images[currentImageIndex])}
+                sx={{
+                  backgroundColor: 'rgba(255, 0, 0, 0.7)',
+                  color: 'white',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 0, 0, 0.9)',
+                  }
+                }}
+                disabled={loading || deletePropertyImage.isPending || deletePropertyImage.isPending}
+              >
+                <DeleteForever sx={{fontSize : 18}}/>
+              </IconButton>)}
           <Button onClick={handleDialogToggle} color="primary">
             Close
           </Button>
         </DialogActions>
+        {deletePropertyImage.isPending && deletePropertyImage.isPending && loading && <LoadingComponent />}
       </Dialog>
     </>
   );
