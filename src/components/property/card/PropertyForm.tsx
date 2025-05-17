@@ -11,13 +11,13 @@ import {
   MenuItem,
   FormLabel,
   SelectChangeEvent,
-  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import {
   getCloudinaryUrl,
   useCreateProperty,
+  useDeleteImage,
   useUpdateProperty,
 } from "../../../api/product";
 import { toast } from "react-toastify";
@@ -27,6 +27,7 @@ import { Product } from "../../../types";
 import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
 import { LocationDialog } from "../../../pages/Maps/LocationPicker";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import ImagesList from "./ImagesList";
 
 interface PropertyFormProps {
   open: boolean;
@@ -43,7 +44,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 }) => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
-  const [imagesNames, setImagesNames] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<string[]>([]); // For newly uploaded images
+  const [existingImages, setExistingImages] = useState<string[]>([]); // For existing images from database
   const [location, setLocation] = useState<{
     type: string;
     coordinates: [number, number];
@@ -74,6 +76,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   };
 
   const { data: properties } = useGetPropertyTypes();
+  const deletePropertyImage = useDeleteImage()
   const handleLocationSelect = (lat: number, lng: number) => {
     const newLocation: any = {
       type: "Point",
@@ -93,6 +96,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setSelectedtype(property.property_type || "");
       setSelectedStatus(property.propertyStatus || "");
       setDistrictSearchTerm(property.district || "");
+      setExistingImages(property.images || []);
       setTalukSearchTerm(property.taluk || "");
       if (property.location?.coordinates) {
         // Set the location coordinates (swapping to [lat, lng] for display)
@@ -110,6 +114,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setDistrictSearchTerm("");
       setTalukSearchTerm("");
       setSelectedLocation(null);
+      setNewImages([]);
+      setExistingImages([]);
     }
   }, [open, property, mode]);
 
@@ -213,21 +219,42 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       Promise.all(uploadPromises)
         .then((responses) => {
           const imageUrls = responses.map((response) => response.secure_url);
-          const imageNames = responses.map(
-            (response) => `${response.display_name}.${response.format}`
-          );
-
+          setNewImages((prev) => [...prev, ...imageUrls]);
           setFormData((prevData: any) => ({
             ...prevData,
             images: [...(prevData.images || []), ...imageUrls],
           }));
-
-          setImagesNames((prevNames) => [...prevNames, ...imageNames]);
         })
         .catch((err) => {
           toast.error(err?.response?.data?.message || "Error uploading images");
         });
     }
+  };
+
+  const handleDeleteExistingImage = (url: string) => {
+    deletePropertyImage.mutate({productId: property._id, imageUrl : url}, {
+      onSuccess: () => {
+        const updatedImages = existingImages.filter(img => img !== url);
+        setExistingImages(updatedImages);
+        setFormData((prevData: any) => ({
+          ...prevData,
+          images: [...newImages, ...updatedImages],
+        }));
+      },
+      onError: (err) => {
+        toast.error(err?.response?.data?.message || "Error deleting image");
+      },
+    });
+  };
+
+  const handleDeleteNewImage = (index: number) => {
+    const updatedImages = [...newImages];
+    updatedImages.splice(index, 1);
+    setNewImages(updatedImages);
+    setFormData((prevData: any) => ({
+      ...prevData,
+      images: [...updatedImages, ...existingImages],
+    }));
   };
 
   const furnishing = [
@@ -782,9 +809,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                 initialLocation={property?.location}
               />
               <FormControl>
-                <FormLabel
-                  sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
-                >
+                <FormLabel sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}>
                   Add Images
                 </FormLabel>
                 <Button variant="outlined" component="label">
@@ -797,21 +822,24 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                     onChange={handleFileChange}
                   />
                 </Button>
-                {imagesNames.length > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
-                      Uploaded Images:
-                    </Typography>
-                    {imagesNames.map((name, index) => (
-                      <Typography
-                        key={index}
-                        variant="body2"
-                        sx={{ fontSize: "0.875rem" }}
-                      >
-                        {name}
-                      </Typography>
-                    ))}
-                  </Box>
+                {(newImages.length > 0 || existingImages.length > 0) && (
+                  <>
+                    {newImages.length > 0 && (
+                      <ImagesList
+                        images={newImages}
+                        handleRemoveImage={handleDeleteNewImage}
+                        title="New Images"
+                        deleteByIndex={true}
+                      />
+                    )}
+                    {existingImages.length > 0 && (
+                      <ImagesList
+                        images={existingImages}
+                        handleDeleteImage={handleDeleteExistingImage}
+                        title="Existing Images"
+                      />
+                    )}
+                  </>
                 )}
               </FormControl>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
@@ -837,7 +865,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         </Box>
       </DialogContent>
 
-      {(isCreatePending || isUpdatePending || cloudinary.isPending) && (
+      {(isCreatePending || isUpdatePending || cloudinary.isPending || deletePropertyImage.isPending) && (
         <LoadingComponent />
       )}
     </Dialog>
