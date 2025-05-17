@@ -11,13 +11,13 @@ import {
   MenuItem,
   FormLabel,
   SelectChangeEvent,
-  Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import {
   getCloudinaryUrl,
   useCreateProperty,
+  useDeleteImage,
   useUpdateProperty,
 } from "../../../api/product";
 import { toast } from "react-toastify";
@@ -27,6 +27,7 @@ import { Product } from "../../../types";
 import DistrictTalukSelector from "../../ui/DistrictTalukSelector";
 import { LocationDialog } from "../../../pages/Maps/LocationPicker";
 import { MapContainer, Marker, TileLayer } from "react-leaflet";
+import ImagesList from "./ImagesList";
 
 interface PropertyFormProps {
   open: boolean;
@@ -43,8 +44,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
 }) => {
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
-  const [imagesNames, setImagesNames] = useState<string[]>([]);
-  const [images, setImages] = useState<string[]>([]);
+  const [newImages, setNewImages] = useState<string[]>([]); // For newly uploaded images
+  const [existingImages, setExistingImages] = useState<string[]>([]); // For existing images from database
   const [location, setLocation] = useState<{
     type: string;
     coordinates: [number, number];
@@ -75,6 +76,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   };
 
   const { data: properties } = useGetPropertyTypes();
+  const deletePropertyImage = useDeleteImage()
   const handleLocationSelect = (lat: number, lng: number) => {
     const newLocation: any = {
       type: "Point",
@@ -94,6 +96,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setSelectedtype(property.property_type || "");
       setSelectedStatus(property.propertyStatus || "");
       setDistrictSearchTerm(property.district || "");
+      setExistingImages(property.images || []);
       setTalukSearchTerm(property.taluk || "");
       if (property.location?.coordinates) {
         // Set the location coordinates (swapping to [lat, lng] for display)
@@ -111,6 +114,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
       setDistrictSearchTerm("");
       setTalukSearchTerm("");
       setSelectedLocation(null);
+      setNewImages([]);
+      setExistingImages([]);
     }
   }, [open, property, mode]);
 
@@ -205,48 +210,52 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const propertyStatusHide = propertiesStatushide.includes(selectedtype);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  if (event.target.files && event.target.files.length > 0) {
-    const files = Array.from(event.target.files);
-    const uploadPromises = files.map((file) => {
-      return cloudinary.mutateAsync(file);
-    });
+    if (event.target.files && event.target.files.length > 0) {
+      const files = Array.from(event.target.files);
+      const uploadPromises = files.map((file) => {
+        return cloudinary.mutateAsync(file);
+      });
 
-    Promise.all(uploadPromises)
-      .then((responses) => {
-        const imageUrls = responses.map((response) => response.secure_url);
-        const imageNames = responses.map(
-          (response) => `${response.display_name}.${response.format}`
-        );
+      Promise.all(uploadPromises)
+        .then((responses) => {
+          const imageUrls = responses.map((response) => response.secure_url);
+          setNewImages((prev) => [...prev, ...imageUrls]);
+          setFormData((prevData: any) => ({
+            ...prevData,
+            images: [...(prevData.images || []), ...imageUrls],
+          }));
+        })
+        .catch((err) => {
+          toast.error(err?.response?.data?.message || "Error uploading images");
+        });
+    }
+  };
 
-        setImages((prev) => [...prev, ...imageUrls]);
-        setImagesNames((prev) => [...prev, ...imageNames]);
-        
+  const handleDeleteExistingImage = (url: string) => {
+    deletePropertyImage.mutate({productId: property._id, imageUrl : url}, {
+      onSuccess: () => {
+        const updatedImages = existingImages.filter(img => img !== url);
+        setExistingImages(updatedImages);
         setFormData((prevData: any) => ({
           ...prevData,
-          images: [...(prevData.images || []), ...imageUrls],
+          images: [...newImages, ...updatedImages],
         }));
-      })
-      .catch((err) => {
-        toast.error(err?.response?.data?.message || "Error uploading images");
-      });
-  }
-};
+      },
+      onError: (err) => {
+        toast.error(err?.response?.data?.message || "Error deleting image");
+      },
+    });
+  };
 
-const handleDeleteImage = (index: number) => {
-  const newImages = [...images];
-  const newImageNames = [...imagesNames];
-  
-  newImages.splice(index, 1);
-  newImageNames.splice(index, 1);
-  
-  setImages(newImages);
-  setImagesNames(newImageNames);
-  
-  setFormData((prevData: any) => ({
-    ...prevData,
-    images: newImages,
-  }));
-};
+  const handleDeleteNewImage = (index: number) => {
+    const updatedImages = [...newImages];
+    updatedImages.splice(index, 1);
+    setNewImages(updatedImages);
+    setFormData((prevData: any) => ({
+      ...prevData,
+      images: [...updatedImages, ...existingImages],
+    }));
+  };
 
   const furnishing = [
     { name: "Fully Furnished" },
@@ -800,9 +809,7 @@ const handleDeleteImage = (index: number) => {
                 initialLocation={property?.location}
               />
               <FormControl>
-                <FormLabel
-                  sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}
-                >
+                <FormLabel sx={{ color: "rgba(0, 0, 0, 0.5)", fontSize: "15px" }}>
                   Add Images
                 </FormLabel>
                 <Button variant="outlined" component="label">
@@ -815,45 +822,25 @@ const handleDeleteImage = (index: number) => {
                     onChange={handleFileChange}
                   />
                 </Button>
-                {(images.length > 0 || imagesNames.length > 0) && (
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
-                        Uploaded Images:
-                      </Typography>
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                        {images.map((url, index) => (
-                          <Box key={index} sx={{ position: 'relative' }}>
-                            <img 
-                              src={url} 
-                              alt={`Uploaded ${index}`} 
-                              style={{ 
-                                width: 80, 
-                                height: 80, 
-                                objectFit: 'cover',
-                                borderRadius: 4 
-                              }} 
-                            />
-                            <IconButton
-                              size="small"
-                              sx={{
-                                position: 'absolute',
-                                top: 0,
-                                right: 0,
-                                backgroundColor: 'rgba(0,0,0,0.5)',
-                                color: 'white',
-                                '&:hover': {
-                                  backgroundColor: 'rgba(0,0,0,0.7)',
-                                }
-                              }}
-                              onClick={() => handleDeleteImage(index)}
-                            >
-                              <CloseIcon fontSize="small" />
-                            </IconButton>
-                          </Box>
-                        ))}
-                      </Box>
-                    </Box>
-                  )}
+                {(newImages.length > 0 || existingImages.length > 0) && (
+                  <>
+                    {newImages.length > 0 && (
+                      <ImagesList
+                        images={newImages}
+                        handleRemoveImage={handleDeleteNewImage}
+                        title="New Images"
+                        deleteByIndex={true}
+                      />
+                    )}
+                    {existingImages.length > 0 && (
+                      <ImagesList
+                        images={existingImages}
+                        handleDeleteImage={handleDeleteExistingImage}
+                        title="Existing Images"
+                      />
+                    )}
+                  </>
+                )}
               </FormControl>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
@@ -878,7 +865,7 @@ const handleDeleteImage = (index: number) => {
         </Box>
       </DialogContent>
 
-      {(isCreatePending || isUpdatePending || cloudinary.isPending) && (
+      {(isCreatePending || isUpdatePending || cloudinary.isPending || deletePropertyImage.isPending) && (
         <LoadingComponent />
       )}
     </Dialog>
