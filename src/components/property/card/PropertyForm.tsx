@@ -44,6 +44,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedtype, setSelectedtype] = useState("");
   const [imagesNames, setImagesNames] = useState<string[]>([]);
+  const [images, setImages] = useState<string[]>([]);
   const [location, setLocation] = useState<{
     type: string;
     coordinates: [number, number];
@@ -204,31 +205,48 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const propertyStatusHide = propertiesStatushide.includes(selectedtype);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const files = Array.from(event.target.files);
-      const uploadPromises = files.map((file) => {
-        return cloudinary.mutateAsync(file);
+  if (event.target.files && event.target.files.length > 0) {
+    const files = Array.from(event.target.files);
+    const uploadPromises = files.map((file) => {
+      return cloudinary.mutateAsync(file);
+    });
+
+    Promise.all(uploadPromises)
+      .then((responses) => {
+        const imageUrls = responses.map((response) => response.secure_url);
+        const imageNames = responses.map(
+          (response) => `${response.display_name}.${response.format}`
+        );
+
+        setImages((prev) => [...prev, ...imageUrls]);
+        setImagesNames((prev) => [...prev, ...imageNames]);
+        
+        setFormData((prevData: any) => ({
+          ...prevData,
+          images: [...(prevData.images || []), ...imageUrls],
+        }));
+      })
+      .catch((err) => {
+        toast.error(err?.response?.data?.message || "Error uploading images");
       });
+  }
+};
 
-      Promise.all(uploadPromises)
-        .then((responses) => {
-          const imageUrls = responses.map((response) => response.secure_url);
-          const imageNames = responses.map(
-            (response) => `${response.display_name}.${response.format}`
-          );
-
-          setFormData((prevData: any) => ({
-            ...prevData,
-            images: [...(prevData.images || []), ...imageUrls],
-          }));
-
-          setImagesNames((prevNames) => [...prevNames, ...imageNames]);
-        })
-        .catch((err) => {
-          toast.error(err?.response?.data?.message || "Error uploading images");
-        });
-    }
-  };
+const handleDeleteImage = (index: number) => {
+  const newImages = [...images];
+  const newImageNames = [...imagesNames];
+  
+  newImages.splice(index, 1);
+  newImageNames.splice(index, 1);
+  
+  setImages(newImages);
+  setImagesNames(newImageNames);
+  
+  setFormData((prevData: any) => ({
+    ...prevData,
+    images: newImages,
+  }));
+};
 
   const furnishing = [
     { name: "Fully Furnished" },
@@ -797,22 +815,45 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
                     onChange={handleFileChange}
                   />
                 </Button>
-                {imagesNames.length > 0 && (
-                  <Box sx={{ mt: 2 }}>
-                    <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
-                      Uploaded Images:
-                    </Typography>
-                    {imagesNames.map((name, index) => (
-                      <Typography
-                        key={index}
-                        variant="body2"
-                        sx={{ fontSize: "0.875rem" }}
-                      >
-                        {name}
+                {(images.length > 0 || imagesNames.length > 0) && (
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body2" sx={{ fontWeight: 500, mb: 1 }}>
+                        Uploaded Images:
                       </Typography>
-                    ))}
-                  </Box>
-                )}
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                        {images.map((url, index) => (
+                          <Box key={index} sx={{ position: 'relative' }}>
+                            <img 
+                              src={url} 
+                              alt={`Uploaded ${index}`} 
+                              style={{ 
+                                width: 80, 
+                                height: 80, 
+                                objectFit: 'cover',
+                                borderRadius: 4 
+                              }} 
+                            />
+                            <IconButton
+                              size="small"
+                              sx={{
+                                position: 'absolute',
+                                top: 0,
+                                right: 0,
+                                backgroundColor: 'rgba(0,0,0,0.5)',
+                                color: 'white',
+                                '&:hover': {
+                                  backgroundColor: 'rgba(0,0,0,0.7)',
+                                }
+                              }}
+                              onClick={() => handleDeleteImage(index)}
+                            >
+                              <CloseIcon fontSize="small" />
+                            </IconButton>
+                          </Box>
+                        ))}
+                      </Box>
+                    </Box>
+                  )}
               </FormControl>
               <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                 <Button
