@@ -74,15 +74,30 @@ export const useCreateProperty = ()=>{
     })
 }
 
-export const getCloudinaryUrl = () => {
+export const useImageKitUpload = (fileName: string = "property-image") => {
   return useMutation({
     mutationFn: async (file: File) => {
+      // 1. Get signature from backend
+      const authRes = await get("/image-kit-auth");
+      const { signature, expire, token } = authRes;
+
+      // 2. Prepare form data
       const data = new FormData();
       data.append("file", file);
-      data.append("upload_preset", import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
-      data.append("cloud_name", import.meta.env.VITE_CLOUDINARY_CLOUD_NAME);
-      const response = await axios.post(import.meta.env.VITE_CLOUDINARY_BASE_URL, data);
-      return response.data;
+      data.append("fileName", fileName);
+      data.append("publicKey", import.meta.env.VITE_IMAGEKIT_PUBLIC_KEY);
+      data.append("signature", signature);
+      data.append("expire", expire);
+      data.append("token", token);
+      data.append("folder", "/properties-images");
+
+      // 3. Upload to ImageKit
+      const uploadRes = await axios.post(
+        "https://upload.imagekit.io/api/v1/files/upload",
+        data
+      );
+
+      return uploadRes.data; // contains URL in .url
     },
   });
 };

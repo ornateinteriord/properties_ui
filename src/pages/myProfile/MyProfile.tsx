@@ -19,7 +19,7 @@ import {  useEffect, useState } from "react";
 
 import { useGetuserDetails, useUpdateUser, } from "../../api/user";
 
-import { getCloudinaryUrl } from "../../api/product";
+import { useImageKitUpload } from "../../api/product";
 import { toast } from "react-toastify";
 import { LoadingComponent } from "../../App";
 import TokenService from "../../api/token/TokenService";
@@ -40,17 +40,17 @@ const MyProfile = () => {
     gender: "",
     profileImage:""
   });
-  const cloudinary = getCloudinaryUrl();
+  const imageKit = useImageKitUpload("profile-image");
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-  
-      cloudinary.mutate(file, {
+
+      imageKit.mutate(file, {
         onSuccess: (data) => {
-          if (data.secure_url) {
+          if (data.url) {
             setFormData((prevData) => ({
               ...prevData,
-              profileImage: data.secure_url,
+              profileImage: data.url,
             }));
           } else {
             toast.error("Failed to get image URL");
@@ -344,7 +344,7 @@ const MyProfile = () => {
           </Box>
         </Box>
       </Card>
-      {(cloudinary.isPending || isLoading || loading)  && <LoadingComponent />}
+      {(imageKit.isPending || isLoading || loading)  && <LoadingComponent />}
     </Box>
   );
 };
