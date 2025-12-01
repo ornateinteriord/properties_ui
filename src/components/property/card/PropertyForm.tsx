@@ -15,7 +15,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useState, useEffect } from "react";
 import {
-  getCloudinaryUrl,
+  useImageKitUpload,
   useCreateProperty,
   useDeleteImage,
   useUpdateProperty,
@@ -69,7 +69,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
   const [districtSearchTerm, setDistrictSearchTerm] = useState("");
   const [talukSearchTerm, setTalukSearchTerm] = useState("");
 
-  const cloudinary = getCloudinaryUrl();
+  const imageKit = useImageKitUpload("property-image");
 
   const handleCloseLocation = () => {
     setLoactionDialog(false);
@@ -213,12 +213,12 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
     if (event.target.files && event.target.files.length > 0) {
       const files = Array.from(event.target.files);
       const uploadPromises = files.map((file) => {
-        return cloudinary.mutateAsync(file);
+        return imageKit.mutateAsync(file);
       });
 
       Promise.all(uploadPromises)
         .then((responses) => {
-          const imageUrls = responses.map((response) => response.secure_url);
+          const imageUrls = responses.map((response) => response.url);
           setNewImages((prev) => [...prev, ...imageUrls]);
           setFormData((prevData: any) => ({
             ...prevData,
@@ -865,7 +865,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({
         </Box>
       </DialogContent>
 
-      {(isCreatePending || isUpdatePending || cloudinary.isPending || deletePropertyImage.isPending) && (
+      {(isCreatePending || isUpdatePending || imageKit.isPending || deletePropertyImage.isPending) && (
         <LoadingComponent />
       )}
     </Dialog>
